@@ -8,19 +8,21 @@
       
       
       
-      <link rel="icon" href="/autoware.universe/tier4-proposal/docs/assets/images/autoware-foundation.png">
+        <link rel="canonical" href="https://autowarefoundation.github.io/autoware.universe/tier4-proposal/map/map_loader/">
+      
+      <link rel="icon" href="../../docs/assets/images/autoware-foundation.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
     
     
       
-        <title>Autoware Universe Documentation</title>
+        <title>map_loader package - Autoware Universe Documentation</title>
       
     
     
-      <link rel="stylesheet" href="/autoware.universe/tier4-proposal/assets/stylesheets/main.816931ca.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.816931ca.min.css">
       
         
-        <link rel="stylesheet" href="/autoware.universe/tier4-proposal/assets/stylesheets/palette.9204c3b2.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.9204c3b2.min.css">
         
       
     
@@ -34,11 +36,11 @@
       
     
     
-      <link rel="stylesheet" href="/autoware.universe/tier4-proposal/docs/assets/css/extra.css">
+      <link rel="stylesheet" href="../../docs/assets/css/extra.css">
     
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     
-    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?"/autoware.universe/tier4-proposal":"/autoware.universe/tier4-proposal"),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?"../..":"../.."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
     
       
 
@@ -66,6 +68,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#map_loader-package" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -84,7 +91,7 @@
 
 <header class="md-header md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/autoware.universe/tier4-proposal/." title="Autoware Universe Documentation" class="md-header__button md-logo" aria-label="Autoware Universe Documentation" data-md-component="logo">
+    <a href="../.." title="Autoware Universe Documentation" class="md-header__button md-logo" aria-label="Autoware Universe Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M499.99 176h-59.87l-16.64-41.6C406.38 91.63 365.57 64 319.5 64h-127c-46.06 0-86.88 27.63-103.99 70.4L71.87 176H12.01C4.2 176-1.53 183.34.37 190.91l6 24C7.7 220.25 12.5 224 18.01 224h20.07C24.65 235.73 16 252.78 16 272v48c0 16.12 6.16 30.67 16 41.93V416c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32h256v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-54.07c9.84-11.25 16-25.8 16-41.93v-48c0-19.22-8.65-36.27-22.07-48H494c5.51 0 10.31-3.75 11.64-9.09l6-24c1.89-7.57-3.84-14.91-11.65-14.91zm-352.06-17.83c7.29-18.22 24.94-30.17 44.57-30.17h127c19.63 0 37.28 11.95 44.57 30.17L384 208H128l19.93-49.83zM96 319.8c-19.2 0-32-12.76-32-31.9S76.8 256 96 256s48 28.71 48 47.85-28.8 15.95-48 15.95zm320 0c-19.2 0-48 3.19-48-15.95S396.8 256 416 256s32 12.76 32 31.9-12.8 31.9-32 31.9z"/></svg>
@@ -103,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              map_loader package
             
           </span>
         </div>
@@ -194,7 +201,7 @@
 
 
   <li class="md-tabs__item">
-    <a href="/autoware.universe/tier4-proposal/." class="md-tabs__link">
+    <a href="../.." class="md-tabs__link">
       autoware.universe
     </a>
   </li>
@@ -214,7 +221,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/autoware.universe/tier4-proposal/common/autoware_utils/" class="md-tabs__link">
+      <a href="../../common/autoware_utils/" class="md-tabs__link">
         Common
       </a>
     </li>
@@ -237,7 +244,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/autoware.universe/tier4-proposal/control/shift_decider/" class="md-tabs__link">
+      <a href="../../control/shift_decider/" class="md-tabs__link">
         Control
       </a>
     </li>
@@ -248,6 +255,8 @@
       
         
   
+  
+    
   
 
 
@@ -260,7 +269,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/autoware.universe/tier4-proposal/map/lanelet2_extension/" class="md-tabs__link">
+      <a href="../lanelet2_extension/" class="md-tabs__link md-tabs__link--active">
         Map
       </a>
     </li>
@@ -278,7 +287,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/autoware.universe/tier4-proposal/messages/" class="md-tabs__link">
+      <a href="../../messages/" class="md-tabs__link">
         Messages
       </a>
     </li>
@@ -299,7 +308,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/autoware.universe/tier4-proposal/system/topic_state_monitor/Readme/" class="md-tabs__link">
+      <a href="../../system/topic_state_monitor/Readme/" class="md-tabs__link">
         System
       </a>
     </li>
@@ -335,7 +344,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/autoware.universe/tier4-proposal/." title="Autoware Universe Documentation" class="md-nav__button md-logo" aria-label="Autoware Universe Documentation" data-md-component="logo">
+    <a href="../.." title="Autoware Universe Documentation" class="md-nav__button md-logo" aria-label="Autoware Universe Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M499.99 176h-59.87l-16.64-41.6C406.38 91.63 365.57 64 319.5 64h-127c-46.06 0-86.88 27.63-103.99 70.4L71.87 176H12.01C4.2 176-1.53 183.34.37 190.91l6 24C7.7 220.25 12.5 224 18.01 224h20.07C24.65 235.73 16 252.78 16 272v48c0 16.12 6.16 30.67 16 41.93V416c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-32h256v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-54.07c9.84-11.25 16-25.8 16-41.93v-48c0-19.22-8.65-36.27-22.07-48H494c5.51 0 10.31-3.75 11.64-9.09l6-24c1.89-7.57-3.84-14.91-11.65-14.91zm-352.06-17.83c7.29-18.22 24.94-30.17 44.57-30.17h127c19.63 0 37.28 11.95 44.57 30.17L384 208H128l19.93-49.83zM96 319.8c-19.2 0-32-12.76-32-31.9S76.8 256 96 256s48 28.71 48 47.85-28.8 15.95-48 15.95zm320 0c-19.2 0-48 3.19-48-15.95S396.8 256 416 256s32 12.76 32 31.9-12.8 31.9-32 31.9z"/></svg>
@@ -366,7 +375,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/autoware.universe/tier4-proposal/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         autoware.universe
       </a>
     </li>
@@ -434,7 +443,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="/autoware.universe/tier4-proposal/common/autoware_utils/">Autoware utils</a>
+          <a href="../../common/autoware_utils/">Autoware utils</a>
           
         </div>
       
@@ -493,7 +502,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/autoware.universe/tier4-proposal/common/goal_distance_calculator/Readme/" class="md-nav__link">
+      <a href="../../common/goal_distance_calculator/Readme/" class="md-nav__link">
         goal_distance_calculator
       </a>
     </li>
@@ -546,7 +555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/autoware.universe/tier4-proposal/common/path_distance_calculator/Readme/" class="md-nav__link">
+      <a href="../../common/path_distance_calculator/Readme/" class="md-nav__link">
         path_distance_calculator
       </a>
     </li>
@@ -624,7 +633,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="/autoware.universe/tier4-proposal/control/shift_decider/">Shift decider</a>
+          <a href="../../control/shift_decider/">Shift decider</a>
           
         </div>
       
@@ -657,12 +666,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" data-md-state="indeterminate" type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
       
       
@@ -714,7 +725,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="/autoware.universe/tier4-proposal/map/lanelet2_extension/">Lanelet2 extension</a>
+          <a href="../lanelet2_extension/">Lanelet2 extension</a>
           
             <label for="__nav_4_1">
               <span class="md-nav__icon md-icon"></span>
@@ -772,7 +783,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/autoware.universe/tier4-proposal/map/lanelet2_extension/docs/extra_lanelet_subtypes/" class="md-nav__link">
+      <a href="../lanelet2_extension/docs/extra_lanelet_subtypes/" class="md-nav__link">
         Extra Lanelet Subtypes
       </a>
     </li>
@@ -786,7 +797,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/autoware.universe/tier4-proposal/map/lanelet2_extension/docs/extra_regulatory_elements/" class="md-nav__link">
+      <a href="../lanelet2_extension/docs/extra_regulatory_elements/" class="md-nav__link">
         Extra Regulatory Elements
       </a>
     </li>
@@ -800,7 +811,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/autoware.universe/tier4-proposal/map/lanelet2_extension/docs/lanelet2_format_extension/" class="md-nav__link">
+      <a href="../lanelet2_extension/docs/lanelet2_format_extension/" class="md-nav__link">
         Modifying Lanelet2 format for Autoware
       </a>
     </li>
@@ -826,14 +837,16 @@
               
   
   
+    
+  
   
     
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2" data-md-state="indeterminate" type="checkbox" id="__nav_4_2" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2" type="checkbox" id="__nav_4_2" checked>
       
       
       
@@ -846,8 +859,8 @@
       
         
         
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="/autoware.universe/tier4-proposal/map/map_loader/">Map loader</a>
+        <div class="md-nav__link md-nav__link--index md-nav__link--active">
+          <a href="./">Map loader</a>
           
         </div>
       
@@ -906,7 +919,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/autoware.universe/tier4-proposal/map/map_tf_generator/Readme/" class="md-nav__link">
+      <a href="../map_tf_generator/Readme/" class="md-nav__link">
         map_tf_generator
       </a>
     </li>
@@ -952,7 +965,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="/autoware.universe/tier4-proposal/messages/">Messages</a>
+          <a href="../../messages/">Messages</a>
           
         </div>
       
@@ -1042,7 +1055,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/autoware.universe/tier4-proposal/system/topic_state_monitor/Readme/" class="md-nav__link">
+      <a href="../../system/topic_state_monitor/Readme/" class="md-nav__link">
         topic_state_monitor
       </a>
     </li>
@@ -1070,12 +1083,598 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pointcloud_map_loader" class="md-nav__link">
+    pointcloud_map_loader
+  </a>
+  
+    <nav class="md-nav" aria-label="pointcloud_map_loader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#feature" class="md-nav__link">
+    Feature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-run" class="md-nav__link">
+    How to run
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#published-topics" class="md-nav__link">
+    Published Topics
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lanelet2_map_loader" class="md-nav__link">
+    lanelet2_map_loader
+  </a>
+  
+    <nav class="md-nav" aria-label="lanelet2_map_loader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#feature_1" class="md-nav__link">
+    Feature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-run_1" class="md-nav__link">
+    How to run
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#published-topics_1" class="md-nav__link">
+    Published Topics
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lanelet2_map_visualization" class="md-nav__link">
+    lanelet2_map_visualization
+  </a>
+  
+    <nav class="md-nav" aria-label="lanelet2_map_visualization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#feature_2" class="md-nav__link">
+    Feature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-run_2" class="md-nav__link">
+    How to Run
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscribed-topics" class="md-nav__link">
+    Subscribed Topics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#published-topics_2" class="md-nav__link">
+    Published Topics
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#elevation_map_loader" class="md-nav__link">
+    elevation_map_loader
+  </a>
+  
+    <nav class="md-nav" aria-label="elevation_map_loader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#feature_3" class="md-nav__link">
+    Feature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-run_3" class="md-nav__link">
+    How to run
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscribed-topics_1" class="md-nav__link">
+    Subscribed Topics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#published-topics_3" class="md-nav__link">
+    Published Topics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameter-description" class="md-nav__link">
+    Parameter description
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameter description">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ros-parameters" class="md-nav__link">
+    ROS parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gridmap-parameters" class="md-nav__link">
+    GridMap parameters
+  </a>
+  
+    <nav class="md-nav" aria-label="GridMap parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general-parameters" class="md-nav__link">
+    General parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grid-map-parameters" class="md-nav__link">
+    Grid map parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#point-cloud-pre-processing-parameters" class="md-nav__link">
+    Point Cloud Pre-processing Parameters
+  </a>
+  
+    <nav class="md-nav" aria-label="Point Cloud Pre-processing Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rigid-body-transform-parameters" class="md-nav__link">
+    Rigid body transform parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster-extraction-parameters" class="md-nav__link">
+    Cluster extraction parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outlier-removal-parameters" class="md-nav__link">
+    Outlier removal parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subsampling-parameters" class="md-nav__link">
+    Subsampling parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
-  <h1>404 - Not found</h1>
+                
+<a href="https://github.com/autowarefoundation/autoware.universe/edit/main/map/map_loader/README.md" title="Edit this page" class="md-content__button md-icon">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+</a>
 
+
+<h1 id="map_loader-package">map_loader package<a class="headerlink" href="#map_loader-package" title="Permanent link">#</a></h1>
+<p>This package provides the features of loading various maps.</p>
+<h2 id="pointcloud_map_loader">pointcloud_map_loader<a class="headerlink" href="#pointcloud_map_loader" title="Permanent link">#</a></h2>
+<h3 id="feature">Feature<a class="headerlink" href="#feature" title="Permanent link">#</a></h3>
+<p>pointcloud_map_loader loads PointCloud file and publishes the map data as sensor_msgs/PointCloud2 message.</p>
+<h3 id="how-to-run">How to run<a class="headerlink" href="#how-to-run" title="Permanent link">#</a></h3>
+<p><code>ros2 run map_loader pointcloud_map_loader --ros-args -p "pcd_paths_or_directory:=[path/to/pointcloud1.pcd, path/to/pointcloud2.pcd, ...]"</code></p>
+<h3 id="published-topics">Published Topics<a class="headerlink" href="#published-topics" title="Permanent link">#</a></h3>
+<ul>
+<li>pointcloud_map (sensor_msgs/PointCloud2) : PointCloud Map</li>
+</ul>
+<hr />
+<h2 id="lanelet2_map_loader">lanelet2_map_loader<a class="headerlink" href="#lanelet2_map_loader" title="Permanent link">#</a></h2>
+<h3 id="feature_1">Feature<a class="headerlink" href="#feature_1" title="Permanent link">#</a></h3>
+<p>lanelet2_map_loader loads Lanelet2 file and publishes the map data as autoware_lanelet2_msgs/MapBin message.
+The node projects lan/lon coordinates into MGRS coordinates.</p>
+<h3 id="how-to-run_1">How to run<a class="headerlink" href="#how-to-run_1" title="Permanent link">#</a></h3>
+<p><code>ros2 run map_loader lanelet2_map_loader --ros-args -p lanelet2_map_path:=path/to/map.osm</code></p>
+<h3 id="published-topics_1">Published Topics<a class="headerlink" href="#published-topics_1" title="Permanent link">#</a></h3>
+<ul>
+<li>~output/lanelet2_map (autoware_lanelet2_msgs/MapBin) : Binary data of loaded Lanelet2 Map</li>
+</ul>
+<hr />
+<h2 id="lanelet2_map_visualization">lanelet2_map_visualization<a class="headerlink" href="#lanelet2_map_visualization" title="Permanent link">#</a></h2>
+<h3 id="feature_2">Feature<a class="headerlink" href="#feature_2" title="Permanent link">#</a></h3>
+<p>lanelet2_map_visualization visualizes autoware_lanelet2_msgs/MapBin messages into visualization_msgs/MarkerArray.</p>
+<h3 id="how-to-run_2">How to Run<a class="headerlink" href="#how-to-run_2" title="Permanent link">#</a></h3>
+<p><code>ros2 run map_loader lanelet2_map_visualization</code></p>
+<h3 id="subscribed-topics">Subscribed Topics<a class="headerlink" href="#subscribed-topics" title="Permanent link">#</a></h3>
+<ul>
+<li>~input/lanelet2_map (autoware_lanelet2_msgs/MapBin) : binary data of Lanelet2 Map</li>
+</ul>
+<h3 id="published-topics_2">Published Topics<a class="headerlink" href="#published-topics_2" title="Permanent link">#</a></h3>
+<ul>
+<li>~output/lanelet2_map_marker (visualization_msgs/MarkerArray) : visualization messages for RViz</li>
+</ul>
+<hr />
+<h2 id="elevation_map_loader">elevation_map_loader<a class="headerlink" href="#elevation_map_loader" title="Permanent link">#</a></h2>
+<h3 id="feature_3">Feature<a class="headerlink" href="#feature_3" title="Permanent link">#</a></h3>
+<p>Generate elevation_map from subscribed pointcloud_map and vector_map and publish it.
+Save the generated elevation_map locally and load it from next time.</p>
+<p>The elevation value of each cell is the average value of z of the points of the lowest cluster.<br />
+Cells with No elevation value can be inpainted using the values of neighboring cells.</p>
+<p align="center">
+  <img src="./media/elevation_map.png" width="1500">
+</p>
+
+<h3 id="how-to-run_3">How to run<a class="headerlink" href="#how-to-run_3" title="Permanent link">#</a></h3>
+<p><code>ros2 run map_loader elevation_map_loader --ros-args -p param_file_path:=path/to/elevation_map_parameters.yaml -p elevation_map_directory:=path/to/elevation_map_directory -p pointcloud_map_path:=path/to/pointcloud.pcd</code></p>
+<h3 id="subscribed-topics_1">Subscribed Topics<a class="headerlink" href="#subscribed-topics_1" title="Permanent link">#</a></h3>
+<ul>
+<li>input/pointcloud_map (sensor_msgs:PointCloud2) : PointCloud Map</li>
+<li>input/vector_map (autoware_lanelet2_msgs/MapBin) : binary data of Lanelet2 Map</li>
+</ul>
+<h3 id="published-topics_3">Published Topics<a class="headerlink" href="#published-topics_3" title="Permanent link">#</a></h3>
+<ul>
+<li>output/elevation_map (grid_map_msgs/GridMap) : Elevation Map</li>
+<li>output/elevation_map_cloud (sensor_msgs:PointCloud2) : Pointcloud generated from the value of Elevation Map</li>
+</ul>
+<h3 id="parameter-description">Parameter description<a class="headerlink" href="#parameter-description" title="Permanent link">#</a></h3>
+<h4 id="ros-parameters">ROS parameters<a class="headerlink" href="#ros-parameters" title="Permanent link">#</a></h4>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+<th align="left">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">map_layer_name</td>
+<td align="left">std::string</td>
+<td align="left">elevation_map layer name</td>
+<td align="left">elevation</td>
+</tr>
+<tr>
+<td align="left">param_file_path</td>
+<td align="left">std::string</td>
+<td align="left">GridMap parameters config</td>
+<td align="left">path_default</td>
+</tr>
+<tr>
+<td align="left">elevation_map_file_path</td>
+<td align="left">std::string</td>
+<td align="left">elevation_map file (bag2)</td>
+<td align="left">path_default</td>
+</tr>
+<tr>
+<td align="left">map_frame</td>
+<td align="left">std::string</td>
+<td align="left">map_frame when loading elevation_map file</td>
+<td align="left">map</td>
+</tr>
+<tr>
+<td align="left">use_inpaint</td>
+<td align="left">bool</td>
+<td align="left">Whether to inpaint empty cells</td>
+<td align="left">true</td>
+</tr>
+<tr>
+<td align="left">inpaint_radius</td>
+<td align="left">float</td>
+<td align="left">Radius of a circular neighborhood of each point inpainted that is considered by the algorithm [m]</td>
+<td align="left">0.3</td>
+</tr>
+<tr>
+<td align="left">use_elevation_map_cloud_publisher</td>
+<td align="left">bool</td>
+<td align="left">Whether to publish <code>output/elevation_map_cloud</code></td>
+<td align="left">false</td>
+</tr>
+<tr>
+<td align="left">use_lane_filter</td>
+<td align="left">bool</td>
+<td align="left">Whether to filter elevation_map with vector_map</td>
+<td align="left">false</td>
+</tr>
+<tr>
+<td align="left">lane_margin</td>
+<td align="left">float</td>
+<td align="left">Value of how much to expand the range of vector_map [m]</td>
+<td align="left">0.5</td>
+</tr>
+<tr>
+<td align="left">lane_height_diff_thresh</td>
+<td align="left">float</td>
+<td align="left">Only point clouds in the height range of this value from vector_map are used to generate elevation_map [m]</td>
+<td align="left">1.0</td>
+</tr>
+<tr>
+<td align="left">lane_filter_voxel_size_x</td>
+<td align="left">float</td>
+<td align="left">Voxel size x for calculating point clouds in vector_map [m]</td>
+<td align="left">0.04</td>
+</tr>
+<tr>
+<td align="left">lane_filter_voxel_size_y</td>
+<td align="left">float</td>
+<td align="left">Voxel size y for calculating point clouds in vector_map [m]</td>
+<td align="left">0.04</td>
+</tr>
+<tr>
+<td align="left">lane_filter_voxel_size_z</td>
+<td align="left">float</td>
+<td align="left">Voxel size z for calculating point clouds in vector_map [m]</td>
+<td align="left">0.04</td>
+</tr>
+</tbody>
+</table>
+<h4 id="gridmap-parameters">GridMap parameters<a class="headerlink" href="#gridmap-parameters" title="Permanent link">#</a></h4>
+<p>The parameters are described on <code>config/elevation_map_parameters.yaml</code>.</p>
+<h5 id="general-parameters">General parameters<a class="headerlink" href="#general-parameters" title="Permanent link">#</a></h5>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+<th align="left">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">pcl_grid_map_extraction/num_processing_threads</td>
+<td align="left">int</td>
+<td align="left">Number of threads for processing grid map cells. Filtering of the raw input point cloud is not parallelized.</td>
+<td align="left">12</td>
+</tr>
+</tbody>
+</table>
+<h5 id="grid-map-parameters">Grid map parameters<a class="headerlink" href="#grid-map-parameters" title="Permanent link">#</a></h5>
+<p>See: <a href="https://github.com/ANYbotics/grid_map/tree/ros2/grid_map_pcl">https://github.com/ANYbotics/grid_map/tree/ros2/grid_map_pcl</a></p>
+<p>Resulting grid map parameters.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+<th align="left">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">pcl_grid_map_extraction/grid_map/min_num_points_per_cell</td>
+<td align="left">int</td>
+<td align="left">Minimum number of points in the point cloud that have to fall within any of the grid map cells. Otherwise the cell elevation will be set to NaN.</td>
+<td align="left">3</td>
+</tr>
+<tr>
+<td align="left">pcl_grid_map_extraction/grid_map/resolution</td>
+<td align="left">float</td>
+<td align="left">Resolution of the grid map. Width and length are computed automatically.</td>
+<td align="left">0.3</td>
+</tr>
+</tbody>
+</table>
+<h4 id="point-cloud-pre-processing-parameters">Point Cloud Pre-processing Parameters<a class="headerlink" href="#point-cloud-pre-processing-parameters" title="Permanent link">#</a></h4>
+<h5 id="rigid-body-transform-parameters">Rigid body transform parameters<a class="headerlink" href="#rigid-body-transform-parameters" title="Permanent link">#</a></h5>
+<p>Rigid body transform that is applied to the point cloud before computing elevation.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+<th align="left">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">pcl_grid_map_extraction/cloud_transform/translation</td>
+<td align="left">float</td>
+<td align="left">Translation (xyz) that is applied to the input point cloud before computing elevation.</td>
+<td align="left">0.0</td>
+</tr>
+<tr>
+<td align="left">pcl_grid_map_extraction/cloud_transform/rotation</td>
+<td align="left">float</td>
+<td align="left">Rotation (intrinsic rotation, convention X-Y'-Z'') that is applied to the input point cloud before computing elevation.</td>
+<td align="left">0.0</td>
+</tr>
+</tbody>
+</table>
+<h5 id="cluster-extraction-parameters">Cluster extraction parameters<a class="headerlink" href="#cluster-extraction-parameters" title="Permanent link">#</a></h5>
+<p>Cluster extraction is based on pcl algorithms. See <a href="https://pointclouds.org/documentation/tutorials/cluster_extraction.html">https://pointclouds.org/documentation/tutorials/cluster_extraction.html</a> for more details.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+<th align="left">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">pcl_grid_map_extraction/cluster_extraction/cluster_tolerance</td>
+<td align="left">float</td>
+<td align="left">Distance between points below which they will still be considered part of one cluster.</td>
+<td align="left">0.2</td>
+</tr>
+<tr>
+<td align="left">pcl_grid_map_extraction/cluster_extraction/min_num_points</td>
+<td align="left">int</td>
+<td align="left">Min number of points that a cluster needs to have (otherwise it will be discarded).</td>
+<td align="left">3</td>
+</tr>
+<tr>
+<td align="left">pcl_grid_map_extraction/cluster_extraction/max_num_points</td>
+<td align="left">int</td>
+<td align="left">Max number of points that a cluster can have (otherwise it will be discarded).</td>
+<td align="left">1000000</td>
+</tr>
+</tbody>
+</table>
+<h5 id="outlier-removal-parameters">Outlier removal parameters<a class="headerlink" href="#outlier-removal-parameters" title="Permanent link">#</a></h5>
+<p>See <a href="https://pointclouds.org/documentation/tutorials/statistical_outlier.html">https://pointclouds.org/documentation/tutorials/statistical_outlier.html</a> for more explanation on outlier removal.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+<th align="left">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">pcl_grid_map_extraction/outlier_removal/is_remove_outliers</td>
+<td align="left">float</td>
+<td align="left">Whether to perform statistical outlier removal.</td>
+<td align="left">false</td>
+</tr>
+<tr>
+<td align="left">pcl_grid_map_extraction/outlier_removal/mean_K</td>
+<td align="left">float</td>
+<td align="left">Number of neighbours to analyze for estimating statistics of a point.</td>
+<td align="left">10</td>
+</tr>
+<tr>
+<td align="left">pcl_grid_map_extraction/outlier_removal/stddev_threshold</td>
+<td align="left">float</td>
+<td align="left">Number of standard deviations under which points are considered to be inliers.</td>
+<td align="left">1.0</td>
+</tr>
+</tbody>
+</table>
+<h5 id="subsampling-parameters">Subsampling parameters<a class="headerlink" href="#subsampling-parameters" title="Permanent link">#</a></h5>
+<p>See <a href="https://pointclouds.org/documentation/tutorials/voxel_grid.html">https://pointclouds.org/documentation/tutorials/voxel_grid.html</a> for more explanation on point cloud downsampling.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+<th align="left">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">pcl_grid_map_extraction/downsampling/is_downsample_cloud</td>
+<td align="left">bool</td>
+<td align="left">Whether to perform downsampling or not.</td>
+<td align="left">false</td>
+</tr>
+<tr>
+<td align="left">pcl_grid_map_extraction/downsampling/voxel_size</td>
+<td align="left">float</td>
+<td align="left">Voxel sizes (xyz) in meters.</td>
+<td align="left">0.02</td>
+</tr>
+</tbody>
+</table>
+
+              
             </article>
           </div>
         </div>
@@ -1088,6 +1687,41 @@
       </main>
       
         <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../lanelet2_extension/docs/lanelet2_format_extension/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Modifying Lanelet2 format for Autoware" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Modifying Lanelet2 format for Autoware
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../map_tf_generator/Readme/" class="md-footer__link md-footer__link--next" aria-label="Next: map_tf_generator" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              map_tf_generator
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1113,10 +1747,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "/autoware.universe/tier4-proposal", "features": ["navigation.expand", "navigation.indexes", "navigation.instant", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "/autoware.universe/tier4-proposal/assets/javascripts/workers/search.01824240.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.instant", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.01824240.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="/autoware.universe/tier4-proposal/assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ff0eccb3.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
       
