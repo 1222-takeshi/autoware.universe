@@ -61,7 +61,22 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/simulator/dummy_perception_publisher/</loc>
+         <lastmod>2021-12-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/system/autoware_state_monitor/</loc>
+         <lastmod>2021-12-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/system/topic_state_monitor/Readme/</loc>
+         <lastmod>2021-12-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/vehicle/vehicle_info_util/Readme/</loc>
          <lastmod>2021-12-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
