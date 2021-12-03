@@ -76,6 +76,81 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/planning/route_handler/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/geo_pos_conv/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/gnss_poser/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/laserscan_to_occupancy_grid_map/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/livox/livox_tag_filter/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/pointcloud_preprocessor/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/pointcloud_preprocessor/docs/concatenate-data/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/pointcloud_preprocessor/docs/crop-box-filter/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/pointcloud_preprocessor/docs/distortion-corrector/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/pointcloud_preprocessor/docs/downsample-filter/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/pointcloud_preprocessor/docs/outlier-filter/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/pointcloud_preprocessor/docs/passthrough-filter/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/pointcloud_preprocessor/docs/pointcloud-accumulator/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/pointcloud_preprocessor/docs/vector-map-filter/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/sensing/tier4_pcl_extensions/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/simulator/dummy_perception_publisher/</loc>
          <lastmod>2021-12-03</lastmod>
          <changefreq>daily</changefreq>
@@ -91,7 +166,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/system/dummy_infrastructure/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/system/topic_state_monitor/Readme/</loc>
+         <lastmod>2021-12-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/system/velodyne_monitor/Readme/</loc>
          <lastmod>2021-12-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
