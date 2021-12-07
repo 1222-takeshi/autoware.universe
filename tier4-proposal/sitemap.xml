@@ -96,6 +96,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/control/autoware_joy_controller/</loc>
+         <lastmod>2021-12-07</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/control/lane_departure_checker/</loc>
          <lastmod>2021-12-07</lastmod>
          <changefreq>daily</changefreq>
