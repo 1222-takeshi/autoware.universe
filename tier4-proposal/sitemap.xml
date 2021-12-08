@@ -6,6 +6,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/awapi/awapi_awiv_adapter/Readme/</loc>
+         <lastmod>2021-12-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/common/autoware_auto_perception_rviz_plugin/</loc>
          <lastmod>2021-12-08</lastmod>
          <changefreq>daily</changefreq>
@@ -287,6 +292,21 @@
     </url>
     <url>
          <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/perception/ground_segmentation/</loc>
+         <lastmod>2021-12-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/perception/ground_segmentation/docs/ransac-ground-filter/</loc>
+         <lastmod>2021-12-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/perception/ground_segmentation/docs/ray-ground-filter/</loc>
+         <lastmod>2021-12-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware.universe/tier4-proposal/perception/ground_segmentation/docs/scan-ground-filter/</loc>
          <lastmod>2021-12-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
