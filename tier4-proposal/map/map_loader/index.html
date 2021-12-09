@@ -7294,23 +7294,23 @@
 <hr />
 <h2 id="lanelet2_map_loader">lanelet2_map_loader<a class="headerlink" href="#lanelet2_map_loader" title="Permanent link">#</a></h2>
 <h3 id="feature_1">Feature<a class="headerlink" href="#feature_1" title="Permanent link">#</a></h3>
-<p>lanelet2_map_loader loads Lanelet2 file and publishes the map data as autoware_lanelet2_msgs/MapBin message.
+<p>lanelet2_map_loader loads Lanelet2 file and publishes the map data as autoware_auto_mapping_msgs/HADMapBin message.
 The node projects lan/lon coordinates into MGRS coordinates.</p>
 <h3 id="how-to-run_1">How to run<a class="headerlink" href="#how-to-run_1" title="Permanent link">#</a></h3>
 <p><code>ros2 run map_loader lanelet2_map_loader --ros-args -p lanelet2_map_path:=path/to/map.osm</code></p>
 <h3 id="published-topics_1">Published Topics<a class="headerlink" href="#published-topics_1" title="Permanent link">#</a></h3>
 <ul>
-<li>~output/lanelet2_map (autoware_lanelet2_msgs/MapBin) : Binary data of loaded Lanelet2 Map</li>
+<li>~output/lanelet2_map (autoware_auto_mapping_msgs/HADMapBin) : Binary data of loaded Lanelet2 Map</li>
 </ul>
 <hr />
 <h2 id="lanelet2_map_visualization">lanelet2_map_visualization<a class="headerlink" href="#lanelet2_map_visualization" title="Permanent link">#</a></h2>
 <h3 id="feature_2">Feature<a class="headerlink" href="#feature_2" title="Permanent link">#</a></h3>
-<p>lanelet2_map_visualization visualizes autoware_lanelet2_msgs/MapBin messages into visualization_msgs/MarkerArray.</p>
+<p>lanelet2_map_visualization visualizes autoware_auto_mapping_msgs/HADMapBin messages into visualization_msgs/MarkerArray.</p>
 <h3 id="how-to-run_2">How to Run<a class="headerlink" href="#how-to-run_2" title="Permanent link">#</a></h3>
 <p><code>ros2 run map_loader lanelet2_map_visualization</code></p>
 <h3 id="subscribed-topics">Subscribed Topics<a class="headerlink" href="#subscribed-topics" title="Permanent link">#</a></h3>
 <ul>
-<li>~input/lanelet2_map (autoware_lanelet2_msgs/MapBin) : binary data of Lanelet2 Map</li>
+<li>~input/lanelet2_map (autoware_auto_mapping_msgs/HADMapBin) : binary data of Lanelet2 Map</li>
 </ul>
 <h3 id="published-topics_2">Published Topics<a class="headerlink" href="#published-topics_2" title="Permanent link">#</a></h3>
 <ul>
