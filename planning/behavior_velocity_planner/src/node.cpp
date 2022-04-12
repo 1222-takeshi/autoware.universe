@@ -113,6 +113,9 @@ BehaviorVelocityPlannerNode::BehaviorVelocityPlannerNode(const rclcpp::NodeOptio
   sub_occupancy_grid_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>(
     "~/input/occupancy_grid", 1,
     std::bind(&BehaviorVelocityPlannerNode::onOccupancyGrid, this, _1));
+  sub_trajectory_ = this->create_subscription<autoware_auto_planning_msgs::msg::Trajectory>(
+    "~/input/trajectory", 1,
+    std::bind(&BehaviorVelocityPlannerNode::onTrajectory, this, _1));
 
   // Publishers
   path_pub_ = this->create_publisher<autoware_auto_planning_msgs::msg::Path>("~/output/path", 1);
@@ -183,6 +186,12 @@ bool BehaviorVelocityPlannerNode::isDataReady()
   }
 
   return true;
+}
+
+void BehaviorVelocityPlannerNode::onTrajectory(
+  const autoware_auto_planning_msgs::msg::Trajectory::ConstSharedPtr msg)
+{
+  planner_data_.trajectory = msg;
 }
 
 void BehaviorVelocityPlannerNode::onOccupancyGrid(

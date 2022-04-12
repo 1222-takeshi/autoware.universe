@@ -21,6 +21,7 @@
 #include <autoware_auto_perception_msgs/msg/predicted_objects.hpp>
 #include <autoware_auto_perception_msgs/msg/traffic_signal_array.hpp>
 #include <autoware_auto_perception_msgs/msg/traffic_signal_stamped.hpp>
+#include <autoware_auto_planning_msgs/msg/trajectory.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <nav_msgs/msg/occupancy_grid.hpp>
@@ -72,6 +73,9 @@ struct PlannerData
   lanelet::LaneletMapPtr lanelet_map;
   // occupancy grid
   nav_msgs::msg::OccupancyGrid::ConstSharedPtr occupancy_grid;
+
+  // trajectory
+  autoware_auto_planning_msgs::msg::Trajectory::ConstSharedPtr trajectory;
 
   // other internal data
   std::map<int, autoware_auto_perception_msgs::msg::TrafficSignalStamped> traffic_light_id_map;

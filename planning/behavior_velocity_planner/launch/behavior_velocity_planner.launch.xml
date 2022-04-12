@@ -47,6 +47,7 @@
     <remap from="~/input/external_traffic_signals" to="$(var external_traffic_light_topic_name)" />
     <remap from="~/input/virtual_traffic_light_states" to="$(var virtual_traffic_light_topic_name)" />
     <remap from="~/input/occupancy_grid" to="/sensing/lidar/occupancy_grid" />
+    <remap from="~/input/trajectory" to="/planning/scenario_planning/trajectory" />
     <remap from="~/output/path" to="path" />
     <remap from="~/output/stop_reasons" to="/planning/scenario_planning/status/stop_reasons" />
     <remap from="~/output/infrastructure_commands" to="/planning/scenario_planning/status/infrastructure_commands" />

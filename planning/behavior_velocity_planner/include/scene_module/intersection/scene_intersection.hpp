@@ -23,6 +23,7 @@
 #include <autoware_auto_perception_msgs/msg/predicted_object.hpp>
 #include <autoware_auto_perception_msgs/msg/predicted_objects.hpp>
 #include <autoware_auto_planning_msgs/msg/path_with_lane_id.hpp>
+#include <autoware_auto_planning_msgs/msg/trajectory.hpp>
 #include <geometry_msgs/msg/point.hpp>
 
 #include <lanelet2_core/LaneletMap.h>
@@ -83,6 +84,7 @@ public:
   {
     bool stop_required;
     autoware_auto_planning_msgs::msg::PathWithLaneId path_raw;
+    autoware_auto_planning_msgs::msg::Trajectory ego_trajectory;
 
     geometry_msgs::msg::Pose slow_wall_pose;
     geometry_msgs::msg::Pose stop_wall_pose;
@@ -204,12 +206,14 @@ private:
   /**
    * @brief Calculate time that is needed for ego-vehicle to cross the intersection. (to be updated)
    * @param path              ego-car lane
+   * @param trajectory_ptr    ego-car trajectory
    * @param closest_idx       ego-car position index on the lane
    * @param objective_lane_id lanelet id on ego-car
    * @return calculated time [s]
    */
   TimeDistanceArray calcIntersectionPassingTime(
-    const autoware_auto_planning_msgs::msg::PathWithLaneId & path, const int closest_idx,
+    const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
+    const autoware_auto_planning_msgs::msg::Trajectory & trajectory_ptr, const int closest_idx,
     const int objective_lane_id) const;
 
   /**
