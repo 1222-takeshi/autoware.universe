@@ -451,32 +451,61 @@ TimeDistanceArray IntersectionModule::calcIntersectionPassingTime(
   std::vector<double> ego_intersection_path;
   ego_intersection_path.push_back(closest_vel);
 
-  for (size_t i = closest_idx + 1; i < path.points.size(); ++i) {
-  // RCLCPP_INFO(logger_, "path.points.size() = %f", path.points.size());
-    // RCLCPP_INFO(logger_, "roop %d path.points.at(i) = %f", i, path.points.at(i));
-    const double dist = planning_utils::calcDist2d(path.points.at(i - 1), path.points.at(i));
+  const auto trajectory_ptr = planner_data_->trajectory;
+  if(!trajectory_ptr){
+    RCLCPP_INFO(logger_, "don't have trajectory please a loop");
+    for (size_t i = closest_idx + 1; i < path.points.size(); ++i) {
+      const double dist = planning_utils::calcDist2d(path.points.at(i - 1), path.points.at(i));
 
-    // ego_intersection_path.push_back(path.points.at(i));
-    dist_sum += dist;
-    // calc vel in idx i+1 (v_{i+1}^2 - v_{i}^2 = 2ax)
-    const double next_vel = std::min(
-      std::sqrt(std::pow(closest_vel, 2.0) + 2.0 * planner_param_.intersection_max_acc * dist),
-      planner_param_.intersection_velocity);
-    // calc average vel in idx i~i+1
-    const double average_vel =
-      std::min((closest_vel + next_vel) / 2.0, planner_param_.intersection_velocity);
-    passing_time += dist / average_vel;
-    time_distance_array.emplace_back(passing_time, dist_sum);
-    closest_vel = next_vel;
+      // ego_intersection_path.push_back(path.points.at(i));
+      dist_sum += dist;
+      // calc vel in idx i+1 (v_{i+1}^2 - v_{i}^2 = 2ax)
+      const double next_vel = std::min(
+        std::sqrt(std::pow(closest_vel, 2.0) + 2.0 * planner_param_.intersection_max_acc * dist),
+        planner_param_.intersection_velocity);
+      // calc average vel in idx i~i+1
+      const double average_vel =
+        std::min((closest_vel + next_vel) / 2.0, planner_param_.intersection_velocity);
+      passing_time += dist / average_vel;
+      time_distance_array.emplace_back(passing_time, dist_sum);
+      closest_vel = next_vel;
 
-    bool has_objective_lane_id = util::hasLaneId(path.points.at(i), objective_lane_id);
+      bool has_objective_lane_id = util::hasLaneId(path.points.at(i), objective_lane_id);
 
-    if (assigned_lane_found && !has_objective_lane_id) {
-      break;
+      if (assigned_lane_found && !has_objective_lane_id) {
+        break;
+      }
+      assigned_lane_found = has_objective_lane_id;
     }
-    assigned_lane_found = has_objective_lane_id;
+  }else{
+    for (size_t i = closest_idx + 1; i < path.points.size(); ++i) {
+      const double dist = planning_utils::calcDist2d(path.points.at(i - 1), path.points.at(i));
+
+      // ego_intersection_path.push_back(path.points.at(i));
+      dist_sum += dist;
+      // calc vel in idx i+1 (v_{i+1}^2 - v_{i}^2 = 2ax)
+      const double next_vel = std::min(
+        std::sqrt(std::pow(closest_vel, 2.0) + 2.0 * planner_param_.intersection_max_acc * dist),
+        planner_param_.intersection_velocity);
+      // calc average vel in idx i~i+1
+      const double average_vel =
+        std::min((closest_vel + next_vel) / 2.0, planner_param_.intersection_velocity);
+      const double motion_vel = 
+        std::min((double)trajectory_ptr->points.at(i).longitudinal_velocity_mps, planner_param_.intersection_velocity);
+      passing_time += dist / trajectory_ptr->points.at(i).longitudinal_velocity_mps;
+      time_distance_array.emplace_back(passing_time, dist_sum);
+
+      RCLCPP_INFO(logger_, "average_vel = %f",average_vel);
+      RCLCPP_INFO(logger_, "motion_vel = %f",motion_vel);
+
+      bool has_objective_lane_id = util::hasLaneId(path.points.at(i), objective_lane_id);
+
+      if (assigned_lane_found && !has_objective_lane_id) {
+        break;
+      }
+      assigned_lane_found = has_objective_lane_id;
+    }
   }
-    // RCLCPP_INFO(logger_, "ego_intersection_path = %f", ego_intersection_path);
   
   if (!assigned_lane_found) {
     return {{0.0, 0.0}};  // has already passed the intersection.
