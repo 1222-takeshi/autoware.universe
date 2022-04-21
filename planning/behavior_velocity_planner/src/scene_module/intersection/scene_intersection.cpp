@@ -92,6 +92,42 @@ bool IntersectionModule::modifyPathVelocity(
   std::vector<lanelet::ConstLanelets> detection_area_lanelets;
   std::vector<lanelet::ConstLanelets> conflicting_area_lanelets;
 
+  // const auto & assigned_lanelet = lanelet_map_ptr->laneletLayer.get(lane_id_);
+  // lanelet::ConstLanelets intersection_lane = {assigned_lanelet};
+  // const double path_length = lanelet::utils::getLaneletLength3d(intersection_lane);
+  // const auto start_itr = path->points.begin();
+  // const auto end_itr = path->points.end();
+  // const auto start_arc_coords = lanelet::utils::getArcCoordinates(
+  //   intersection_lane, tier4_autoware_utils::getPose(path->points.at(start_idx).point));
+
+  // const auto closest_arc_coords = lanelet::utils::getArcCoordinates(
+  //   intersection_lane, tier4_autoware_utils::getPose(path->points.at(closest_idx).point));
+    
+  // const double start_arc_length = start_arc_coords.length;
+
+  // const double end_arc_length = lanelet::utils::getLaneletLength3d(intersection_lane.front());
+  // const auto target_polygon =
+  //   lanelet::utils::to2D(lanelet::utils::getPolygonFromArcLength(intersection_lane, start_arc_length, end_arc_length));
+
+
+  // Polygon2d intersection_polygon{};
+
+  // for (const auto & p : target_polygon) {
+  //   intersection_polygon.outer().emplace_back(p.x(), p.y());
+  // }
+
+  // intersection_polygon.outer().emplace_back(intersection_polygon.outer().front());
+
+  // debug_data_.intersection_area = toGeomMsg(intersection_polygon);
+
+  // lanelet::ConstLanelets ego_lane_with_next_lane;
+  // if (last_itr.base() != path.points.end()) {
+  //   const auto & next_lanelet =
+  //     lanelet_map_ptr->laneletLayer.get((*last_itr.base()).lane_ids.front());
+  //   ego_lane_with_next_lane = {assigned_lanelet, next_lanelet};
+  // } else {
+  //   ego_lane_with_next_lane = {assigned_lanelet};
+
   util::getObjectiveLanelets(
     lanelet_map_ptr, routing_graph_ptr, lane_id_, planner_param_, &conflicting_area_lanelets,
     &detection_area_lanelets, logger_);
@@ -279,8 +315,8 @@ bool IntersectionModule::checkCollision(
   /* check collision between target_objects predicted path and ego lane */
 
   // cut the predicted path at passing_time
-  const auto trajectory_ptr = planner_data_->trajectory;
-  const auto time_distance_array = calcIntersectionPassingTime(path, *trajectory_ptr, closest_idx, lane_id_);
+  // const auto time_distance_array = calcIntersectionPassingTime(path, *trajectory_ptr, closest_idx, lane_id_);
+  const auto time_distance_array = calcIntersectionPassingTime(path, closest_idx, lane_id_);
   const double passing_time = time_distance_array.back().first;
   cutPredictPathWithDuration(&target_objects, passing_time);
 
@@ -422,28 +458,18 @@ Polygon2d IntersectionModule::generateEgoIntersectionLanePolygon(
 }
 
 TimeDistanceArray IntersectionModule::calcIntersectionPassingTime(
-  const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
-  const autoware_auto_planning_msgs::msg::Trajectory & trajectory_ptr, const int closest_idx,
+  const autoware_auto_planning_msgs::msg::PathWithLaneId & path, const int closest_idx,
   const int objective_lane_id) const
 {
+// TimeDistanceArray IntersectionModule::calcIntersectionPassingTime(
+//   const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
+//   const autoware_auto_planning_msgs::msg::Trajectory & trajectory_ptr, const int closest_idx,
+//   const int objective_lane_id) const
+// {
   TimeDistanceArray time_distance_array{};
   double closest_vel =
     (std::max(1e-01, std::fabs(planner_data_->current_velocity->twist.linear.x)));
 
-  // std::vector<double> trajs_velocity;
-  
-  std::cout << "trajectory size : " << trajectory_ptr.points.size() << std::endl;
-  int count = 0;
-  // for (const aut  o & point : trajectory_ptr->points) {
-    count++;
-    // trajs_velocity.push_back(point.longitudinal_velocity_mps);
-    RCLCPP_INFO(logger_, "loop %d", count);
-    // RCLCPP_INFO(logger_, "loop %d, longitudinal_velocity_mps = %f", count, point.longitudinal_velocity_mps);
-  // }
-  // RCLCPP_INFO(logger_, "trajectory = %f", planner_data_->trajectory);
-  // RCLCPP_INFO(logger_, "trajectory = %f", planner_data_->trajectory->points.begin().longitudinal_velocity_mps);
-  // RCLCPP_INFO(logger_, "trajectory->points.begin().longitudinal_velocity_mps = %f", planner_data_->trajectory->points.begin().longitudinal_velocity_mps);
-  // RCLCPP_INFO(logger_, "closest_vel = %f", closest_vel);
   double dist_sum = 0.0;
   double passing_time = 0.0;
   time_distance_array.emplace_back(passing_time, dist_sum);

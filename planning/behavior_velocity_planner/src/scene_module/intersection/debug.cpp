@@ -282,11 +282,19 @@ visualization_msgs::msg::MarkerArray IntersectionModule::createDebugMarkerArray(
       debug_data_.stuck_vehicle_detect_area, "stuck_vehicle_detect_area", lane_id_, 0.0, 0.5, 0.5),
     current_time, &debug_marker_array);
 
+  // appendMarkerArray(
+  //   createPolygonMarkerArray(debug_data_.intersection_area, "intersection_area", lane_id_, 0.0, 0.1, 0.5),
+  //   current_time, &debug_marker_array);
+
   appendMarkerArray(
     createPolygonMarkerArray(
       debug_data_.candidate_collision_ego_lane_polygon, "candidate_collision_ego_lane_polygon",
       lane_id_, 0.5, 0.0, 0.0),
     current_time, &debug_marker_array);
+
+  // appendMarkerArray(
+  //   createLaneletPolygonsMarkerArray(debug_data_.intersection_lane_polygon, "intersection_lane_polygon", lane_id_),
+  //   current_time, &debug_marker_array);
 
   size_t i{0};
   for (const auto & p : debug_data_.candidate_collision_object_polygons) {

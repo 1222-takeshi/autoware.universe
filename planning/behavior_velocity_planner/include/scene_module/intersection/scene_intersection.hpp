@@ -92,6 +92,7 @@ public:
     geometry_msgs::msg::Pose judge_point_pose;
     geometry_msgs::msg::Polygon ego_lane_polygon;
     geometry_msgs::msg::Polygon stuck_vehicle_detect_area;
+    geometry_msgs::msg::Polygon intersection_area;
     geometry_msgs::msg::Polygon candidate_collision_ego_lane_polygon;
     std::vector<geometry_msgs::msg::Polygon> candidate_collision_object_polygons;
     std::vector<lanelet::ConstLanelet> intersection_detection_lanelets;
@@ -206,14 +207,12 @@ private:
   /**
    * @brief Calculate time that is needed for ego-vehicle to cross the intersection. (to be updated)
    * @param path              ego-car lane
-   * @param trajectory_ptr    ego-car trajectory
    * @param closest_idx       ego-car position index on the lane
    * @param objective_lane_id lanelet id on ego-car
    * @return calculated time [s]
    */
   TimeDistanceArray calcIntersectionPassingTime(
-    const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
-    const autoware_auto_planning_msgs::msg::Trajectory & trajectory_ptr, const int closest_idx,
+    const autoware_auto_planning_msgs::msg::PathWithLaneId & path, const int closest_idx,
     const int objective_lane_id) const;
 
   /**
