@@ -15,7 +15,7 @@
 #include "scene_module/no_stopping_area/scene_no_stopping_area.hpp"
 
 #include "utilization/arc_lane_util.hpp"
-#include "utilization/interpolate.hpp"
+#include "utilization/path_utilization.hpp"
 #include "utilization/util.hpp"
 
 #include <interpolation/spline_interpolation.hpp>
@@ -33,81 +33,6 @@
 namespace behavior_velocity_planner
 {
 namespace bg = boost::geometry;
-bool splineInterpolate(
-  const autoware_auto_planning_msgs::msg::PathWithLaneId & input, const double interval,
-  autoware_auto_planning_msgs::msg::PathWithLaneId * output, const rclcpp::Logger logger)
-{
-  *output = input;
-
-  if (input.points.size() <= 1) {
-    RCLCPP_WARN(logger, "Do not interpolate because path size is 1.");
-    return false;
-  }
-
-  static constexpr double ep = 1.0e-8;
-
-  // calc arclength for path
-  std::vector<double> base_x;
-  std::vector<double> base_y;
-  std::vector<double> base_z;
-  for (const auto & p : input.points) {
-    base_x.push_back(p.point.pose.position.x);
-    base_y.push_back(p.point.pose.position.y);
-    base_z.push_back(p.point.pose.position.z);
-  }
-  std::vector<double> base_s = interpolation::calcEuclidDist(base_x, base_y);
-
-  // remove duplicating sample points
-  {
-    size_t Ns = base_s.size();
-    size_t i = 1;
-    while (i < Ns) {
-      if (std::fabs(base_s[i - 1] - base_s[i]) < ep) {
-        base_s.erase(base_s.begin() + i);
-        base_x.erase(base_x.begin() + i);
-        base_y.erase(base_y.begin() + i);
-        base_z.erase(base_z.begin() + i);
-        Ns -= 1;
-        i -= 1;
-      }
-      ++i;
-    }
-  }
-
-  std::vector<double> resampled_s;
-  for (double d = 0.0; d < base_s.back() - ep; d += interval) {
-    resampled_s.push_back(d);
-  }
-
-  // do spline for xy
-  const std::vector<double> resampled_x = ::interpolation::slerp(base_s, base_x, resampled_s);
-  const std::vector<double> resampled_y = ::interpolation::slerp(base_s, base_y, resampled_s);
-  const std::vector<double> resampled_z = ::interpolation::slerp(base_s, base_z, resampled_s);
-
-  // set xy
-  output->points.clear();
-  for (size_t i = 0; i < resampled_s.size(); i++) {
-    autoware_auto_planning_msgs::msg::PathPointWithLaneId p;
-    p.point.pose.position.x = resampled_x.at(i);
-    p.point.pose.position.y = resampled_y.at(i);
-    p.point.pose.position.z = resampled_z.at(i);
-    output->points.push_back(p);
-  }
-
-  // set yaw
-  for (int i = 1; i < static_cast<int>(resampled_s.size()) - 1; i++) {
-    auto p = output->points.at(i - 1).point.pose.position;
-    auto n = output->points.at(i + 1).point.pose.position;
-    double yaw = std::atan2(n.y - p.y, n.x - p.x);
-    output->points.at(i).point.pose.orientation = planning_utils::getQuaternionFromYaw(yaw);
-  }
-  if (output->points.size() > 1) {
-    size_t l = resampled_s.size();
-    output->points.front().point.pose.orientation = output->points.at(1).point.pose.orientation;
-    output->points.back().point.pose.orientation = output->points.at(l - 1).point.pose.orientation;
-  }
-  return true;
-}
 
 NoStoppingAreaModule::NoStoppingAreaModule(
   const int64_t module_id, const lanelet::autoware::NoStoppingArea & no_stopping_area_reg_elem,
@@ -472,7 +397,7 @@ bool NoStoppingAreaModule::isStoppable(
 void NoStoppingAreaModule::insertStopPoint(
   autoware_auto_planning_msgs::msg::PathWithLaneId & path, const PathIndexWithPose & stop_point)
 {
-  const auto insert_idx = stop_point.first + 1;
+  size_t insert_idx = static_cast<size_t>(stop_point.first + 1);
   const auto stop_pose = stop_point.second;
 
   // To PathPointWithLaneId
@@ -481,13 +406,8 @@ void NoStoppingAreaModule::insertStopPoint(
   stop_point_with_lane_id.point.pose = stop_pose;
   stop_point_with_lane_id.point.longitudinal_velocity_mps = 0.0;
 
-  // Insert stop point
-  path.points.insert(path.points.begin() + insert_idx, stop_point_with_lane_id);
-
-  // Insert 0 velocity after stop point
-  for (size_t j = insert_idx; j < path.points.size(); ++j) {
-    path.points.at(j).point.longitudinal_velocity_mps = 0.0;
-  }
+  // Insert stop point or replace with zero velocity
+  planning_utils::insertVelocity(path, stop_point_with_lane_id, 0.0, insert_idx);
 }
 
 boost::optional<PathIndexWithPose> NoStoppingAreaModule::createTargetPoint(

@@ -15,6 +15,10 @@
 #ifndef BEHAVIOR_VELOCITY_PLANNER__PLANNER_DATA_HPP_
 #define BEHAVIOR_VELOCITY_PLANNER__PLANNER_DATA_HPP_
 
+#include "route_handler/route_handler.hpp"
+
+#include <motion_velocity_smoother/smoother/analytical_jerk_constrained_smoother/analytical_jerk_constrained_smoother.hpp>
+#include <motion_velocity_smoother/smoother/smoother_base.hpp>
 #include <vehicle_info_util/vehicle_info_util.hpp>
 
 #include <autoware_auto_mapping_msgs/msg/had_map_bin.hpp>
@@ -29,6 +33,7 @@
 #include <std_msgs/msg/header.hpp>
 #include <tier4_api_msgs/msg/crosswalk_status.hpp>
 #include <tier4_api_msgs/msg/intersection_status.hpp>
+#include <tier4_planning_msgs/msg/velocity_limit.hpp>
 #include <tier4_v2x_msgs/msg/virtual_traffic_light_state_array.hpp>
 
 #include <boost/optional.hpp>
@@ -70,7 +75,6 @@ struct PlannerData
   std::deque<geometry_msgs::msg::TwistStamped> velocity_buffer;
   autoware_auto_perception_msgs::msg::PredictedObjects::ConstSharedPtr predicted_objects;
   pcl::PointCloud<pcl::PointXYZ>::ConstPtr no_ground_pointcloud;
-  lanelet::LaneletMapPtr lanelet_map;
   // occupancy grid
   nav_msgs::msg::OccupancyGrid::ConstSharedPtr occupancy_grid;
 
@@ -79,17 +83,18 @@ struct PlannerData
 
   // other internal data
   std::map<int, autoware_auto_perception_msgs::msg::TrafficSignalStamped> traffic_light_id_map;
-  lanelet::traffic_rules::TrafficRulesPtr traffic_rules;
-  lanelet::routing::RoutingGraphPtr routing_graph;
-  std::shared_ptr<const lanelet::routing::RoutingGraphContainer> overall_graphs;
-
   // external data
   std::map<int, autoware_auto_perception_msgs::msg::TrafficSignalStamped>
     external_traffic_light_id_map;
   boost::optional<tier4_api_msgs::msg::CrosswalkStatus> external_crosswalk_status_input;
   boost::optional<tier4_api_msgs::msg::IntersectionStatus> external_intersection_status_input;
+  boost::optional<tier4_planning_msgs::msg::VelocityLimit> external_velocity_limit;
   tier4_v2x_msgs::msg::VirtualTrafficLightStateArray::ConstSharedPtr virtual_traffic_light_states;
 
+  // velocity smoother
+  std::shared_ptr<motion_velocity_smoother::SmootherBase> velocity_smoother_;
+  // route handler
+  std::shared_ptr<route_handler::RouteHandler> route_handler_;
   // parameters
   vehicle_info_util::VehicleInfo vehicle_info_;
 
@@ -118,7 +123,7 @@ struct PlannerData
     }
 
     // Check all velocities
-    constexpr double stop_velocity = 0.1;
+    constexpr double stop_velocity = 1e-3;
     for (const auto & v : vs) {
       if (v >= stop_velocity) {
         return false;

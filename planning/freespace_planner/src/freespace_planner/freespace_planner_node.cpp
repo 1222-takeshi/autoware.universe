@@ -233,7 +233,8 @@ FreespacePlannerNode::FreespacePlannerNode(const rclcpp::NodeOptions & node_opti
   // Subscribers
   {
     route_sub_ = create_subscription<HADMapRoute>(
-      "~/input/route", 1, std::bind(&FreespacePlannerNode::onRoute, this, _1));
+      "~/input/route", rclcpp::QoS{1}.transient_local(),
+      std::bind(&FreespacePlannerNode::onRoute, this, _1));
     occupancy_grid_sub_ = create_subscription<OccupancyGrid>(
       "~/input/occupancy_grid", 1, std::bind(&FreespacePlannerNode::onOccupancyGrid, this, _1));
     scenario_sub_ = create_subscription<Scenario>(
@@ -259,11 +260,9 @@ FreespacePlannerNode::FreespacePlannerNode(const rclcpp::NodeOptions & node_opti
 
   // Timer
   {
-    auto timer_callback = std::bind(&FreespacePlannerNode::onTimer, this);
-    const auto period = rclcpp::Rate(node_param_.update_rate).period();
-    timer_ = std::make_shared<rclcpp::GenericTimer<decltype(timer_callback)>>(
-      get_clock(), period, std::move(timer_callback), get_node_base_interface()->get_context());
-    get_node_timers_interface()->add_timer(timer_, nullptr);
+    const auto period_ns = rclcpp::Rate(node_param_.update_rate).period();
+    timer_ = rclcpp::create_timer(this, get_clock(), period_ns,
+      std::bind(&FreespacePlannerNode::onTimer, this));
   }
 }
 

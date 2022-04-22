@@ -14,8 +14,15 @@
 
 #include "traffic_light_ssd_fine_detector/nodelet.hpp"
 
-#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <cuda_utils.hpp>
+
+#if (defined(_MSC_VER) or (defined(__GNUC__) and (7 <= __GNUC_MAJOR__)))
+#include <filesystem>
+namespace fs = ::std::filesystem;
+#else
+#include <experimental/filesystem>
+namespace fs = ::std::experimental::filesystem;
+#endif
 
 #include <memory>
 #include <string>
@@ -36,16 +43,14 @@ TrafficLightSSDFineDetectorNodelet::TrafficLightSSDFineDetectorNodelet(
   using std::placeholders::_1;
   using std::placeholders::_2;
 
-  std::string package_path =
-    ament_index_cpp::get_package_share_directory("traffic_light_ssd_fine_detector");
-  std::string data_path = package_path + "/data/";
-  std::string engine_path = package_path + "/data/mb2-ssd-lite.engine";
-  std::ifstream fs(engine_path);
   std::vector<std::string> labels;
   const int max_batch_size = this->declare_parameter("max_batch_size", 8);
   const std::string onnx_file = this->declare_parameter<std::string>("onnx_file");
   const std::string label_file = this->declare_parameter<std::string>("label_file");
   const std::string mode = this->declare_parameter("mode", "FP32");
+
+  fs::path engine_path{onnx_file};
+  engine_path.replace_extension("engine");
 
   if (readLabelFile(label_file, labels)) {
     if (!getTlrIdFromLabel(labels, tlr_id_)) {
@@ -53,8 +58,8 @@ TrafficLightSSDFineDetectorNodelet::TrafficLightSSDFineDetectorNodelet(
     }
   }
 
-  if (fs.is_open()) {
-    RCLCPP_INFO(this->get_logger(), "Found %s", engine_path.c_str());
+  if (fs::exists(engine_path)) {
+    RCLCPP_INFO(this->get_logger(), "Found %s", engine_path.string().c_str());
     net_ptr_.reset(new ssd::Net(engine_path, false));
     if (max_batch_size != net_ptr_->getMaxBatchSize()) {
       RCLCPP_INFO(
@@ -69,7 +74,7 @@ TrafficLightSSDFineDetectorNodelet::TrafficLightSSDFineDetectorNodelet(
   } else {
     RCLCPP_INFO(
       this->get_logger(), "Could not find %s, try making TensorRT engine from onnx",
-      engine_path.c_str());
+      engine_path.string().c_str());
     net_ptr_.reset(new ssd::Net(onnx_file, mode, max_batch_size));
     net_ptr_->save(engine_path);
   }
@@ -84,14 +89,9 @@ TrafficLightSSDFineDetectorNodelet::TrafficLightSSDFineDetectorNodelet(
   mean_ = toFloatVector(this->declare_parameter("mean", std::vector<double>({0.5, 0.5, 0.5})));
   std_ = toFloatVector(this->declare_parameter("std", std::vector<double>({0.5, 0.5, 0.5})));
 
-  auto timer_callback = std::bind(&TrafficLightSSDFineDetectorNodelet::connectCb, this);
-  const auto period_s = 0.1;
-  const auto period_ns =
-    std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(period_s));
-  timer_ = std::make_shared<rclcpp::GenericTimer<decltype(timer_callback)>>(
-    this->get_clock(), period_ns, std::move(timer_callback),
-    this->get_node_base_interface()->get_context());
-  this->get_node_timers_interface()->add_timer(timer_, nullptr);
+  using std::chrono_literals::operator""ms;
+  timer_ = rclcpp::create_timer(
+    this, get_clock(), 100ms, std::bind(&TrafficLightSSDFineDetectorNodelet::connectCb, this));
 
   std::lock_guard<std::mutex> lock(connect_mutex_);
   output_roi_pub_ =

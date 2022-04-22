@@ -73,7 +73,13 @@ public:
   bool isHandlerReady() const;
   lanelet::ConstPolygon3d getExtraDrivableAreaById(const lanelet::Id id) const;
   Header getRouteHeader() const;
-  lanelet::routing::RoutingGraphContainer getOverallGraph() const;
+
+  // for routing graph
+  bool isMapMsgReady() const;
+  lanelet::routing::RoutingGraphPtr getRoutingGraphPtr() const;
+  lanelet::traffic_rules::TrafficRulesPtr getTrafficRulesPtr() const;
+  std::shared_ptr<const lanelet::routing::RoutingGraphContainer> getOverallGraphPtr() const;
+  lanelet::LaneletMapPtr getLaneletMapPtr() const;
 
   // for routing
   bool planPathLaneletsBetweenCheckpoints(
@@ -90,7 +96,126 @@ public:
   std::vector<lanelet::ConstLanelet> getLanesAfterGoal(const double vehicle_length) const;
 
   // for lanelet
+  bool getPreviousLaneletsWithinRoute(
+    const lanelet::ConstLanelet & lanelet, lanelet::ConstLanelets * prev_lanelets) const;
   bool isDeadEndLanelet(const lanelet::ConstLanelet & lanelet) const;
+  lanelet::ConstLanelets getLaneletsFromPoint(const lanelet::ConstPoint3d & point) const;
+
+  /**
+   * @brief Check if same-direction lane is available at the right side of the lanelet
+   * Searches for any lanes regardless of whether it is lane-changeable or not.
+   * Required the linestring to be shared(same line ID) between the lanelets.
+   * @param the lanelet of interest
+   * @return vector of lanelet having same direction if true
+   */
+  boost::optional<lanelet::ConstLanelet> getRightLanelet(
+    const lanelet::ConstLanelet & lanelet) const;
+
+  /**
+   * @brief Check if same-direction lane is available at the left side of the lanelet
+   * Searches for any lanes regardless of whether it is lane-changeable or not.
+   * Required the linestring to be shared(same line ID) between the lanelets.
+   * @param the lanelet of interest
+   * @return vector of lanelet having same direction if true
+   */
+  boost::optional<lanelet::ConstLanelet> getLeftLanelet(
+    const lanelet::ConstLanelet & lanelet) const;
+  lanelet::ConstLanelets getNextLanelets(const lanelet::ConstLanelet & lanelet) const;
+
+  /**
+   * @brief Check if opposite-direction lane is available at the right side of the lanelet
+   * Required the linestring to be shared(same line ID) between the lanelets.
+   * @param the lanelet of interest
+   * @return vector of lanelet with opposite direction if true
+   */
+  lanelet::Lanelets getRightOppositeLanelets(const lanelet::ConstLanelet & lanelet) const;
+
+  /**
+   * @brief Check if opposite-direction lane is available at the left side of the lanelet
+   * Required the linestring to be shared between(same line ID) the lanelets.
+   * @param the lanelet of interest
+   * @return vector of lanelet with opposite direction if true
+   */
+  lanelet::Lanelets getLeftOppositeLanelets(const lanelet::ConstLanelet & lanelet) const;
+
+  /**
+   * @brief Searches and return all lanelet on the left that shares same linestring
+   * @param the lanelet of interest
+   * @param (optional) flag to include the lane with opposite direction
+   * @return vector of lanelet that is connected via share linestring
+   */
+  lanelet::ConstLanelets getAllLeftSharedLinestringLanelets(
+    const lanelet::ConstLanelet & lane, const bool & include_opposite) const noexcept;
+
+  /**
+   * @brief Searches and return all lanelet on the right that shares same linestring
+   * @param the lanelet of interest
+   * @param (optional) flag to include the lane with opposite direction
+   * @return vector of lanelet that is connected via share linestring
+   */
+  lanelet::ConstLanelets getAllRightSharedLinestringLanelets(
+    const lanelet::ConstLanelet & lane, const bool & include_opposite) const noexcept;
+
+  /**
+   * @brief Searches and return all lanelet (left and right) that shares same linestring
+   * @param the lanelet of interest
+   * @param (optional) flag to search only right side
+   * @param (optional) flag to search only left side
+   * @param (optional) flag to include the lane with opposite direction
+   * @return vector of lanelet that is connected via share linestring
+   */
+  lanelet::ConstLanelets getAllSharedLineStringLanelets(
+    const lanelet::ConstLanelet & current_lane, bool is_right = true, bool is_left = true,
+    bool is_opposite = true) const noexcept;
+
+  /**
+   * @brief Searches the furthest linestring to the right side of the lanelet
+   * Only lanelet with same direction is considered
+   * @param the lanelet of interest
+   * @return right most linestring of the lane with same direction
+   */
+  lanelet::ConstLineString3d getRightMostSameDirectionLinestring(
+    const lanelet::ConstLanelet & lanelet) const noexcept;
+
+  /**
+   * @brief Searches the furthest linestring to the right side of the lanelet
+   * Used to search for road shoulders. Lane direction is ignored
+   * @param the lanelet of interest
+   * @return right most linestring
+   */
+  lanelet::ConstLineString3d getRightMostLinestring(
+    const lanelet::ConstLanelet & lanelet) const noexcept;
+
+  /**
+   * @brief Searches the furthest linestring to the left side of the lanelet
+   * Only lanelet with same direction is considered
+   * @param the lanelet of interest
+   * @return left most linestring of the lane with same direction
+   */
+  lanelet::ConstLineString3d getLeftMostSameDirectionLinestring(
+    const lanelet::ConstLanelet & lanelet) const noexcept;
+
+  /**
+   * @brief Searches the furthest linestring to the left side of the lanelet
+   * Used to search for road shoulders. Lane direction is ignored
+   * @param the lanelet of interest
+   * @return left most linestring
+   */
+  lanelet::ConstLineString3d getLeftMostLinestring(
+    const lanelet::ConstLanelet & lanelet) const noexcept;
+
+  /**
+   * @brief Return furthest linestring on both side of the lanelet
+   * @param the lanelet of interest
+   * @param (optional) search furthest right side
+   * @param (optional) search furthest left side
+   * @param (optional) include opposite lane as well
+   * @return right and left linestrings
+   */
+  lanelet::ConstLineStrings3d getFurthestLinestring(
+    const lanelet::ConstLanelet & lanelet, bool is_right = true, bool is_left = true,
+    bool is_opposite = true) const noexcept;
+
   int getNumLaneToPreferredLane(const lanelet::ConstLanelet & lanelet) const;
   bool getClosestLaneletWithinRoute(
     const Pose & search_pose, lanelet::ConstLanelet * closest_lanelet) const;
@@ -163,8 +288,6 @@ private:
   bool isBijectiveConnection(
     const lanelet::ConstLanelets & lanelet_section1,
     const lanelet::ConstLanelets & lanelet_section2) const;
-  bool getPreviousLaneletWithinRoute(
-    const lanelet::ConstLanelet & lanelet, lanelet::ConstLanelet * prev_lanelet) const;
   bool getNextLaneletWithinRoute(
     const lanelet::ConstLanelet & lanelet, lanelet::ConstLanelet * next_lanelet) const;
   bool getPreviousLaneletWithinRouteExceptGoal(

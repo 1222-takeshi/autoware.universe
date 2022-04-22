@@ -182,14 +182,9 @@ MultiObjectTracker::MultiObjectTracker(const rclcpp::NodeOptions & node_options)
 
   // Create ROS time based timer
   if (enable_delay_compensation) {
-    auto timer_callback = std::bind(&MultiObjectTracker::onTimer, this);
-    auto period = std::chrono::duration_cast<std::chrono::nanoseconds>(
-      std::chrono::duration<double>(1.0 / publish_rate));
-
-    publish_timer_ = std::make_shared<rclcpp::GenericTimer<decltype(timer_callback)>>(
-      this->get_clock(), period, std::move(timer_callback),
-      this->get_node_base_interface()->get_context());
-    this->get_node_timers_interface()->add_timer(publish_timer_, nullptr);
+    const auto period_ns = rclcpp::Rate(publish_rate).period();
+    publish_timer_ = rclcpp::create_timer(
+      this, get_clock(), period_ns, std::bind(&MultiObjectTracker::onTimer, this));
   }
 
   const auto tmp = this->declare_parameter<std::vector<int64_t>>("can_assign_matrix");
@@ -199,9 +194,25 @@ MultiObjectTracker::MultiObjectTracker(const rclcpp::NodeOptions & node_options)
   const auto max_area_matrix = this->declare_parameter<std::vector<double>>("max_area_matrix");
   const auto min_area_matrix = this->declare_parameter<std::vector<double>>("min_area_matrix");
   const auto max_rad_matrix = this->declare_parameter<std::vector<double>>("max_rad_matrix");
+  const auto min_iou_matrix = this->declare_parameter<std::vector<double>>("min_iou_matrix");
+
+  // tracker map
+  tracker_map_.insert(
+    std::make_pair(Label::CAR, this->declare_parameter<std::string>("car_tracker")));
+  tracker_map_.insert(
+    std::make_pair(Label::TRUCK, this->declare_parameter<std::string>("truck_tracker")));
+  tracker_map_.insert(
+    std::make_pair(Label::BUS, this->declare_parameter<std::string>("bus_tracker")));
+  tracker_map_.insert(
+    std::make_pair(Label::PEDESTRIAN, this->declare_parameter<std::string>("pedestrian_tracker")));
+  tracker_map_.insert(
+    std::make_pair(Label::BICYCLE, this->declare_parameter<std::string>("bicycle_tracker")));
+  tracker_map_.insert(
+    std::make_pair(Label::MOTORCYCLE, this->declare_parameter<std::string>("motorcycle_tracker")));
 
   data_association_ = std::make_unique<DataAssociation>(
-    can_assign_matrix, max_dist_matrix, max_area_matrix, min_area_matrix, max_rad_matrix);
+    can_assign_matrix, max_dist_matrix, max_area_matrix, min_area_matrix, max_rad_matrix,
+    min_iou_matrix);
 }
 
 void MultiObjectTracker::onMeasurement(
@@ -268,12 +279,22 @@ std::shared_ptr<Tracker> MultiObjectTracker::createNewTracker(
   const rclcpp::Time & time) const
 {
   const std::uint8_t label = utils::getHighestProbLabel(object.classification);
-  if (label == Label::CAR || label == Label::TRUCK || label == Label::BUS) {
+  const auto tracker = tracker_map_.at(label);
+
+  if (tracker == "bicycle_tracker") {
+    return std::make_shared<BicycleTracker>(time, object);
+  } else if (tracker == "big_vehicle_tracker") {
+    return std::make_shared<BigVehicleTracker>(time, object);
+  } else if (tracker == "multi_vehicle_tracker") {
     return std::make_shared<MultipleVehicleTracker>(time, object);
-  } else if (label == Label::PEDESTRIAN) {
+  } else if (tracker == "normal_vehicle_tracker") {
+    return std::make_shared<NormalVehicleTracker>(time, object);
+  } else if (tracker == "pass_through_tracker") {
+    return std::make_shared<PassThroughTracker>(time, object);
+  } else if (tracker == "pedestrian_and_bicycle_tracker") {
     return std::make_shared<PedestrianAndBicycleTracker>(time, object);
-  } else if (label == Label::BICYCLE || label == Label::MOTORCYCLE) {
-    return std::make_shared<PedestrianAndBicycleTracker>(time, object);
+  } else if (tracker == "pedestrian_tracker") {
+    return std::make_shared<PedestrianTracker>(time, object);
   } else {
     return std::make_shared<UnknownTracker>(time, object);
   }

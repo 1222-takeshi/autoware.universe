@@ -58,7 +58,7 @@ std::pair<TurnIndicatorsCommand, double> TurnSignalDecider::getIntersectionTurnS
   // Get frenet coordinate of current_pose on path
   util::FrenetCoordinate3d vehicle_pose_frenet;
   if (!util::convertToFrenetCoordinate3d(path, current_pose.position, &vehicle_pose_frenet)) {
-    RCLCPP_ERROR_THROTTLE(
+    RCLCPP_DEBUG_THROTTLE(
       logger_, clock, 5000, "failed to convert vehicle pose into frenet coordinate");
     return std::make_pair(turn_signal, distance);
   }
@@ -87,9 +87,7 @@ std::pair<TurnIndicatorsCommand, double> TurnSignalDecider::getIntersectionTurnS
       if (
         lane.attributeOr("turn_signal_distance", std::numeric_limits<double>::max()) <
         distance_from_vehicle_front) {
-        if (1 < path_point.lane_ids.size() && lane.id() == path_point.lane_ids.back()) {
-          continue;
-        }
+        continue;
       }
       if (lane.attributeOr("turn_direction", std::string("none")) == "left") {
         turn_signal.command = TurnIndicatorsCommand::ENABLE_LEFT;

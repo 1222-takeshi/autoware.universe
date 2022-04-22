@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <scene_module/traffic_light/scene.hpp>
+#include <tier4_autoware_utils/trajectory/trajectory.hpp>
 #include <utilization/util.hpp>
 
 #include <boost/optional.hpp>  // To be replaced by std::optional in C++17
@@ -32,93 +33,6 @@ namespace bg = boost::geometry;
 
 namespace
 {
-std::pair<int, double> findWayPointAndDistance(
-  const autoware_auto_planning_msgs::msg::PathWithLaneId & input_path, const Eigen::Vector2d & p)
-{
-  constexpr double max_lateral_dist = 3.0;
-  for (size_t i = 0; i < input_path.points.size() - 1; ++i) {
-    const double dx = p.x() - input_path.points.at(i).point.pose.position.x;
-    const double dy = p.y() - input_path.points.at(i).point.pose.position.y;
-    const double dx_wp = input_path.points.at(i + 1).point.pose.position.x -
-                         input_path.points.at(i).point.pose.position.x;
-    const double dy_wp = input_path.points.at(i + 1).point.pose.position.y -
-                         input_path.points.at(i).point.pose.position.y;
-
-    const double theta = std::atan2(dy, dx) - std::atan2(dy_wp, dx_wp);
-
-    const double dist = std::hypot(dx, dy);
-    const double dist_wp = std::hypot(dx_wp, dy_wp);
-
-    // check lateral distance
-    if (std::fabs(dist * std::sin(theta)) > max_lateral_dist) {
-      continue;
-    }
-
-    // if the point p is back of the way point, return negative distance
-    if (dist * std::cos(theta) < 0) {
-      return std::make_pair(static_cast<int>(i), -1.0 * dist);
-    }
-
-    if (dist * std::cos(theta) < dist_wp) {
-      return std::make_pair(static_cast<int>(i), dist);
-    }
-  }
-
-  // if the way point is not found, return negative distance from the way point at 0
-  const double dx = p.x() - input_path.points.at(0).point.pose.position.x;
-  const double dy = p.y() - input_path.points.at(0).point.pose.position.y;
-  return std::make_pair(-1, -1.0 * std::hypot(dx, dy));
-}
-
-double calcArcLengthFromWayPoint(
-  const autoware_auto_planning_msgs::msg::PathWithLaneId & input_path, const int & src,
-  const int & dst)
-{
-  double length = 0;
-  const size_t src_idx = src >= 0 ? static_cast<size_t>(src) : 0;
-  const size_t dst_idx = dst >= 0 ? static_cast<size_t>(dst) : 0;
-  for (size_t i = src_idx; i < dst_idx; ++i) {
-    const double dx_wp = input_path.points.at(i + 1).point.pose.position.x -
-                         input_path.points.at(i).point.pose.position.x;
-    const double dy_wp = input_path.points.at(i + 1).point.pose.position.y -
-                         input_path.points.at(i).point.pose.position.y;
-    length += std::hypot(dx_wp, dy_wp);
-  }
-  return length;
-}
-
-double calcSignedArcLength(
-  const autoware_auto_planning_msgs::msg::PathWithLaneId & input_path,
-  const geometry_msgs::msg::Pose & p1, const Eigen::Vector2d & p2)
-{
-  std::pair<int, double> src =
-    findWayPointAndDistance(input_path, Eigen::Vector2d(p1.position.x, p1.position.y));
-  std::pair<int, double> dst = findWayPointAndDistance(input_path, p2);
-  if (dst.first == -1) {
-    double dx = p1.position.x - p2.x();
-    double dy = p1.position.y - p2.y();
-    return -1.0 * std::hypot(dx, dy);
-  }
-
-  if (src.first < dst.first) {
-    return calcArcLengthFromWayPoint(input_path, src.first, dst.first) - src.second + dst.second;
-  } else if (src.first > dst.first) {
-    return -1.0 *
-           (calcArcLengthFromWayPoint(input_path, dst.first, src.first) - dst.second + src.second);
-  } else {
-    return dst.second - src.second;
-  }
-}
-
-[[maybe_unused]] double calcSignedDistance(
-  const geometry_msgs::msg::Pose & p1, const Eigen::Vector2d & p2)
-{
-  Eigen::Affine3d map2p1;
-  tf2::fromMsg(p1, map2p1);
-  auto basecoords_p2 = map2p1.inverse() * Eigen::Vector3d(p2.x(), p2.y(), p1.position.z);
-  return basecoords_p2.x() >= 0 ? basecoords_p2.norm() : -basecoords_p2.norm();
-}
-
 bool getBackwardPointFromBasePoint(
   const Eigen::Vector2d & line_point1, const Eigen::Vector2d & line_point2,
   const Eigen::Vector2d & base_point, const double backward_length, Eigen::Vector2d & output_point)
@@ -313,8 +227,11 @@ bool TrafficLightModule::modifyPathVelocity(
   }
 
   // Calculate dist to stop pose
-  const double signed_arc_length_to_stop_point =
-    calcSignedArcLength(input_path, self_pose.pose, stop_line_point);
+  geometry_msgs::msg::Point stop_line_point_msg;
+  stop_line_point_msg.x = stop_line_point.x();
+  stop_line_point_msg.y = stop_line_point.y();
+  const double signed_arc_length_to_stop_point = tier4_autoware_utils::calcSignedArcLength(
+    input_path.points, self_pose.pose.position, stop_line_point_msg);
 
   // Check state
   if (state_ == State::APPROACH) {
@@ -447,7 +364,8 @@ bool TrafficLightModule::isPassthrough(const double & signed_arc_length) const
 bool TrafficLightModule::isTrafficSignalStop(
   const autoware_auto_perception_msgs::msg::TrafficSignal & tl_state) const
 {
-  if (hasTrafficLightColor(tl_state, autoware_auto_perception_msgs::msg::TrafficLight::GREEN)) {
+  if (hasTrafficLightCircleColor(
+        tl_state, autoware_auto_perception_msgs::msg::TrafficLight::GREEN)) {
     return false;
   }
 
@@ -548,18 +466,13 @@ autoware_auto_planning_msgs::msg::PathWithLaneId TrafficLightModule::insertStopP
   target_point_with_lane_id.point.pose.position.x = target_point.x();
   target_point_with_lane_id.point.pose.position.y = target_point.y();
   target_point_with_lane_id.point.longitudinal_velocity_mps = 0.0;
-
-  // Insert stop pose into path
-  modified_path.points.insert(
-    modified_path.points.begin() + insert_target_point_idx, target_point_with_lane_id);
   debug_data_.stop_poses.push_back(target_point_with_lane_id.point.pose);
 
-  // insert 0 velocity after target point
-  for (size_t j = insert_target_point_idx; j < modified_path.points.size(); ++j) {
-    modified_path.points.at(j).point.longitudinal_velocity_mps = 0.0;
-  }
-  if (target_velocity_point_idx < first_stop_path_point_index_) {
-    first_stop_path_point_index_ = target_velocity_point_idx;
+  // Insert stop pose into path or replace with zero velocity
+  size_t insert_index = insert_target_point_idx;
+  planning_utils::insertVelocity(modified_path, target_point_with_lane_id, 0.0, insert_index);
+  if (static_cast<int>(target_velocity_point_idx) < first_stop_path_point_index_) {
+    first_stop_path_point_index_ = static_cast<int>(target_velocity_point_idx);
     debug_data_.first_stop_pose = target_point_with_lane_id.point.pose;
   }
 
@@ -573,13 +486,16 @@ autoware_auto_planning_msgs::msg::PathWithLaneId TrafficLightModule::insertStopP
   return modified_path;
 }
 
-bool TrafficLightModule::hasTrafficLightColor(
+bool TrafficLightModule::hasTrafficLightCircleColor(
   const autoware_auto_perception_msgs::msg::TrafficSignal & tl_state,
   const uint8_t & lamp_color) const
 {
-  const auto it_lamp = std::find_if(
-    tl_state.lights.begin(), tl_state.lights.end(),
-    [&lamp_color](const auto & x) { return x.color == lamp_color; });
+  using autoware_auto_perception_msgs::msg::TrafficLight;
+
+  const auto it_lamp =
+    std::find_if(tl_state.lights.begin(), tl_state.lights.end(), [&lamp_color](const auto & x) {
+      return x.shape == TrafficLight::CIRCLE && x.color == lamp_color;
+    });
 
   return it_lamp != tl_state.lights.end();
 }

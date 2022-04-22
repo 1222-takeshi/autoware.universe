@@ -59,7 +59,7 @@ def generate_launch_description():
                     "max_height": 2.0,
                     "angle_min": -3.141592,  # -M_PI
                     "angle_max": 3.141592,  # M_PI
-                    "angle_increment": 0.00436332222,  # 0.25*M_PI/180.0
+                    "angle_increment": 0.00349065850,  # 0.20*M_PI/180.0
                     "scan_time": 0.0,
                     "range_min": 1.0,
                     "range_max": 200.0,
@@ -76,8 +76,8 @@ def generate_launch_description():
             extra_arguments=[{"use_intra_process_comms": LaunchConfiguration("use_intra_process")}],
         ),
         ComposableNode(
-            package="laserscan_to_occupancy_grid_map",
-            plugin="occupancy_grid_map::OccupancyGridMapNode",
+            package="probabilistic_occupancy_grid_map",
+            plugin="occupancy_grid_map::LaserscanBasedOccupancyGridMapNode",
             name="occupancy_grid_map_node",
             remappings=[
                 ("~/input/laserscan", LaunchConfiguration("output/laserscan")),

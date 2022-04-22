@@ -16,9 +16,12 @@
 #define MOTION_VELOCITY_SMOOTHER__MOTION_VELOCITY_SMOOTHER_NODE_HPP_
 
 #include "motion_velocity_smoother/resample.hpp"
+#include "motion_velocity_smoother/smoother/analytical_jerk_constrained_smoother/analytical_jerk_constrained_smoother.hpp"
 #include "motion_velocity_smoother/smoother/jerk_filtered_smoother.hpp"
 #include "motion_velocity_smoother/smoother/l2_pseudo_jerk_smoother.hpp"
 #include "motion_velocity_smoother/smoother/linf_pseudo_jerk_smoother.hpp"
+#include "motion_velocity_smoother/smoother/smoother_base.hpp"
+#include "motion_velocity_smoother/trajectory_utils.hpp"
 #include "osqp_interface/osqp_interface.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "tf2/utils.h"
@@ -42,12 +45,6 @@
 #include <string>
 #include <tuple>
 #include <vector>
-
-// *INDENT-OFF*
-#include "motion_velocity_smoother/smoother/analytical_jerk_constrained_smoother/analytical_jerk_constrained_smoother.hpp"
-// *INDENT-ON*
-#include "motion_velocity_smoother/smoother/smoother_base.hpp"
-#include "motion_velocity_smoother/trajectory_utils.hpp"
 
 namespace motion_velocity_smoother
 {
@@ -127,12 +124,6 @@ private:
     AlgorithmType algorithm_type;  // Option : JerkFiltered, Linf, L2
   } node_param_{};
 
-  SmootherBase::BaseParam base_param_{};
-  JerkFilteredSmoother::Param jerk_filtered_smoother_param_{};
-  L2PseudoJerkSmoother::Param l2_pseudo_jerk_smoother_param_{};
-  LinfPseudoJerkSmoother::Param linf_pseudo_jerk_smoother_param_{};
-  AnalyticalJerkConstrainedSmoother::Param analytical_jerk_constrained_smoother_param_{};
-
   std::shared_ptr<SmootherBase> smoother_;
 
   bool publish_debug_trajs_;  // publish planned trajectories
@@ -196,16 +187,6 @@ private:
 
   // parameter handling
   void initCommonParam();
-
-  void initSmootherBaseParam();
-
-  void initJerkFilteredSmootherParam();
-
-  void initL2PseudoJerkSmootherParam();
-
-  void initLinfPseudoJerkSmootherParam();
-
-  void initAnalyticalJerkConstrainedSmootherParam();
 
   // debug
   tier4_autoware_utils::StopWatch<std::chrono::milliseconds> stop_watch_;

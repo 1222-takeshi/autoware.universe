@@ -189,13 +189,10 @@ VehicleCmdGate::VehicleCmdGate(const rclcpp::NodeOptions & node_options)
   start_request_ = std::make_unique<StartRequest>(this, use_start_request);
 
   // Timer
-  auto timer_callback = std::bind(&VehicleCmdGate::onTimer, this);
-  auto period = std::chrono::duration_cast<std::chrono::nanoseconds>(
+  const auto period_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
     std::chrono::duration<double>(update_period_));
-  timer_ = std::make_shared<rclcpp::GenericTimer<decltype(timer_callback)>>(
-    this->get_clock(), period, std::move(timer_callback),
-    this->get_node_base_interface()->get_context());
-  this->get_node_timers_interface()->add_timer(timer_, nullptr);
+  timer_ =
+    rclcpp::create_timer(this, get_clock(), period_ns, std::bind(&VehicleCmdGate::onTimer, this));
 }
 
 bool VehicleCmdGate::isHeartbeatTimeout(
@@ -345,7 +342,7 @@ void VehicleCmdGate::onTimer()
   } else {
     if (current_gate_mode_.data == tier4_control_msgs::msg::GateMode::AUTO) {
       turn_indicator = auto_commands_.turn_indicator;
-      hazard_light = emergency_commands_.hazard_light;
+      hazard_light = auto_commands_.hazard_light;
       gear = auto_commands_.gear;
 
       // Don't send turn signal when autoware is not engaged
@@ -517,7 +514,10 @@ autoware_auto_control_msgs::msg::AckermannControlCommand VehicleCmdGate::createS
   const
 {
   autoware_auto_control_msgs::msg::AckermannControlCommand cmd;
-
+  const auto t = this->now();
+  cmd.stamp = t;
+  cmd.lateral.stamp = t;
+  cmd.longitudinal.stamp = t;
   cmd.lateral.steering_tire_angle = current_steer_;
   cmd.lateral.steering_tire_rotation_rate = 0.0;
   cmd.longitudinal.speed = 0.0;
@@ -530,7 +530,10 @@ autoware_auto_control_msgs::msg::AckermannControlCommand
 VehicleCmdGate::createEmergencyStopControlCmd() const
 {
   autoware_auto_control_msgs::msg::AckermannControlCommand cmd;
-
+  const auto t = this->now();
+  cmd.stamp = t;
+  cmd.lateral.stamp = t;
+  cmd.longitudinal.stamp = t;
   cmd.lateral.steering_tire_angle = prev_control_cmd_.lateral.steering_tire_angle;
   cmd.lateral.steering_tire_rotation_rate = prev_control_cmd_.lateral.steering_tire_rotation_rate;
   cmd.longitudinal.speed = 0.0;
@@ -692,7 +695,7 @@ VehicleCmdGate::StartRequest::StartRequest(rclcpp::Node * node, bool use_start_r
   request_start_pub_ = node_->create_publisher<tier4_debug_msgs::msg::BoolStamped>(
     "/api/autoware/get/start_accepted", rclcpp::QoS(1));
   current_twist_sub_ = node_->create_subscription<nav_msgs::msg::Odometry>(
-    "/localization/twist", rclcpp::QoS(1),
+    "/localization/kinematic_state", rclcpp::QoS(1),
     std::bind(&VehicleCmdGate::StartRequest::onCurrentTwist, this, _1));
 }
 

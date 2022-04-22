@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NORMAL_DISTRIBUTIONS_TRANSFORM_OMP_HPP
-#define NORMAL_DISTRIBUTIONS_TRANSFORM_OMP_HPP
+#ifndef NDT__IMPL__OMP_HPP_
+#define NDT__IMPL__OMP_HPP_
 
 #include "ndt/omp.hpp"
 
@@ -109,6 +109,13 @@ double NormalDistributionsTransformOMP<PointSource, PointTarget>::getTransformat
 }
 
 template <class PointSource, class PointTarget>
+double NormalDistributionsTransformOMP<
+  PointSource, PointTarget>::getNearestVoxelTransformationLikelihood() const
+{
+  return ndt_ptr_->getNearestVoxelTransformationLikelihood();
+}
+
+template <class PointSource, class PointTarget>
 double NormalDistributionsTransformOMP<PointSource, PointTarget>::getFitnessScore()
 {
   return ndt_ptr_->getFitnessScore();
@@ -136,7 +143,7 @@ Eigen::Matrix4f NormalDistributionsTransformOMP<PointSource, PointTarget>::getFi
 }
 
 template <class PointSource, class PointTarget>
-std::vector<Eigen::Matrix4f>
+std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f>>
 NormalDistributionsTransformOMP<PointSource, PointTarget>::getFinalTransformationArray() const
 {
   return ndt_ptr_->getFinalTransformationArray();
@@ -155,6 +162,22 @@ boost::shared_ptr<pcl::search::KdTree<PointTarget>>
 NormalDistributionsTransformOMP<PointSource, PointTarget>::getSearchMethodTarget() const
 {
   return ndt_ptr_->getSearchMethodTarget();
+}
+
+template <class PointSource, class PointTarget>
+double
+NormalDistributionsTransformOMP<PointSource, PointTarget>::calculateTransformationProbability(
+  const pcl::PointCloud<PointSource> & trans_cloud) const
+{
+  return ndt_ptr_->calculateTransformationProbability(trans_cloud);
+}
+
+template <class PointSource, class PointTarget>
+double NormalDistributionsTransformOMP<PointSource, PointTarget>::
+  calculateNearestVoxelTransformationLikelihood(
+    const pcl::PointCloud<PointSource> & trans_cloud) const
+{
+  return ndt_ptr_->calculateNearestVoxelTransformationLikelihood(trans_cloud);
 }
 
 template <class PointSource, class PointTarget>
@@ -183,4 +206,4 @@ NormalDistributionsTransformOMP<PointSource, PointTarget>::getNeighborhoodSearch
   return ndt_ptr_->getNeighborhoodSearchMethod();
 }
 
-#endif  // NORMAL_DISTRIBUTIONS_TRANSFORM_OMP_HPP
+#endif  // NDT__IMPL__OMP_HPP_

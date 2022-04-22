@@ -67,8 +67,9 @@ double norm(const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Poin
 }
 
 bool isLocalOptimalSolutionOscillation(
-  const std::vector<Eigen::Matrix4f> & result_pose_matrix_array, const float oscillation_threshold,
-  const float inversion_vector_threshold)
+  const std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f>> &
+    result_pose_matrix_array,
+  const float oscillation_threshold, const float inversion_vector_threshold)
 {
   bool prev_oscillation = false;
   int oscillation_cnt = 0;
@@ -101,7 +102,12 @@ NDTScanMatcher::NDTScanMatcher()
   base_frame_("base_link"),
   ndt_base_frame_("ndt_base_link"),
   map_frame_("map"),
+  converged_param_type_(ConvergedParamType::TRANSFORM_PROBABILITY),
   converged_param_transform_probability_(4.5),
+  converged_param_nearest_voxel_transformation_likelihood_(2.3),
+  initial_estimate_particles_num_(100),
+  initial_pose_timeout_sec_(1.0),
+  initial_pose_distance_tolerance_m_(10.0),
   inversion_vector_threshold_(-0.9),
   oscillation_threshold_(10)
 {
@@ -161,8 +167,38 @@ NDTScanMatcher::NDTScanMatcher()
     get_logger(), "trans_epsilon: %lf, step_size: %lf, resolution: %lf, max_iterations: %d",
     trans_epsilon, step_size, resolution, max_iterations);
 
+  int converged_param_type_tmp = this->declare_parameter("converged_param_type", 0);
+  converged_param_type_ = static_cast<ConvergedParamType>(converged_param_type_tmp);
+  if (
+    ndt_implement_type_ != NDTImplementType::OMP &&
+    converged_param_type_ == ConvergedParamType::NEAREST_VOXEL_TRANSFORMATION_LIKELIHOOD) {
+    RCLCPP_ERROR(
+      get_logger(),
+      "ConvergedParamType::NEAREST_VOXEL_TRANSFORMATION_LIKELIHOOD is only available when "
+      "NDTImplementType::OMP is selected.");
+    return;
+  }
+
   converged_param_transform_probability_ = this->declare_parameter(
     "converged_param_transform_probability", converged_param_transform_probability_);
+  converged_param_nearest_voxel_transformation_likelihood_ = this->declare_parameter(
+    "converged_param_nearest_voxel_transformation_likelihood",
+    converged_param_nearest_voxel_transformation_likelihood_);
+
+  initial_estimate_particles_num_ =
+    this->declare_parameter("initial_estimate_particles_num", initial_estimate_particles_num_);
+
+  initial_pose_timeout_sec_ =
+    this->declare_parameter("initial_pose_timeout_sec", initial_pose_timeout_sec_);
+
+  initial_pose_distance_tolerance_m_ = this->declare_parameter(
+    "initial_pose_distance_tolerance_m", initial_pose_distance_tolerance_m_);
+
+  std::vector<double> output_pose_covariance =
+    this->declare_parameter<std::vector<double>>("output_pose_covariance");
+  for (std::size_t i = 0; i < output_pose_covariance.size(); ++i) {
+    output_pose_covariance_[i] = output_pose_covariance[i];
+  }
 
   rclcpp::CallbackGroup::SharedPtr initial_pose_callback_group;
   initial_pose_callback_group =
@@ -200,6 +236,9 @@ NDTScanMatcher::NDTScanMatcher()
   exe_time_pub_ = this->create_publisher<tier4_debug_msgs::msg::Float32Stamped>("exe_time_ms", 10);
   transform_probability_pub_ =
     this->create_publisher<tier4_debug_msgs::msg::Float32Stamped>("transform_probability", 10);
+  nearest_voxel_transformation_likelihood_pub_ =
+    this->create_publisher<tier4_debug_msgs::msg::Float32Stamped>(
+      "nearest_voxel_transformation_likelihood", 10);
   iteration_num_pub_ =
     this->create_publisher<tier4_debug_msgs::msg::Int32Stamped>("iteration_num", 10);
   initial_to_result_distance_pub_ =
@@ -214,6 +253,7 @@ NDTScanMatcher::NDTScanMatcher()
   ndt_monte_carlo_initial_pose_marker_pub_ =
     this->create_publisher<visualization_msgs::msg::MarkerArray>(
       "monte_carlo_initial_pose_marker", 10);
+
   diagnostics_pub_ =
     this->create_publisher<diagnostic_msgs::msg::DiagnosticArray>("/diagnostics", 10);
 
@@ -422,9 +462,27 @@ void NDTScanMatcher::callbackSensorPoints(
     initial_pose_msg_ptr_array_, sensor_ros_time, initial_pose_old_msg_ptr,
     initial_pose_new_msg_ptr);
   popOldPose(initial_pose_msg_ptr_array_, sensor_ros_time);
-  // TODO(Tier IV): check pose_timestamp - sensor_ros_time
+
+  // check the time stamp
+  bool valid_old_timestamp = validateTimeStampDifference(
+    initial_pose_old_msg_ptr->header.stamp, sensor_ros_time, initial_pose_timeout_sec_);
+  bool valid_new_timestamp = validateTimeStampDifference(
+    initial_pose_new_msg_ptr->header.stamp, sensor_ros_time, initial_pose_timeout_sec_);
+
+  // check the position jumping (ex. immediately after the initial pose estimation)
+  bool valid_new_to_old_distance = validatePositionDifference(
+    initial_pose_old_msg_ptr->pose.pose.position, initial_pose_new_msg_ptr->pose.pose.position,
+    initial_pose_distance_tolerance_m_);
+
+  // must all validations are true
+  if (!(valid_old_timestamp && valid_new_timestamp && valid_new_to_old_distance)) {
+    RCLCPP_WARN(get_logger(), "Validation error.");
+    return;
+  }
+
   const auto initial_pose_msg =
     interpolatePose(*initial_pose_old_msg_ptr, *initial_pose_new_msg_ptr, sensor_ros_time);
+
   // enf of critical section for initial_pose_msg_ptr_array_
   initial_pose_array_lock.unlock();
 
@@ -450,8 +508,8 @@ void NDTScanMatcher::callbackSensorPoints(
   result_pose_affine.matrix() = result_pose_matrix.cast<double>();
   const geometry_msgs::msg::Pose result_pose_msg = tf2::toMsg(result_pose_affine);
 
-  const std::vector<Eigen::Matrix4f> result_pose_matrix_array =
-    ndt_ptr_->getFinalTransformationArray();
+  const std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f>>
+    result_pose_matrix_array = ndt_ptr_->getFinalTransformationArray();
   std::vector<geometry_msgs::msg::Pose> result_pose_msg_array;
   for (const auto & pose_matrix : result_pose_matrix_array) {
     Eigen::Affine3d pose_affine;
@@ -466,6 +524,8 @@ void NDTScanMatcher::callbackSensorPoints(
     1000.0;
 
   const float transform_probability = ndt_ptr_->getTransformationProbability();
+  const float nearest_voxel_transformation_likelihood =
+    ndt_ptr_->getNearestVoxelTransformationLikelihood();
 
   const int iteration_num = ndt_ptr_->getFinalNumIteration();
 
@@ -481,22 +541,54 @@ void NDTScanMatcher::callbackSensorPoints(
   These bugs are now resolved in original pcl implementation.
   https://github.com/PointCloudLibrary/pcl/blob/424c1c6a0ca97d94ca63e5daff4b183a4db8aae4/registration/include/pcl/registration/impl/ndt.hpp#L73-L180
   *****************************************************************************/
+  bool is_ok_iteration_num = iteration_num < ndt_ptr_->getMaximumIterations() + 2;
+  if (!is_ok_iteration_num) {
+    RCLCPP_WARN(
+      get_logger(),
+      "The number of iterations has reached its upper limit. The number of iterations: %d, Limit: "
+      "%d",
+      iteration_num, ndt_ptr_->getMaximumIterations() + 2);
+  }
+
   bool is_local_optimal_solution_oscillation = false;
-  if (iteration_num >= ndt_ptr_->getMaximumIterations() + 2) {
+  if (!is_ok_iteration_num) {
     is_local_optimal_solution_oscillation = isLocalOptimalSolutionOscillation(
       result_pose_matrix_array, oscillation_threshold_, inversion_vector_threshold_);
   }
 
-  bool is_converged = true;
+  bool is_ok_converged_param = false;
+  if (converged_param_type_ == ConvergedParamType::TRANSFORM_PROBABILITY) {
+    is_ok_converged_param = transform_probability > converged_param_transform_probability_;
+    if (!is_ok_converged_param) {
+      RCLCPP_WARN(
+        get_logger(), "Transform Probability is below the threshold. Score: %lf, Threshold: %lf",
+        transform_probability, converged_param_transform_probability_);
+    }
+  } else if (converged_param_type_ == ConvergedParamType::NEAREST_VOXEL_TRANSFORMATION_LIKELIHOOD) {
+    is_ok_converged_param = nearest_voxel_transformation_likelihood >
+                            converged_param_nearest_voxel_transformation_likelihood_;
+    if (!is_ok_converged_param) {
+      RCLCPP_WARN(
+        get_logger(),
+        "Nearest Voxel Transform Probability is below the threshold. Score: %lf, Threshold: %lf",
+        nearest_voxel_transformation_likelihood,
+        converged_param_nearest_voxel_transformation_likelihood_);
+    }
+  } else {
+    is_ok_converged_param = false;
+    RCLCPP_ERROR_STREAM_THROTTLE(
+      this->get_logger(), *this->get_clock(), 1, "Unknown converged param type.");
+  }
+
+  bool is_converged = false;
   static size_t skipping_publish_num = 0;
-  if (
-    iteration_num >= ndt_ptr_->getMaximumIterations() + 2 ||
-    transform_probability < converged_param_transform_probability_) {
+  if (is_ok_iteration_num && is_ok_converged_param) {
+    is_converged = true;
+    skipping_publish_num = 0;
+  } else {
     is_converged = false;
     ++skipping_publish_num;
     RCLCPP_WARN(get_logger(), "Not Converged");
-  } else {
-    skipping_publish_num = 0;
   }
 
   // publish
@@ -509,15 +601,7 @@ void NDTScanMatcher::callbackSensorPoints(
   result_pose_with_cov_msg.header.stamp = sensor_ros_time;
   result_pose_with_cov_msg.header.frame_id = map_frame_;
   result_pose_with_cov_msg.pose.pose = result_pose_msg;
-
-  // TODO(Tier IV): temporary value
-  Eigen::Map<RowMatrixXd> covariance(&result_pose_with_cov_msg.pose.covariance[0], 6, 6);
-  covariance(0, 0) = 0.025;
-  covariance(1, 1) = 0.025;
-  covariance(2, 2) = 0.025;
-  covariance(3, 3) = 0.000625;
-  covariance(4, 4) = 0.000625;
-  covariance(5, 5) = 0.000625;
+  result_pose_with_cov_msg.pose.covariance = output_pose_covariance_;
 
   if (is_converged) {
     ndt_pose_pub_->publish(result_pose_stamped_msg);
@@ -565,6 +649,8 @@ void NDTScanMatcher::callbackSensorPoints(
   exe_time_pub_->publish(makeFloat32Stamped(sensor_ros_time, exe_time));
 
   transform_probability_pub_->publish(makeFloat32Stamped(sensor_ros_time, transform_probability));
+  nearest_voxel_transformation_likelihood_pub_->publish(
+    makeFloat32Stamped(sensor_ros_time, nearest_voxel_transformation_likelihood));
 
   iteration_num_pub_->publish(makeInt32Stamped(sensor_ros_time, iteration_num));
 
@@ -584,6 +670,8 @@ void NDTScanMatcher::callbackSensorPoints(
     makeFloat32Stamped(sensor_ros_time, initial_to_result_distance_new));
 
   key_value_stdmap_["transform_probability"] = std::to_string(transform_probability);
+  key_value_stdmap_["nearest_voxel_transformation_likelihood"] =
+    std::to_string(nearest_voxel_transformation_likelihood);
   key_value_stdmap_["iteration_num"] = std::to_string(iteration_num);
   key_value_stdmap_["skipping_publish_num"] = std::to_string(skipping_publish_num);
   if (is_local_optimal_solution_oscillation) {
@@ -603,7 +691,8 @@ geometry_msgs::msg::PoseWithCovarianceStamped NDTScanMatcher::alignUsingMonteCar
   }
 
   // generateParticle
-  const auto initial_poses = createRandomPoseArray(initial_pose_with_cov, 100);
+  const auto initial_poses =
+    createRandomPoseArray(initial_pose_with_cov, initial_estimate_particles_num_);
 
   std::vector<Particle> particle_array;
   auto output_cloud = std::make_shared<pcl::PointCloud<PointSource>>();
@@ -680,6 +769,38 @@ bool NDTScanMatcher::getTransform(
       get_logger(), "Please publish TF %s to %s", target_frame.c_str(), source_frame.c_str());
 
     *transform_stamped_ptr = identity;
+    return false;
+  }
+  return true;
+}
+
+bool NDTScanMatcher::validateTimeStampDifference(
+  const rclcpp::Time & target_time, const rclcpp::Time & reference_time,
+  const double time_tolerance_sec)
+{
+  const double dt = std::abs((target_time - reference_time).seconds());
+  if (dt > time_tolerance_sec) {
+    RCLCPP_WARN(
+      get_logger(),
+      "Validation error. The reference time is %lf[sec], but the target time is %lf[sec]. The "
+      "difference is %lf[sec] (the tolerance is %lf[sec]).",
+      reference_time.seconds(), target_time.seconds(), dt, time_tolerance_sec);
+    return false;
+  }
+  return true;
+}
+
+bool NDTScanMatcher::validatePositionDifference(
+  const geometry_msgs::msg::Point & target_point, const geometry_msgs::msg::Point & reference_point,
+  const double distance_tolerance_m_)
+{
+  double distance = norm(target_point, reference_point);
+  if (distance > distance_tolerance_m_) {
+    RCLCPP_WARN(
+      get_logger(),
+      "Validation error. The distance from reference position to target position is %lf[m] (the "
+      "tolerance is %lf[m]).",
+      distance, distance_tolerance_m_);
     return false;
   }
   return true;

@@ -12,15 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "motion_velocity_smoother/smoother/analytical_jerk_constrained_smoother/analytical_jerk_constrained_smoother.hpp"
+
 #include <algorithm>
 #include <string>
 #include <tuple>
 #include <utility>
 #include <vector>
-
-// *INDENT-OFF*
-#include "motion_velocity_smoother/smoother/analytical_jerk_constrained_smoother/analytical_jerk_constrained_smoother.hpp"
-// *INDENT-ON*
 
 namespace
 {
@@ -64,13 +62,38 @@ bool applyMaxVelocity(
 
 namespace motion_velocity_smoother
 {
-AnalyticalJerkConstrainedSmoother::AnalyticalJerkConstrainedSmoother(const Param & smoother_param)
-: smoother_param_(smoother_param)
+AnalyticalJerkConstrainedSmoother::AnalyticalJerkConstrainedSmoother(rclcpp::Node & node)
+: SmootherBase(node)
 {
+  auto & p = smoother_param_;
+  p.resample.ds_resample = node.declare_parameter("resample.ds_resample", 0.1);
+  p.resample.num_resample = node.declare_parameter("resample.num_resample", 1);
+  p.resample.delta_yaw_threshold = node.declare_parameter("resample.delta_yaw_threshold", 0.785);
+  p.latacc.enable_constant_velocity_while_turning =
+    node.declare_parameter("latacc.enable_constant_velocity_while_turning", false);
+  p.latacc.constant_velocity_dist_threshold =
+    node.declare_parameter("latacc.constant_velocity_dist_threshold", 2.0);
+  p.forward.max_acc = node.declare_parameter("forward.max_acc", 1.0);
+  p.forward.min_acc = node.declare_parameter("forward.min_acc", -1.0);
+  p.forward.max_jerk = node.declare_parameter("forward.max_jerk", 0.3);
+  p.forward.min_jerk = node.declare_parameter("forward.min_jerk", -0.3);
+  p.forward.kp = node.declare_parameter("forward.kp", 0.3);
+  p.backward.start_jerk = node.declare_parameter("backward.start_jerk", -0.1);
+  p.backward.min_jerk_mild_stop = node.declare_parameter("backward.min_jerk_mild_stop", -0.3);
+  p.backward.min_jerk = node.declare_parameter("backward.min_jerk", -1.5);
+  p.backward.min_acc_mild_stop = node.declare_parameter("backward.min_acc_mild_stop", -1.0);
+  p.backward.min_acc = node.declare_parameter("backward.min_acc", -2.5);
+  p.backward.span_jerk = node.declare_parameter("backward.span_jerk", -0.01);
 }
+
 void AnalyticalJerkConstrainedSmoother::setParam(const Param & smoother_param)
 {
   smoother_param_ = smoother_param;
+}
+
+AnalyticalJerkConstrainedSmoother::Param AnalyticalJerkConstrainedSmoother::getParam() const
+{
+  return smoother_param_;
 }
 
 bool AnalyticalJerkConstrainedSmoother::apply(
@@ -229,7 +252,7 @@ boost::optional<TrajectoryPoints> AnalyticalJerkConstrainedSmoother::resampleTra
       continue;
     }
 
-    for (size_t j = 0; j < smoother_param_.resample.num_resample; ++j) {
+    for (size_t j = 0; j < static_cast<size_t>(smoother_param_.resample.num_resample); ++j) {
       auto tp = input.at(i);
 
       tp.pose = lerpByPose(tp0.pose, tp1.pose, s);
@@ -544,14 +567,12 @@ bool AnalyticalJerkConstrainedSmoother::calcEnoughDistForDecel(
   const double a0 = trajectory.at(start_index).acceleration_mps2;
   const double jerk_acc = std::abs(planning_jerk);
   const double jerk_dec = planning_jerk;
-  // *INDENT-OFF*
   auto calcMinAcc = [&params](const double planning_jerk) {
     if (planning_jerk < params.backward.min_jerk_mild_stop) {
       return params.backward.min_acc;
     }
     return params.backward.min_acc_mild_stop;
   };
-  // *INDENT-ON*
   const double min_acc = calcMinAcc(planning_jerk);
   type = 0;
   times.clear();
@@ -589,14 +610,12 @@ bool AnalyticalJerkConstrainedSmoother::applyDecelVelocityFilter(
   const double a0 = output_trajectory.at(decel_start_index).acceleration_mps2;
   const double jerk_acc = std::abs(planning_jerk);
   const double jerk_dec = planning_jerk;
-  // *INDENT-OFF*
   auto calcMinAcc = [&params](const double planning_jerk) {
     if (planning_jerk < params.backward.min_jerk_mild_stop) {
       return params.backward.min_acc;
     }
     return params.backward.min_acc_mild_stop;
   };
-  // *INDENT-ON*
   const double min_acc = calcMinAcc(planning_jerk);
 
   if (!analytical_velocity_planning_utils::calcStopVelocityWithConstantJerkAccLimit(

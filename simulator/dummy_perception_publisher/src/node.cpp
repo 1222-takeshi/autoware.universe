@@ -46,12 +46,9 @@ DummyPerceptionPublisherNode::DummyPerceptionPublisherNode()
     "input/object", 100,
     std::bind(&DummyPerceptionPublisherNode::objectCallback, this, std::placeholders::_1));
 
-  auto timer_callback = std::bind(&DummyPerceptionPublisherNode::timerCallback, this);
-  auto period = std::chrono::milliseconds(100);
-  timer_ = std::make_shared<rclcpp::GenericTimer<decltype(timer_callback)>>(
-    this->get_clock(), period, std::move(timer_callback),
-    this->get_node_base_interface()->get_context());
-  this->get_node_timers_interface()->add_timer(timer_, nullptr);
+  using std::chrono_literals::operator""ms;
+  timer_ = rclcpp::create_timer(
+    this, get_clock(), 100ms, std::bind(&DummyPerceptionPublisherNode::timerCallback, this));
 }
 
 void DummyPerceptionPublisherNode::timerCallback()
@@ -405,6 +402,18 @@ void DummyPerceptionPublisherNode::objectCallback(
           dummy_perception_publisher::msg::Object object;
           objects_.at(i) = *msg;
           tf2::toMsg(tf_map2object_origin, objects_.at(i).initial_state.pose_covariance.pose);
+
+          // Use base_link Z
+          geometry_msgs::msg::TransformStamped ros_map2base_link;
+          try {
+            ros_map2base_link = tf_buffer_.lookupTransform(
+              "map", "base_link", rclcpp::Time(0), rclcpp::Duration::from_seconds(0.5));
+            objects_.at(i).initial_state.pose_covariance.pose.position.z =
+              ros_map2base_link.transform.translation.z;
+          } catch (tf2::TransformException & ex) {
+            RCLCPP_WARN_SKIPFIRST_THROTTLE(get_logger(), *get_clock(), 5000, "%s", ex.what());
+            return;
+          }
           break;
         }
       }

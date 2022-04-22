@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <scene_module/detection_area/scene.hpp>
+#include <tier4_autoware_utils/trajectory/trajectory.hpp>
 #include <utilization/util.hpp>
 
 #include <tf2_eigen/tf2_eigen.h>
@@ -28,82 +29,6 @@ namespace bg = boost::geometry;
 
 namespace
 {
-std::pair<int, double> findWayPointAndDistance(
-  const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
-  const geometry_msgs::msg::Point & p)
-{
-  constexpr double max_lateral_dist = 3.0;
-  for (size_t i = 0; i < path.points.size() - 1; ++i) {
-    const auto & p_front = path.points.at(i).point.pose.position;
-    const auto & p_back = path.points.at(i + 1).point.pose.position;
-
-    const double dx = p.x - p_front.x;
-    const double dy = p.y - p_front.y;
-    const double dx_wp = p_back.x - p_front.x;
-    const double dy_wp = p_back.y - p_front.y;
-
-    const double theta = std::atan2(dy, dx) - std::atan2(dy_wp, dx_wp);
-
-    const double dist = std::hypot(dx, dy);
-    const double dist_wp = std::hypot(dx_wp, dy_wp);
-
-    // check lateral distance
-    if (std::fabs(dist * std::sin(theta)) > max_lateral_dist) {
-      continue;
-    }
-
-    // if the point p is back of the way point, return negative distance
-    if (dist * std::cos(theta) < 0) {
-      return std::make_pair(static_cast<int>(i), -1.0 * dist);
-    }
-
-    if (dist * std::cos(theta) < dist_wp) {
-      return std::make_pair(static_cast<int>(i), dist);
-    }
-  }
-
-  // if the way point is not found, return negative distance from the way point at 0
-  const double dx = p.x - path.points.front().point.pose.position.x;
-  const double dy = p.y - path.points.front().point.pose.position.y;
-  return std::make_pair(-1, -1.0 * std::hypot(dx, dy));
-}
-
-double calcArcLengthFromWayPoint(
-  const autoware_auto_planning_msgs::msg::PathWithLaneId & path, const int & src, const int & dst)
-{
-  double length = 0;
-  const size_t src_idx = src >= 0 ? static_cast<size_t>(src) : 0;
-  const size_t dst_idx = dst >= 0 ? static_cast<size_t>(dst) : 0;
-  for (size_t i = src_idx; i < dst_idx; ++i) {
-    const auto & p_front = path.points.at(i).point.pose.position;
-    const auto & p_back = path.points.at(i + 1).point.pose.position;
-
-    length += std::hypot(p_back.x - p_front.x, p_back.y - p_front.y);
-  }
-  return length;
-}
-
-double calcSignedArcLength(
-  const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
-  const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2)
-{
-  const std::pair<int, double> src = findWayPointAndDistance(path, p1);
-  const std::pair<int, double> dst = findWayPointAndDistance(path, p2);
-  if (dst.first == -1) {
-    const double dx = p1.x - p2.x;
-    const double dy = p1.y - p2.y;
-    return -1.0 * std::hypot(dx, dy);
-  }
-
-  if (src.first < dst.first) {
-    return calcArcLengthFromWayPoint(path, src.first, dst.first) - src.second + dst.second;
-  } else if (src.first > dst.first) {
-    return -1.0 * (calcArcLengthFromWayPoint(path, dst.first, src.first) - dst.second + src.second);
-  } else {
-    return dst.second - src.second;
-  }
-}
-
 double calcSignedDistance(const geometry_msgs::msg::Pose & p1, const geometry_msgs::msg::Point & p2)
 {
   Eigen::Affine3d map2p1;
@@ -171,11 +96,13 @@ boost::optional<PathIndexWithOffset> findForwardOffsetSegment(
     const auto p_front = to_bg2d(path.points.at(i).point.pose.position);
     const auto p_back = to_bg2d(path.points.at(i + 1).point.pose.position);
 
-    sum_length += bg::distance(p_front, p_back);
+    const auto segment_length = bg::distance(p_front, p_back);
+    sum_length += segment_length;
 
     // If it's over offset point, return front index and remain offset length
     if (sum_length >= offset_length) {
-      return std::make_pair(i, sum_length - offset_length);
+      const auto remain_length = sum_length - offset_length;
+      return std::make_pair(i, segment_length - remain_length);
     }
   }
 
@@ -391,6 +318,8 @@ std::vector<geometry_msgs::msg::Point> DetectionAreaModule::getObstaclePoints() 
     for (const auto p : points) {
       if (bg::within(Point2d{p.x, p.y}, lanelet::utils::to2D(detection_area).basicPolygon())) {
         obstacle_points.push_back(planning_utils::toRosPoint(p));
+        // get all obstacle point becomes high computation cost so skip if any point is found
+        break;
       }
     }
   }
@@ -423,7 +352,8 @@ bool DetectionAreaModule::isOverLine(
   const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
   const geometry_msgs::msg::Pose & self_pose, const geometry_msgs::msg::Pose & line_pose) const
 {
-  return calcSignedArcLength(path, self_pose.position, line_pose.position) < 0;
+  return tier4_autoware_utils::calcSignedArcLength(
+           path.points, self_pose.position, line_pose.position) < 0;
 }
 
 bool DetectionAreaModule::hasEnoughBrakingDistance(
@@ -445,7 +375,7 @@ autoware_auto_planning_msgs::msg::PathWithLaneId DetectionAreaModule::insertStop
 {
   auto output_path = path;
 
-  const auto insert_idx = stop_point.first + 1;
+  size_t insert_idx = static_cast<size_t>(stop_point.first + 1);
   const auto stop_pose = stop_point.second;
 
   // To PathPointWithLaneId
@@ -454,14 +384,8 @@ autoware_auto_planning_msgs::msg::PathWithLaneId DetectionAreaModule::insertStop
   stop_point_with_lane_id.point.pose = stop_pose;
   stop_point_with_lane_id.point.longitudinal_velocity_mps = 0.0;
 
-  // Insert stop point
-  output_path.points.insert(output_path.points.begin() + insert_idx, stop_point_with_lane_id);
-
-  // Insert 0 velocity after stop point
-  for (size_t j = insert_idx; j < output_path.points.size(); ++j) {
-    output_path.points.at(j).point.longitudinal_velocity_mps = 0.0;
-  }
-
+  // Insert stop point or replace with zero velocity
+  planning_utils::insertVelocity(output_path, stop_point_with_lane_id, 0.0, insert_idx);
   return output_path;
 }
 

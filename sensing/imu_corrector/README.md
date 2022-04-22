@@ -7,7 +7,8 @@
 1. Correct yaw rate offset by reading the parameter.
 2. Correct yaw rate standard deviation by reading the parameter.
 
-Use the value estimated by [deviation_estimator](https://github.com/tier4/calibration_tools/tree/main/localization/deviation_estimation_tools) as the parameters for this node.
+<!-- TODO(TIER IV): Make this repository public or change the link. -->
+<!-- Use the value estimated by [deviation_estimator](https://github.com/tier4/calibration_tools/tree/main/localization/deviation_estimation_tools) as the parameters for this node. -->
 
 ## Inputs / Outputs
 
@@ -27,10 +28,14 @@ Use the value estimated by [deviation_estimator](https://github.com/tier4/calibr
 
 ### Core Parameters
 
-| Name                         | Type   | Description                         |
-| ---------------------------- | ------ | ----------------------------------- |
-| `angular_velocity_offset_z`  | double | yaw rate offset [rad/s]             |
-| `angular_velocity_stddev_zz` | double | yaw rate standard deviation [rad/s] |
+| Name                         | Type   | Description                           |
+| ---------------------------- | ------ | ------------------------------------- |
+| `angular_velocity_offset_x`  | double | roll rate offset [rad/s]              |
+| `angular_velocity_offset_y`  | double | pitch rate offset [rad/s]             |
+| `angular_velocity_offset_z`  | double | yaw rate offset [rad/s]               |
+| `angular_velocity_stddev_xx` | double | roll rate standard deviation [rad/s]  |
+| `angular_velocity_stddev_yy` | double | pitch rate standard deviation [rad/s] |
+| `angular_velocity_stddev_zz` | double | yaw rate standard deviation [rad/s]   |
 
 ## Assumptions / Known limits
 

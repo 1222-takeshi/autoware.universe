@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NORMAL_DISTRIBUTIONS_TRANSFORM_PCL_MODIFIED_HPP
-#define NORMAL_DISTRIBUTIONS_TRANSFORM_PCL_MODIFIED_HPP
+#ifndef NDT__IMPL__PCL_MODIFIED_HPP_
+#define NDT__IMPL__PCL_MODIFIED_HPP_
 
 #include "ndt/pcl_modified.hpp"
 
@@ -112,6 +112,14 @@ double NormalDistributionsTransformPCLModified<
 }
 
 template <class PointSource, class PointTarget>
+double NormalDistributionsTransformPCLModified<
+  PointSource, PointTarget>::getNearestVoxelTransformationLikelihood() const
+{
+  // return ndt_ptr_->getTransformationLikelihood();
+  return 0.0;
+}
+
+template <class PointSource, class PointTarget>
 double NormalDistributionsTransformPCLModified<PointSource, PointTarget>::getFitnessScore()
 {
   return ndt_ptr_->getFitnessScore();
@@ -139,8 +147,9 @@ NormalDistributionsTransformPCLModified<PointSource, PointTarget>::getFinalTrans
 }
 
 template <class PointSource, class PointTarget>
-std::vector<Eigen::Matrix4f> NormalDistributionsTransformPCLModified<
-  PointSource, PointTarget>::getFinalTransformationArray() const
+std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f>>
+NormalDistributionsTransformPCLModified<PointSource, PointTarget>::getFinalTransformationArray()
+  const
 {
   return ndt_ptr_->getFinalTransformationArray();
 }
@@ -159,4 +168,23 @@ NormalDistributionsTransformPCLModified<PointSource, PointTarget>::getSearchMeth
   return ndt_ptr_->getSearchMethodTarget();
 }
 
-#endif  // NORMAL_DISTRIBUTIONS_TRANSFORM_PCL_MODIFIED_HPP
+template <class PointSource, class PointTarget>
+double NormalDistributionsTransformPCLModified<PointSource, PointTarget>::
+  calculateTransformationProbability(const pcl::PointCloud<PointSource> & trans_cloud) const
+{
+  (void)trans_cloud;
+  // return ndt_ptr_->calculateTransformationProbability(trans_cloud);
+  return 0.0;
+}
+
+template <class PointSource, class PointTarget>
+double NormalDistributionsTransformPCLModified<PointSource, PointTarget>::
+  calculateNearestVoxelTransformationLikelihood(
+    const pcl::PointCloud<PointSource> & trans_cloud) const
+{
+  (void)trans_cloud;
+  // return ndt_ptr_->calculateNearestVoxelTransformationLikelihood(trans_cloud);
+  return 0.0;
+}
+
+#endif  // NDT__IMPL__PCL_MODIFIED_HPP_

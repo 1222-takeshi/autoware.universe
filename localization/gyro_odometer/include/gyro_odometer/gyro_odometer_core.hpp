@@ -46,6 +46,10 @@ private:
     vehicle_twist_with_cov_sub_;
   rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_sub_;
 
+  rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_raw_pub_;
+  rclcpp::Publisher<geometry_msgs::msg::TwistWithCovarianceStamped>::SharedPtr
+    twist_with_covariance_raw_pub_;
+
   rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_pub_;
   rclcpp::Publisher<geometry_msgs::msg::TwistWithCovarianceStamped>::SharedPtr
     twist_with_covariance_pub_;
@@ -54,7 +58,10 @@ private:
   tf2_ros::TransformListener tf_listener_;
 
   std::string output_frame_;
+  double message_timeout_sec_;
+
   geometry_msgs::msg::TwistWithCovarianceStamped::ConstSharedPtr twist_with_cov_msg_ptr_;
+  sensor_msgs::msg::Imu::ConstSharedPtr imu_msg_ptr_;
 };
 
 #endif  // GYRO_ODOMETER__GYRO_ODOMETER_CORE_HPP_

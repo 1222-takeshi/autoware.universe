@@ -47,12 +47,14 @@ CPUMonitorBase::CPUMonitorBase(const std::string & node_name, const rclcpp::Node
   mpstat_exists_(false),
   usage_warn_(declare_parameter<float>("usage_warn", 0.96)),
   usage_error_(declare_parameter<float>("usage_error", 1.00)),
-  usage_count_(declare_parameter<int>("usage_count", 2)),
+  usage_warn_count_(declare_parameter<int>("usage_warn_count", 2)),
+  usage_error_count_(declare_parameter<int>("usage_error_count", 2)),
   usage_avg_(declare_parameter<bool>("usage_avg", true))
 {
   gethostname(hostname_, sizeof(hostname_));
   num_cores_ = boost::thread::hardware_concurrency();
-  usage_check_cnt_.resize(num_cores_ + 2);  // 2 = all + dummy
+  usage_warn_check_cnt_.resize(num_cores_ + 2);   // 2 = all + dummy
+  usage_error_check_cnt_.resize(num_cores_ + 2);  // 2 = all + dummy
 
   // Check if command exists
   fs::path p = bp::search_path("mpstat");
@@ -64,6 +66,12 @@ CPUMonitorBase::CPUMonitorBase(const std::string & node_name, const rclcpp::Node
   updater_.add("CPU Load Average", this, &CPUMonitorBase::checkLoad);
   updater_.add("CPU Thermal Throttling", this, &CPUMonitorBase::checkThrottling);
   updater_.add("CPU Frequency", this, &CPUMonitorBase::checkFrequency);
+
+  // Publisher
+  rclcpp::QoS durable_qos{1};
+  durable_qos.transient_local();
+  pub_cpu_usage_ =
+    this->create_publisher<tier4_external_api_msgs::msg::CpuUsage>("~/cpu_usage", durable_qos);
 }
 
 void CPUMonitorBase::update() { updater_.force_update(); }
@@ -113,10 +121,15 @@ void CPUMonitorBase::checkUsage(diagnostic_updater::DiagnosticStatusWrapper & st
   // Remember start time to measure elapsed time
   const auto t_start = SystemMonitorUtility::startMeasurement();
 
+  tier4_external_api_msgs::msg::CpuUsage cpu_usage;
+  using CpuStatus = tier4_external_api_msgs::msg::CpuStatus;
+
   if (!mpstat_exists_) {
     stat.summary(DiagStatus::ERROR, "mpstat error");
     stat.add(
       "mpstat", "Command 'mpstat' not found, but can be installed with: sudo apt install sysstat");
+    cpu_usage.all.status = CpuStatus::STALE;
+    publishCpuUsage(cpu_usage);
     return;
   }
 
@@ -131,6 +144,8 @@ void CPUMonitorBase::checkUsage(diagnostic_updater::DiagnosticStatusWrapper & st
     is_err >> os.rdbuf();
     stat.summary(DiagStatus::ERROR, "mpstat error");
     stat.add("mpstat", os.str().c_str());
+    cpu_usage.all.status = CpuStatus::STALE;
+    publishCpuUsage(cpu_usage);
     return;
   }
 
@@ -159,21 +174,28 @@ void CPUMonitorBase::checkUsage(diagnostic_updater::DiagnosticStatusWrapper & st
         for (const pt::ptree::value_type & child3 : statistics.get_child("cpu-load")) {
           const pt::ptree & cpu_load = child3.second;
           bool get_cpu_name = false;
+
+          CpuStatus cpu_status;
+
           if (boost::optional<std::string> v = cpu_load.get_optional<std::string>("cpu")) {
             cpu_name = v.get();
             get_cpu_name = true;
           }
           if (boost::optional<float> v = cpu_load.get_optional<float>("usr")) {
             usr = v.get();
+            cpu_status.usr = usr;
           }
           if (boost::optional<float> v = cpu_load.get_optional<float>("nice")) {
             nice = v.get();
+            cpu_status.nice = nice;
           }
           if (boost::optional<float> v = cpu_load.get_optional<float>("sys")) {
             sys = v.get();
+            cpu_status.sys = sys;
           }
           if (boost::optional<float> v = cpu_load.get_optional<float>("idle")) {
             idle = v.get();
+            cpu_status.idle = idle;
           }
 
           total = 100.0 - iowait - idle;
@@ -183,6 +205,9 @@ void CPUMonitorBase::checkUsage(diagnostic_updater::DiagnosticStatusWrapper & st
           } else {
             level = CpuUsageToLevel(std::string("err"), usage);
           }
+
+          cpu_status.total = total;
+          cpu_status.status = level;
 
           stat.add(fmt::format("CPU {}: status", cpu_name), load_dict_.at(level));
           stat.addf(fmt::format("CPU {}: total", cpu_name), "%.2f%%", total);
@@ -198,17 +223,30 @@ void CPUMonitorBase::checkUsage(diagnostic_updater::DiagnosticStatusWrapper & st
           } else {
             whole_level = std::max(whole_level, level);
           }
+
+          if (cpu_name == "all") {
+            cpu_usage.all = cpu_status;
+          } else {
+            cpu_usage.cpus.push_back(cpu_status);
+          }
         }
       }
     }
   } catch (const std::exception & e) {
     stat.summary(DiagStatus::ERROR, "mpstat exception");
     stat.add("mpstat", e.what());
-    std::fill(usage_check_cnt_.begin(), usage_check_cnt_.end(), 0);
+    std::fill(usage_warn_check_cnt_.begin(), usage_warn_check_cnt_.end(), 0);
+    std::fill(usage_error_check_cnt_.begin(), usage_error_check_cnt_.end(), 0);
+    cpu_usage.all.status = CpuStatus::STALE;
+    cpu_usage.cpus.clear();
+    publishCpuUsage(cpu_usage);
     return;
   }
 
   stat.summary(whole_level, load_dict_.at(whole_level));
+
+  // Publish msg
+  publishCpuUsage(cpu_usage);
 
   // Measure elapsed time since start time and report
   SystemMonitorUtility::stopMeasurement(t_start, stat);
@@ -233,22 +271,24 @@ int CPUMonitorBase::CpuUsageToLevel(const std::string & cpu_name, float usage)
   }
 
   // convert CPU usage to level
-  int level;
-  if (usage >= usage_error_) {
-    usage_check_cnt_[idx] = usage_count_;
-    level = DiagStatus::ERROR;
-  } else if (usage >= usage_warn_) {
-    if (usage_check_cnt_[idx] < usage_count_) {
-      usage_check_cnt_[idx]++;
-    }
-    if (usage_check_cnt_[idx] >= usage_count_) {
-      level = DiagStatus::ERROR;
+  int level = DiagStatus::OK;
+  if (usage >= usage_warn_) {
+    if (usage_warn_check_cnt_[idx] < usage_warn_count_) {
+      usage_warn_check_cnt_[idx]++;
     } else {
       level = DiagStatus::WARN;
     }
   } else {
-    usage_check_cnt_[idx] = 0;
-    level = DiagStatus::OK;
+    usage_warn_check_cnt_[idx] = 0;
+  }
+  if (usage >= usage_error_) {
+    if (usage_error_check_cnt_[idx] < usage_error_count_) {
+      usage_error_check_cnt_[idx]++;
+    } else {
+      level = DiagStatus::ERROR;
+    }
+  } else {
+    usage_error_check_cnt_[idx] = 0;
   }
 
   return level;
@@ -365,4 +405,13 @@ void CPUMonitorBase::getFreqNames()
   std::sort(freqs_.begin(), freqs_.end(), [](const cpu_freq_info & c1, const cpu_freq_info & c2) {
     return c1.index_ < c2.index_;
   });  // NOLINT
+}
+
+void CPUMonitorBase::publishCpuUsage(tier4_external_api_msgs::msg::CpuUsage usage)
+{
+  // Create timestamp
+  const auto stamp = this->now();
+
+  usage.stamp = stamp;
+  pub_cpu_usage_->publish(usage);
 }
