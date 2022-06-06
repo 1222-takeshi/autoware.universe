@@ -271,9 +271,10 @@ bool IntersectionModule::checkCollision(
       // check direction of objects
       const auto object_direction = getObjectPoseWithVelocityDirection(object.kinematics);
       if (checkAngleForTargetLanelets(object_direction, detection_area_lanelet_ids)) {
-        target_objects.objects.push_back(object);
-        break;
+        // target_objects.objects.push_back(object);
+        // break;
       }
+      target_objects.objects.push_back(object);
     }
   }
 
