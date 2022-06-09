@@ -110,6 +110,7 @@ bool IntersectionModule::modifyPathVelocity(
     return true;
   }
   debug_data_.detection_area = detection_areas;
+  debug_data_.conflicting_area = conflicting_areas;
 
   /* set stop-line and stop-judgement-line for base_link */
   int stop_line_idx = -1;
