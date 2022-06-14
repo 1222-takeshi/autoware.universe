@@ -162,7 +162,6 @@ private:
     lanelet::routing::RoutingGraphPtr routing_graph_ptr,
     const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
     const std::vector<lanelet::CompoundPolygon3d> & detection_areas,
-    const std::vector<int> & detection_area_lanelet_ids,
     const autoware_auto_perception_msgs::msg::PredictedObjects::ConstSharedPtr objects_ptr,
     const int closest_idx);
 

@@ -32,23 +32,6 @@ namespace behavior_velocity_planner
 {
 namespace bg = boost::geometry;
 
-static geometry_msgs::msg::Pose getObjectPoseWithVelocityDirection(
-  const autoware_auto_perception_msgs::msg::PredictedObjectKinematics & obj_state)
-{
-  if (obj_state.initial_twist_with_covariance.twist.linear.x >= 0) {
-    return obj_state.initial_pose_with_covariance.pose;
-  }
-
-  // When the object velocity is negative, invert orientation (yaw)
-  auto obj_pose = obj_state.initial_pose_with_covariance.pose;
-  double yaw, pitch, roll;
-  tf2::getEulerYPR(obj_pose.orientation, yaw, pitch, roll);
-  tf2::Quaternion inv_q;
-  inv_q.setRPY(roll, pitch, yaw + M_PI);
-  obj_pose.orientation = tf2::toMsg(inv_q);
-  return obj_pose;
-}
-
 IntersectionModule::IntersectionModule(
   const int64_t module_id, const int64_t lane_id, std::shared_ptr<const PlannerData> planner_data,
   const PlannerParam & planner_param, const rclcpp::Logger logger,
@@ -100,8 +83,6 @@ bool IntersectionModule::modifyPathVelocity(
     conflicting_area_lanelets, planner_param_.detection_area_length);
   std::vector<lanelet::CompoundPolygon3d> detection_areas = util::getPolygon3dFromLaneletsVec(
     detection_area_lanelets, planner_param_.detection_area_length);
-  std::vector<int> conflicting_area_lanelet_ids =
-    util::getLaneletIdsFromLaneletsVec(conflicting_area_lanelets);
   std::vector<int> detection_area_lanelet_ids =
     util::getLaneletIdsFromLaneletsVec(detection_area_lanelets);
 
@@ -154,7 +135,7 @@ bool IntersectionModule::modifyPathVelocity(
 
   /* calculate dynamic collision around detection area */
   bool has_collision = checkCollision(
-    lanelet_map_ptr, routing_graph_ptr, *path, detection_areas, detection_area_lanelet_ids, objects_ptr, closest_idx);
+    lanelet_map_ptr, routing_graph_ptr, *path, detection_areas, objects_ptr, closest_idx);
   bool is_stuck = checkStuckVehicleInIntersection(
     lanelet_map_ptr, *path, closest_idx, stop_line_idx, objects_ptr);
   bool is_entry_prohibited = (has_collision || is_stuck);
@@ -228,7 +209,6 @@ bool IntersectionModule::checkCollision(
   lanelet::routing::RoutingGraphPtr routing_graph_ptr,
   const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
   const std::vector<lanelet::CompoundPolygon3d> & detection_areas,
-  const std::vector<int> & detection_area_lanelet_ids,
   const autoware_auto_perception_msgs::msg::PredictedObjects::ConstSharedPtr objects_ptr,
   const int closest_idx)
 {
@@ -275,12 +255,6 @@ bool IntersectionModule::checkCollision(
         continue;
       }
 
-      // check direction of objects
-      const auto object_direction = getObjectPoseWithVelocityDirection(object.kinematics);
-      if (checkAngleForTargetLanelets(object_direction, detection_area_lanelet_ids)) {
-        // target_objects.objects.push_back(object);
-        // break;
-      }
       target_objects.objects.push_back(object);
     }
   }
