@@ -254,7 +254,6 @@ bool IntersectionModule::checkCollision(
       if (checkObjectWithinNeighborArea(lanelet_map_ptr, routing_graph_ptr, path, object_pose)){
         continue;
       }
-
       target_objects.objects.push_back(object);
     }
   }
@@ -271,7 +270,6 @@ bool IntersectionModule::checkCollision(
     ego_lane_with_next_lane, tier4_autoware_utils::getPose(path.points.at(closest_idx).point));
   const double distance_until_intersection =
     calcDistanceUntilIntersectionLanelet(lanelet_map_ptr, path, closest_idx);
-
   const double base_link2front = planner_data_->vehicle_info_.max_longitudinal_offset_m;
 
   // check collision between predicted_path and ego_area
@@ -428,7 +426,6 @@ bool IntersectionModule::checkObjectWithinNeighborArea(
       return true;
     }
   }
-
   return false;
 }
 
