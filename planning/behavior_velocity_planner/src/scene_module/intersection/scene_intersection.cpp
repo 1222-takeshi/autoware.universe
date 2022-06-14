@@ -154,7 +154,7 @@ bool IntersectionModule::modifyPathVelocity(
 
   /* calculate dynamic collision around detection area */
   bool has_collision = checkCollision(
-    lanelet_map_ptr, *path, detection_areas, detection_area_lanelet_ids, objects_ptr, closest_idx);
+    lanelet_map_ptr, routing_graph_ptr, *path, detection_areas, detection_area_lanelet_ids, objects_ptr, closest_idx);
   bool is_stuck = checkStuckVehicleInIntersection(
     lanelet_map_ptr, *path, closest_idx, stop_line_idx, objects_ptr);
   bool is_entry_prohibited = (has_collision || is_stuck);
@@ -225,6 +225,7 @@ void IntersectionModule::cutPredictPathWithDuration(
 
 bool IntersectionModule::checkCollision(
   lanelet::LaneletMapConstPtr lanelet_map_ptr,
+  lanelet::routing::RoutingGraphPtr routing_graph_ptr,
   const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
   const std::vector<lanelet::CompoundPolygon3d> & detection_areas,
   const std::vector<int> & detection_area_lanelet_ids,
@@ -268,6 +269,12 @@ bool IntersectionModule::checkCollision(
         // ignore the object far from detection area
         continue;
       }
+
+      // check the detected object within neighbor lanes
+      if (checkObjectWithinNeighborArea(lanelet_map_ptr, routing_graph_ptr, path, object_pose)){
+        continue;
+      }
+
       // check direction of objects
       const auto object_direction = getObjectPoseWithVelocityDirection(object.kinematics);
       if (checkAngleForTargetLanelets(object_direction, detection_area_lanelet_ids)) {
@@ -290,6 +297,7 @@ bool IntersectionModule::checkCollision(
     ego_lane_with_next_lane, tier4_autoware_utils::getPose(path.points.at(closest_idx).point));
   const double distance_until_intersection =
     calcDistanceUntilIntersectionLanelet(lanelet_map_ptr, path, closest_idx);
+
   const double base_link2front = planner_data_->vehicle_info_.max_longitudinal_offset_m;
 
   // check collision between predicted_path and ego_area
@@ -420,6 +428,34 @@ Polygon2d IntersectionModule::generateEgoIntersectionLanePolygon(
   polygon.outer().emplace_back(polygon.outer().front());
 
   return polygon;
+}
+
+bool IntersectionModule::checkObjectWithinNeighborArea(
+    lanelet::LaneletMapConstPtr lanelet_map_ptr,
+    lanelet::routing::RoutingGraphPtr routing_graph_ptr,
+    const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
+    const geometry_msgs::msg::Pose & object_pose) const
+{
+  lanelet::ConstLanelets ego_lane_with_next_lane = getEgoLaneWithNextLane(lanelet_map_ptr, path);
+  std::vector<lanelet::ConstLanelets> ego_lane_with_next_lane_neighbors;
+  for (const auto & ll : ego_lane_with_next_lane){
+    auto neighbor_lanes = lanelet::utils::query::getAllNeighbors(routing_graph_ptr, ll);
+    for(const auto & neighbor_lane : neighbor_lanes){
+      ego_lane_with_next_lane_neighbors.push_back({neighbor_lane});
+    }
+  }
+  std::vector<lanelet::CompoundPolygon3d> ego_lane_with_next_lane_neighbors_poly =
+  util::getPolygon3dFromLaneletsVec(
+  ego_lane_with_next_lane_neighbors, planner_param_.detection_area_length);
+  debug_data_.ego_lane_with_next_lane_neighbors_poly = ego_lane_with_next_lane_neighbors_poly;
+  for(const auto & neighbor_lane_poly : ego_lane_with_next_lane_neighbors_poly){
+    const bool is_in_neighbor_lane = bg::within(to_bg2d(object_pose.position), lanelet::utils::to2D(neighbor_lane_poly));
+    if (is_in_neighbor_lane) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 TimeDistanceArray IntersectionModule::calcIntersectionPassingTime(

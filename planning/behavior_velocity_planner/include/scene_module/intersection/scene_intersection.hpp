@@ -94,6 +94,7 @@ public:
     std::vector<geometry_msgs::msg::Polygon> candidate_collision_object_polygons;
     std::vector<lanelet::ConstLanelet> intersection_detection_lanelets;
     std::vector<lanelet::CompoundPolygon3d> detection_area;
+    std::vector<lanelet::CompoundPolygon3d> ego_lane_with_next_lane_neighbors_poly;
     autoware_auto_perception_msgs::msg::PredictedObjects conflicting_targets;
     autoware_auto_perception_msgs::msg::PredictedObjects stuck_targets;
   };
@@ -158,6 +159,7 @@ private:
    */
   bool checkCollision(
     lanelet::LaneletMapConstPtr lanelet_map_ptr,
+    lanelet::routing::RoutingGraphPtr routing_graph_ptr,
     const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
     const std::vector<lanelet::CompoundPolygon3d> & detection_areas,
     const std::vector<int> & detection_area_lanelet_ids,
@@ -192,6 +194,19 @@ private:
     lanelet::LaneletMapConstPtr lanelet_map_ptr,
     const autoware_auto_planning_msgs::msg::PathWithLaneId & path, const int closest_idx,
     const int start_idx, const double extra_dist, const double ignore_dist) const;
+
+  /**
+   * @brief Whether the given pose within any target lanelet or not
+   * @param lanelet_map_ptr lanelet map
+   * @param path            ego-car lane
+   * @param object_pose     detected object pose
+   * @return true if the given pose within any target lanelet
+   */
+  bool checkObjectWithinNeighborArea(
+    lanelet::LaneletMapConstPtr lanelet_map_ptr,
+    lanelet::routing::RoutingGraphPtr routing_graph_ptr,
+    const autoware_auto_planning_msgs::msg::PathWithLaneId & path,
+    const geometry_msgs::msg::Pose & object_pose) const;
 
   /**
    * @brief Modify objects predicted path. remove path point if the time exceeds timer_thr.
