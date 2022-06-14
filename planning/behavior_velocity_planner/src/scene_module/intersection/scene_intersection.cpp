@@ -249,13 +249,13 @@ bool IntersectionModule::checkCollision(
         // ignore the object far from detection area
         continue;
       }
-
-      // check the detected object within neighbor lanes
-      if (checkObjectWithinNeighborArea(lanelet_map_ptr, routing_graph_ptr, path, object_pose)){
-        continue;
-      }
-      target_objects.objects.push_back(object);
     }
+
+    // check the detected object within neighbor lanes
+    if (checkObjectWithinNeighborArea(lanelet_map_ptr, routing_graph_ptr, path, object_pose)){
+      continue;
+    }
+    target_objects.objects.push_back(object);
   }
 
   /* check collision between target_objects predicted path and ego lane */
