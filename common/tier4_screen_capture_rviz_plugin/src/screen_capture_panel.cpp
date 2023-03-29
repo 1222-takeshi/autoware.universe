@@ -28,7 +28,7 @@ void setFormatDate(QLabel * line, double time)
   char buffer[128];
   auto seconds = static_cast<time_t>(time);
   strftime(buffer, sizeof(buffer), "%Y-%m-%d-%H-%M-%S", localtime(&seconds));
-  line->setText(QString("- ") + QString(buffer) + QString(".mp4"));
+  line->setText(QString("-") + QString(buffer));
 }
 
 AutowareScreenCapturePanel::AutowareScreenCapturePanel(QWidget * parent)
@@ -111,6 +111,7 @@ void AutowareScreenCapturePanel::onClickScreenCapture()
 
 void AutowareScreenCapturePanel::onClickVideoCapture()
 {
+  std::unique_lock<std::mutex> lock(capture_mutex_);
   const int clock = static_cast<int>(1e3 / capture_hz_->value());
   try {
     const QWidgetList top_level_widgets = QApplication::topLevelWidgets();

@@ -85,6 +85,7 @@ private:
   cv::VideoWriter writer_;
   cv::Size current_movie_size_;
   std::vector<cv::Mat> image_vec_;
+  std::mutex capture_mutex_;
 
   static std::string stateToString(const State & state)
   {
