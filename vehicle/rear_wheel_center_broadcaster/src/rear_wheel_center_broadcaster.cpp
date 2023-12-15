@@ -16,6 +16,9 @@
 
 namespace rear_wheel_center_broadcaster
 {
+using tier4_autoware_utils::createQuaternionFromRPY;
+using tier4_autoware_utils::getRPY;
+
 RearWheelCenterBroadcaster::RearWheelCenterBroadcaster(const rclcpp::NodeOptions & node_options)
 : Node("rear_wheel_center_broadcaster", node_options)
 {
@@ -29,36 +32,36 @@ RearWheelCenterBroadcaster::RearWheelCenterBroadcaster(const rclcpp::NodeOptions
 
     change_wheel_center_sub_ = this->create_subscription<std_msgs::msg::Bool>(
         "/change_wheel_center", 10,
-        std::bind(&RearWheelCenterBroadcaster::handleChangeWheelCenter, this, std::placeholders::_1));
+        std::bind(&RearWheelCenterBroadcaster::onChangeWheelCenter, this, std::placeholders::_1));
+    kinematic_state_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
+        "/localization/kinematic_state", 10,
+        std::bind(&RearWheelCenterBroadcaster::onKinematicState, this, std::placeholders::_1));
 
+    initialpose_pub_ = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>(
+        "/initialpose", 10);
     timer_ = this->create_wall_timer(
         std::chrono::milliseconds(100), std::bind(&RearWheelCenterBroadcaster::broadcastTransform, this));
 
     tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(*this);
     wheel_center_x_ = wheel_rear_center_x_;
     wheel_center_yaw_ = 0.0;
+    initialpose_published_ = false;
 }
 
 void RearWheelCenterBroadcaster::broadcastTransform() {
     geometry_msgs::msg::TransformStamped t;
-    tf2::Quaternion tf_q;
-    tf_q.setRPY(wheel_center_roll_, wheel_center_pitch_, wheel_center_yaw_);
     t.header.stamp = this->now();
     t.header.frame_id = "base_link";
     t.child_frame_id = "rear_wheel_center";
     t.transform.translation.x = wheel_center_x_;
     t.transform.translation.y = wheel_center_y_;
     t.transform.translation.z = wheel_center_y_;
-    t.transform.rotation.x = tf_q.x();
-    t.transform.rotation.y = tf_q.y();
-    t.transform.rotation.z = tf_q.z();
-    t.transform.rotation.w = tf_q.w();
+    t.transform.rotation = createQuaternionFromRPY(wheel_center_roll_, wheel_center_pitch_, wheel_center_yaw_);
 
     tf_broadcaster_->sendTransform(t);
 }
 
-void RearWheelCenterBroadcaster::handleChangeWheelCenter(const std_msgs::msg::Bool::SharedPtr msg) {
-    std_msgs::msg::String state_msg;
+void RearWheelCenterBroadcaster::onChangeWheelCenter(const std_msgs::msg::Bool::SharedPtr msg) {
     if (msg->data) {
         wheel_center_x_ = wheel_front_center_x_;
         wheel_center_yaw_ = change_yaw_;
@@ -70,6 +73,20 @@ void RearWheelCenterBroadcaster::handleChangeWheelCenter(const std_msgs::msg::Bo
     }
 }
 
+void RearWheelCenterBroadcaster::onKinematicState(const nav_msgs::msg::Odometry::SharedPtr msg) {
+    geometry_msgs::msg::PoseWithCovarianceStamped initialpose_msg;
+    // if(!initialpose_published_) {
+    //     const auto rpy = getRPY(msg->pose.pose.orientation);
+    //     initialpose_msg.header.stamp = this->now();
+    //     initialpose_msg.header.frame_id = "map";
+    //     initialpose_msg.pose.pose.position = msg->pose.pose.position;
+    //     initialpose_msg.pose.pose.orientation = createQuaternionFromRPY(rpy.x, rpy.y, wheel_center_yaw_);
+    //     initialpose_msg.pose.covariance = msg->pose.covariance;
+    //     initialpose_pub_->publish(initialpose_msg);
+    //     initialpose_published_ = true;
+    //     RCLCPP_INFO(this->get_logger(), "publish initialpose");
+    // }
+}
 }  // namespace rear_wheel_center_broadcaster
 
 #include "rclcpp_components/register_node_macro.hpp"
