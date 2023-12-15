@@ -1,0 +1,21 @@
+<launch>
+  <arg name="wheel_front_center_x" default="0.605"/>
+  <arg name="wheel_rear_center_x" default="0.0"/>
+  <arg name="wheel_center_y" default="0.0"/>
+  <arg name="wheel_center_z" default="0.0"/>
+  <arg name="wheel_center_roll" default="0.0"/>
+  <arg name="wheel_center_pitch" default="0.0"/>
+  <arg name="wheel_center_yaw" default="0.0"/>
+  <arg name="change_yaw" default="3.14"/>
+  <!-- rear wheel center broadcaster -->
+  <node pkg="rear_wheel_center_broadcaster" exec="rear_wheel_center_broadcaster" name="rear_wheel_center_broadcaster" output="screen">
+    <param name="wheel_front_center_x" value="$(arg wheel_front_center_x)"/>
+    <param name="wheel_rear_center_x" value="$(arg wheel_rear_center_x)"/>
+    <param name="wheel_center_y" value="$(arg wheel_center_y)"/>
+    <param name="wheel_center_z" value="$(arg wheel_center_z)"/>
+    <param name="wheel_center_roll" value="$(arg wheel_center_roll)"/>
+    <param name="wheel_center_pitch" value="$(arg wheel_center_pitch)"/>
+    <param name="wheel_center_yaw" value="$(arg wheel_center_yaw)"/>
+    <param name="change_yaw" value="$(arg change_yaw)"/>
+  </node>
+</launch>
