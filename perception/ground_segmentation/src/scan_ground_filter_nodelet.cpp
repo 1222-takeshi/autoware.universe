@@ -575,6 +575,8 @@ void ScanGroundFilterComponent::extractObjectPoints(
     std::memcpy(
       &out_object_cloud.data[output_data_size], &in_cloud_ptr->data[i * in_cloud_ptr->point_step],
       in_cloud_ptr->point_step * sizeof(uint8_t));
+    *reinterpret_cast<float *>(&out_object_cloud.data[output_data_size + intensity_offset_]) =
+      1;  // set intensity to 1
     output_data_size += in_cloud_ptr->point_step;
   }
 }
@@ -604,7 +606,7 @@ void ScanGroundFilterComponent::faster_filter(
   output.row_step = no_ground_indices.indices.size() * input->point_step;
   output.data.resize(output.row_step);
   output.width = no_ground_indices.indices.size();
-  output.fields = input->fields;
+  output.fields.assign(input->fields.begin(), input->fields.begin() + 3);
   output.is_dense = true;
   output.height = input->height;
   output.is_bigendian = input->is_bigendian;
