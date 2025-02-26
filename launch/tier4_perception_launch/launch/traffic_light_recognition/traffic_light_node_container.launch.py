@@ -12,75 +12,83 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from itertools import chain
 import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.actions import GroupAction
+from launch.actions import OpaqueFunction
 from launch.actions import SetLaunchConfiguration
 from launch.conditions import IfCondition
 from launch.conditions import UnlessCondition
 from launch.substitutions import LaunchConfiguration
+from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import PythonExpression
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.actions import LoadComposableNodes
+from launch_ros.actions import PushRosNamespace
 from launch_ros.descriptions import ComposableNode
+from launch_ros.parameter_descriptions import ParameterFile
+import yaml
 
 
-def generate_launch_description():
-    launch_arguments = []
+def launch_setup(context, *args, **kwargs):
 
-    def add_launch_arg(name: str, default_value=None, description=None):
-        # a default_value of None is equivalent to not passing that kwarg at all
-        launch_arguments.append(
-            DeclareLaunchArgument(name, default_value=default_value, description=description)
+    # Load all camera namespaces
+    all_camera_namespaces = LaunchConfiguration("all_camera_namespaces").perform(context)
+
+    # Convert string to list
+    all_camera_namespaces = yaml.load(all_camera_namespaces, Loader=yaml.FullLoader)
+    if not isinstance(all_camera_namespaces, list):
+        raise ValueError(
+            "all_camera_namespaces is not a list. You should declare it like `['camera6', 'camera7']`."
+        )
+    if not all((isinstance(v, str) for v in all_camera_namespaces)):
+        raise ValueError(
+            "all_camera_namespaces is not a list of strings. You should declare it like `['camera6', 'camera7']`."
         )
 
-    fine_detector_share_dir = get_package_share_directory("traffic_light_fine_detector")
-    classifier_share_dir = get_package_share_directory("traffic_light_classifier")
-    add_launch_arg("enable_image_decompressor", "True")
-    add_launch_arg("enable_fine_detection", "True")
-    add_launch_arg("input/image", "/sensing/camera/traffic_light/image_raw")
-    add_launch_arg("output/rois", "/perception/traffic_light_recognition/rois")
-    add_launch_arg(
-        "output/traffic_signals", "/perception/traffic_light_recognition/traffic_signals"
-    )
+    # Create containers for all cameras
+    traffic_light_recognition_containers = [
+        create_traffic_light_node_container(namespace, context, *args, **kwargs)
+        for namespace in all_camera_namespaces
+    ]
+    traffic_light_recognition_containers = list(chain(*traffic_light_recognition_containers))
 
-    # traffic_light_fine_detector
-    add_launch_arg(
-        "fine_detector_model_path",
-        os.path.join(fine_detector_share_dir, "data", "tlr_yolox_s.onnx"),
-    )
-    add_launch_arg(
-        "fine_detector_label_path",
-        os.path.join(fine_detector_share_dir, "data", "tlr_labels.txt"),
-    )
-    add_launch_arg("fine_detector_precision", "fp16")
-    add_launch_arg("fine_detector_score_thresh", "0.3")
-    add_launch_arg("fine_detector_nms_thresh", "0.65")
+    return traffic_light_recognition_containers
 
-    add_launch_arg("approximate_sync", "False")
 
-    # traffic_light_classifier
-    add_launch_arg("classifier_type", "1")
-    add_launch_arg(
-        "classifier_model_path",
-        os.path.join(classifier_share_dir, "data", "traffic_light_classifier_efficientNet_b1.onnx"),
-    )
-    add_launch_arg(
-        "classifier_label_path", os.path.join(classifier_share_dir, "data", "lamp_labels.txt")
-    )
-    add_launch_arg("classifier_precision", "fp16")
-    add_launch_arg("classifier_mean", "[123.675, 116.28, 103.53]")
-    add_launch_arg("classifier_std", "[58.395, 57.12, 57.375]")
-
-    add_launch_arg("use_intra_process", "False")
-    add_launch_arg("use_multithread", "False")
+def create_traffic_light_node_container(namespace, context, *args, **kwargs):
+    camera_arguments = {
+        "input/camera_info": f"/sensing/camera/{namespace}/camera_info",
+        "input/image": f"/sensing/camera/{namespace}/image_raw",
+        "output/rois": f"/perception/traffic_light_recognition/{namespace}/detection/rois",
+        "output/traffic_signals": f"/perception/traffic_light_recognition/{namespace}/classification/traffic_signals",
+        "output/car/traffic_signals": f"/perception/traffic_light_recognition/{namespace}/classification/car/traffic_signals",
+        "output/pedestrian/traffic_signals": f"/perception/traffic_light_recognition/{namespace}/classification/pedestrian/traffic_signals",
+        "output/debug": f"/perception/traffic_light_recognition/{namespace}/detection/rois/debug",
+    }
 
     def create_parameter_dict(*args):
         result = {}
         for x in args:
             result[x] = LaunchConfiguration(x)
         return result
+
+    fine_detector_model_param = ParameterFile(
+        param_file=LaunchConfiguration("fine_detector_param_path").perform(context),
+        allow_substs=True,
+    )
+    car_traffic_light_classifier_model_param = ParameterFile(
+        param_file=LaunchConfiguration("car_classifier_param_path").perform(context),
+        allow_substs=True,
+    )
+    pedestrian_traffic_light_classifier_model_param = ParameterFile(
+        param_file=LaunchConfiguration("pedestrian_classifier_param_path").perform(context),
+        allow_substs=True,
+    )
 
     container = ComposableNodeContainer(
         name="traffic_light_node_container",
@@ -89,40 +97,48 @@ def generate_launch_description():
         executable=LaunchConfiguration("container_executable"),
         composable_node_descriptions=[
             ComposableNode(
-                package="traffic_light_classifier",
-                plugin="traffic_light::TrafficLightClassifierNodelet",
-                name="traffic_light_classifier",
+                package="autoware_traffic_light_classifier",
+                plugin="autoware::traffic_light::TrafficLightClassifierNodelet",
+                name="car_traffic_light_classifier",
                 namespace="classification",
-                parameters=[
-                    create_parameter_dict(
-                        "approximate_sync",
-                        "classifier_type",
-                        "classifier_model_path",
-                        "classifier_label_path",
-                        "classifier_precision",
-                        "classifier_mean",
-                        "classifier_std",
-                    )
-                ],
+                parameters=[car_traffic_light_classifier_model_param, {"build_only": False}],
                 remappings=[
-                    ("~/input/image", LaunchConfiguration("input/image")),
-                    ("~/input/rois", LaunchConfiguration("output/rois")),
-                    ("~/output/traffic_signals", "classified/traffic_signals"),
+                    ("~/input/image", camera_arguments["input/image"]),
+                    ("~/input/rois", camera_arguments["output/rois"]),
+                    ("~/output/traffic_signals", "classified/car/traffic_signals"),
                 ],
                 extra_arguments=[
                     {"use_intra_process_comms": LaunchConfiguration("use_intra_process")}
                 ],
             ),
             ComposableNode(
-                package="traffic_light_visualization",
-                plugin="traffic_light::TrafficLightRoiVisualizerNodelet",
-                name="traffic_light_roi_visualizer",
-                parameters=[create_parameter_dict("enable_fine_detection")],
+                package="autoware_traffic_light_classifier",
+                plugin="autoware::traffic_light::TrafficLightClassifierNodelet",
+                name="pedestrian_traffic_light_classifier",
+                namespace="classification",
+                parameters=[pedestrian_traffic_light_classifier_model_param, {"build_only": False}],
                 remappings=[
-                    ("~/input/image", LaunchConfiguration("input/image")),
-                    ("~/input/rois", LaunchConfiguration("output/rois")),
+                    ("~/input/image", camera_arguments["input/image"]),
+                    ("~/input/rois", camera_arguments["output/rois"]),
+                    ("~/output/traffic_signals", "classified/pedestrian/traffic_signals"),
+                ],
+                extra_arguments=[
+                    {"use_intra_process_comms": LaunchConfiguration("use_intra_process")}
+                ],
+            ),
+            ComposableNode(
+                package="autoware_traffic_light_visualization",
+                plugin="autoware::traffic_light::TrafficLightRoiVisualizerNode",
+                name="traffic_light_roi_visualizer",
+                parameters=[create_parameter_dict("use_ml_detector", "use_image_transport")],
+                remappings=[
+                    ("~/input/image", camera_arguments["input/image"]),
+                    ("~/input/rois", camera_arguments["output/rois"]),
                     ("~/input/rough/rois", "detection/rough/rois"),
-                    ("~/input/traffic_signals", LaunchConfiguration("output/traffic_signals")),
+                    (
+                        "~/input/traffic_signals",
+                        camera_arguments["output/traffic_signals"],
+                    ),
                     ("~/output/image", "debug/rois"),
                     ("~/output/image/compressed", "debug/rois/compressed"),
                     ("~/output/image/compressedDepth", "debug/rois/compressedDepth"),
@@ -139,16 +155,17 @@ def generate_launch_description():
     decompressor_loader = LoadComposableNodes(
         composable_node_descriptions=[
             ComposableNode(
-                package="image_transport_decompressor",
-                plugin="image_preprocessor::ImageTransportDecompressor",
+                package="autoware_image_transport_decompressor",
+                plugin="autoware::image_preprocessor::ImageTransportDecompressor",
                 name="traffic_light_image_decompressor",
+                namespace=namespace,
                 parameters=[{"encoding": "rgb8"}],
                 remappings=[
                     (
                         "~/input/compressed_image",
-                        [LaunchConfiguration("input/image"), "/compressed"],
+                        [camera_arguments["input/image"], "/compressed"],
                     ),
-                    ("~/output/raw_image", LaunchConfiguration("input/image")),
+                    ("~/output/raw_image", camera_arguments["input/image"]),
                 ],
                 extra_arguments=[
                     {"use_intra_process_comms": LaunchConfiguration("use_intra_process")}
@@ -159,27 +176,19 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration("enable_image_decompressor")),
     )
 
-    fine_detector_param = create_parameter_dict(
-        "fine_detector_model_path",
-        "fine_detector_label_path",
-        "fine_detector_precision",
-        "fine_detector_score_thresh",
-        "fine_detector_nms_thresh",
-    )
-
     fine_detector_loader = LoadComposableNodes(
         composable_node_descriptions=[
             ComposableNode(
-                package="traffic_light_fine_detector",
-                plugin="traffic_light::TrafficLightFineDetectorNodelet",
+                package="autoware_traffic_light_fine_detector",
+                plugin="autoware::traffic_light::TrafficLightFineDetectorNode",
                 name="traffic_light_fine_detector",
-                namespace="detection",
-                parameters=[fine_detector_param],
+                namespace=f"{namespace}/detection",
+                parameters=[fine_detector_model_param, {"build_only": False}],
                 remappings=[
-                    ("~/input/image", LaunchConfiguration("input/image")),
+                    ("~/input/image", camera_arguments["input/image"]),
                     ("~/input/rois", "rough/rois"),
                     ("~/expect/rois", "expect/rois"),
-                    ("~/output/rois", LaunchConfiguration("output/rois")),
+                    ("~/output/rois", camera_arguments["output/rois"]),
                 ],
                 extra_arguments=[
                     {"use_intra_process_comms": LaunchConfiguration("use_intra_process")}
@@ -187,8 +196,163 @@ def generate_launch_description():
             ),
         ],
         target_container=container,
-        condition=IfCondition(LaunchConfiguration("enable_fine_detection")),
+        condition=IfCondition(
+            PythonExpression(
+                [
+                    "'",
+                    LaunchConfiguration("ml_detection_model_type"),
+                    "' == 'fine_detection_model' ",
+                ]
+            )
+        ),
     )
+
+    # cspell: ignore semseg
+    whole_img_detector_loader = LoadComposableNodes(
+        composable_node_descriptions=[
+            ComposableNode(
+                package="autoware_tensorrt_yolox",
+                plugin="autoware::tensorrt_yolox::TrtYoloXNode",
+                name="traffic_light_detector",
+                namespace=f"{namespace}/detection",
+                parameters=[
+                    LaunchConfiguration("whole_image_detector_param_path"),
+                    {
+                        "model_path": PathJoinSubstitution(
+                            [
+                                LaunchConfiguration("whole_image_detector_model_path"),
+                                LaunchConfiguration("whole_image_detector_model_name"),
+                            ]
+                        ),
+                        "label_path": PathJoinSubstitution(
+                            [
+                                LaunchConfiguration("whole_image_detector_model_path"),
+                                "car_ped_tl_detector_labels.txt",
+                            ]
+                        ),
+                        "build_only": False,
+                        "clip_value": 0.0,
+                    },
+                ],
+                remappings=[
+                    ("~/in/image", camera_arguments["input/image"]),
+                    ("~/out/objects", "ml_detected/rois"),
+                    ("~/out/image", camera_arguments["output/debug"] + "/image"),
+                    (
+                        "~/out/image/compressed",
+                        camera_arguments["output/debug"] + "/image/compressed",
+                    ),
+                    (
+                        "~/out/image/compressedDepth",
+                        camera_arguments["output/debug"] + "/image/compressedDepth",
+                    ),
+                    ("~/out/image/theora", camera_arguments["output/debug"] + "/image/theora"),
+                ],
+                extra_arguments=[
+                    {"use_intra_process_comms": LaunchConfiguration("use_intra_process")}
+                ],
+            ),
+            ComposableNode(
+                package="autoware_traffic_light_selector",
+                plugin="autoware::traffic_light::TrafficLightSelectorNode",
+                name="traffic_light_selector",
+                namespace=f"{namespace}/detection",
+                parameters=[
+                    {
+                        "max_iou_threshold": -0.5,
+                    }
+                ],
+                remappings=[
+                    ("input/detected_rois", "ml_detected/rois"),
+                    ("input/rough_rois", "rough/rois"),
+                    ("input/expect_rois", "expect/rois"),
+                    ("input/camera_info", camera_arguments["input/camera_info"]),
+                    ("output/traffic_rois", camera_arguments["output/rois"]),
+                ],
+            ),
+            ComposableNode(
+                package="autoware_traffic_light_category_merger",
+                plugin="autoware::traffic_light::TrafficLightCategoryMergerNode",
+                name="traffic_light_category_merger",
+                namespace=f"{namespace}/classification",
+                parameters=[],
+                remappings=[
+                    ("input/car_signals", "classified/car/traffic_signals"),
+                    ("input/pedestrian_signals", "classified/pedestrian/traffic_signals"),
+                    ("output/traffic_signals", camera_arguments["output/traffic_signals"]),
+                ],
+            ),
+        ],
+        target_container=container,
+        condition=IfCondition(
+            PythonExpression(
+                [
+                    "'",
+                    LaunchConfiguration("ml_detection_model_type"),
+                    "' == 'whole_image_detection_model' ",
+                ]
+            )
+        ),
+    )
+
+    return [
+        GroupAction([PushRosNamespace(namespace), container]),
+        decompressor_loader,
+        fine_detector_loader,
+        whole_img_detector_loader,
+    ]
+
+
+def generate_launch_description():
+    launch_arguments = []
+
+    def add_launch_arg(name: str, default_value=None, description=None):
+        # a default_value of None is equivalent to not passing that kwarg at all
+        launch_arguments.append(
+            DeclareLaunchArgument(name, default_value=default_value, description=description)
+        )
+
+    tensorrt_yolox_share_dir = get_package_share_directory("autoware_tensorrt_yolox")
+    fine_detector_share_dir = get_package_share_directory("autoware_traffic_light_fine_detector")
+    classifier_share_dir = get_package_share_directory("autoware_traffic_light_classifier")
+    add_launch_arg("all_camera_namespaces", "[camera6, camera7]")
+    add_launch_arg("enable_image_decompressor", "True")
+    add_launch_arg("use_ml_detector", "True")
+    add_launch_arg("ml_detection_model_type", "fine_detection_model")
+    add_launch_arg("use_image_transport", "True")
+
+    # traffic_light_fine_detector
+    add_launch_arg(
+        "fine_detector_param_path",
+        os.path.join(fine_detector_share_dir, "config", "traffic_light_fine_detector.param.yaml"),
+    )
+
+    # whole image (traffic light) detector by yolox
+    add_launch_arg(
+        "whole_image_detector_model_path", os.path.expandvars("$HOME/autoware_data/tensorrt_yolox")
+    )
+    add_launch_arg("whole_image_detector_model_name", "tlr_car_ped_yolox_s_960_960_batch_1")
+    add_launch_arg(
+        "whole_image_detector_param_path",
+        os.path.join(tensorrt_yolox_share_dir, "config", "yolox_traffic_light_detector.param.yaml"),
+    )
+
+    # traffic_light_classifier
+    add_launch_arg(
+        "car_classifier_param_path",
+        os.path.join(classifier_share_dir, "config", "car_traffic_light_classifier.param.yaml"),
+    )
+    add_launch_arg(
+        "pedestrian_classifier_param_path",
+        os.path.join(
+            classifier_share_dir,
+            "config",
+            "pedestrian_traffic_light_classifier.param.yaml",
+        ),
+    )
+
+    add_launch_arg("use_intra_process", "False")
+    add_launch_arg("use_multithread", "False")
 
     set_container_executable = SetLaunchConfiguration(
         "container_executable",
@@ -207,8 +371,6 @@ def generate_launch_description():
             *launch_arguments,
             set_container_executable,
             set_container_mt_executable,
-            container,
-            decompressor_loader,
-            fine_detector_loader,
+            OpaqueFunction(function=launch_setup),
         ]
     )
