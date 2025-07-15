@@ -9918,9 +9918,29 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concatenation-strategies" class="md-nav__link">
+    Concatenation Strategies
+  </a>
+  
+    <nav class="md-nav" aria-label="Concatenation Strategies">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
-  <a href="#parameter-settings" class="md-nav__link">
-    Parameter Settings
+  <a href="#naive-strategy-matching_strategytype-naive" class="md-nav__link">
+    Naive Strategy (matching_strategy.type: "naive")
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-strategy-matching_strategytype-advanced" class="md-nav__link">
+    Advanced Strategy (matching_strategy.type: "advanced")
   </a>
   
 </li>
@@ -14056,9 +14076,29 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concatenation-strategies" class="md-nav__link">
+    Concatenation Strategies
+  </a>
+  
+    <nav class="md-nav" aria-label="Concatenation Strategies">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
-  <a href="#parameter-settings" class="md-nav__link">
-    Parameter Settings
+  <a href="#naive-strategy-matching_strategytype-naive" class="md-nav__link">
+    Naive Strategy (matching_strategy.type: "naive")
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-strategy-matching_strategytype-advanced" class="md-nav__link">
+    Advanced Strategy (matching_strategy.type: "advanced")
   </a>
   
 </li>
@@ -14314,13 +14354,52 @@
 </tr>
 </tbody>
 </table>
-<h3 id="parameter-settings">Parameter Settings<a class="headerlink" href="#parameter-settings" title="Permanent link">#</a></h3>
-<p>If you didn't synchronize your LiDAR sensors, set the <code>type</code> parameter of <code>matching_strategy</code> to <code>naive</code> to concatenate the point clouds directly. However, if your LiDAR sensors are synchronized, set type to <code>advanced</code> and adjust the <code>lidar_timestamp_offsets</code> and <code>lidar_timestamp_noise_window</code> parameters accordingly.</p>
-<p>The three parameters, <code>timeout_sec</code>, <code>lidar_timestamp_offsets</code>, and <code>lidar_timestamp_noise_window</code>, are essential for efficiently collecting point clouds in the same collector and managing edge cases (point cloud drops or delays) effectively.</p>
-<h4 id="timeout_sec">timeout_sec<a class="headerlink" href="#timeout_sec" title="Permanent link">#</a></h4>
+<h2 id="concatenation-strategies">Concatenation Strategies<a class="headerlink" href="#concatenation-strategies" title="Permanent link">#</a></h2>
+<p>The <code>concatenate_and_time_synchronize_node</code> supports different concatenation strategies through the <code>matching_strategy.type</code> parameter, designed to handle different LiDAR synchronization scenarios:</p>
+<h3 id="naive-strategy-matching_strategytype-naive">Naive Strategy (<code>matching_strategy.type: "naive"</code>)<a class="headerlink" href="#naive-strategy-matching_strategytype-naive" title="Permanent link">#</a></h3>
+<p>The naive strategy is designed for scenarios where LiDAR sensors are <strong>not synchronized</strong> or when precise timestamp alignment is not critical. This strategy:</p>
+<ul>
+<li><strong>Direct concatenation</strong>: Point clouds are concatenated directly without complex timestamp matching</li>
+<li><strong>Simple collection</strong>: Point clouds are collected and merged as they arrive within the timeout window</li>
+<li><strong>No offset compensation</strong>: Does not use <code>lidar_timestamp_offsets</code> or <code>lidar_timestamp_noise_window</code> parameters</li>
+<li><strong>Faster processing</strong>: Reduced computational overhead due to simplified logic</li>
+</ul>
+<p><strong>When to use naive strategy:</strong></p>
+<ul>
+<li>LiDAR sensors are not hardware-synchronized</li>
+<li>Timestamp differences between sensors are negligible for your application</li>
+<li>You prioritize processing speed over precise temporal alignment</li>
+<li>Simple concatenation without complex matching logic is sufficient</li>
+</ul>
+<h4 id="parameter-settings">Parameter Settings<a class="headerlink" href="#parameter-settings" title="Permanent link">#</a></h4>
+<p>Set the <code>type</code> parameter of <code>matching_strategy</code> to <code>"naive"</code> to concatenate the point clouds directly.</p>
+<h3 id="advanced-strategy-matching_strategytype-advanced">Advanced Strategy (<code>matching_strategy.type: "advanced"</code>)<a class="headerlink" href="#advanced-strategy-matching_strategytype-advanced" title="Permanent link">#</a></h3>
+<p>The advanced strategy is designed for scenarios where LiDAR sensors are <strong>synchronized</strong> and precise timestamp alignment is crucial. This strategy:</p>
+<ul>
+<li><strong>Precise timestamp matching</strong>: Uses reference timestamps with offset compensation</li>
+<li><strong>Noise tolerance</strong>: Accounts for timestamp jitter using <code>lidar_timestamp_noise_window</code></li>
+<li><strong>Offset correction</strong>: Applies <code>lidar_timestamp_offsets</code> to align different LiDAR timing</li>
+<li><strong>Robust collection</strong>: Handles temporal variations and ensures proper point cloud grouping</li>
+</ul>
+<p><strong>When to use advanced strategy:</strong></p>
+<ul>
+<li>LiDAR sensors are hardware-synchronized</li>
+<li>Precise temporal alignment is critical for your application</li>
+<li>You have measured timestamp offsets between your LiDAR sensors</li>
+<li>You want to handle timestamp noise and jitter effectively</li>
+</ul>
+<p><strong>Required parameters for advanced strategy:</strong></p>
+<ul>
+<li><code>lidar_timestamp_offsets</code>: Array of time offsets for each LiDAR sensor</li>
+<li><code>lidar_timestamp_noise_window</code>: Time window to handle timestamp jitter</li>
+<li><code>timeout_sec</code>: Maximum wait time for point cloud collection</li>
+</ul>
+<h4 id="parameter-settings_1">Parameter Settings<a class="headerlink" href="#parameter-settings_1" title="Permanent link">#</a></h4>
+<p>Set the <code>type</code> parameter of <code>matching_strategy</code> to <code>"advanced"</code> and configure the <code>timeout_sec</code>, <code>lidar_timestamp_offsets</code> and <code>lidar_timestamp_noise_window</code> parameters accordingly.</p>
+<h5 id="timeout_sec">timeout_sec<a class="headerlink" href="#timeout_sec" title="Permanent link">#</a></h5>
 <p>When network issues occur or when point clouds experience delays in the previous processing pipeline, some point clouds may be delayed or dropped. To address this, the <code>timeout_sec</code> parameter is used. Once the timer is created, it will start counting down from <code>timeout_sec</code>. If the timer reaches zero, the collector will not wait for delayed or dropped point clouds but will concatenate the remaining point clouds in the collector directly. The figure below demonstrates how <code>timeout_sec</code> works with <code>concatenate_and_time_sync_node</code> when <code>timeout_sec</code> is set to <code>0.12</code> (120 ms).</p>
 <p><img alt="concatenate_edge_case" src="../image/concatenate_edge_case.drawio.svg"></p>
-<h4 id="lidar_timestamp_offsets">lidar_timestamp_offsets<a class="headerlink" href="#lidar_timestamp_offsets" title="Permanent link">#</a></h4>
+<h5 id="lidar_timestamp_offsets">lidar_timestamp_offsets<a class="headerlink" href="#lidar_timestamp_offsets" title="Permanent link">#</a></h5>
 <p>Since different vehicles have varied designs for LiDAR scanning, the timestamps of each LiDAR may differ. Users need to know the offsets between each LiDAR and set the values in <code>lidar_timestamp_offsets</code>.</p>
 <p>To monitor the timestamps of each LiDAR, run the following command:</p>
 <div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>topic<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"pointcloud_topic"</span><span class="w"> </span>--field<span class="w"> </span>header
@@ -14334,7 +14413,7 @@ nanosec:<span class="w"> </span><span class="m">355444581</span>
 <p>If there are three LiDARs (left, right, top), and the timestamps for the left, right, and top point clouds are <code>0.01</code>, <code>0.05</code>, and <code>0.09</code> seconds respectively, the parameters should be set as [0.0, 0.04, 0.08]. This reflects the timestamp differences between the current point cloud and the point cloud with the earliest timestamp. Note that the order of the <code>lidar_timestamp_offsets</code> corresponds to the order of the <code>input_topics</code>.</p>
 <p>The figure below demonstrates how <code>lidar_timestamp_offsets</code> works with <code>concatenate_and_time_sync_node</code>.</p>
 <p><img alt="ideal_timestamp_offset" src="../image/ideal_timestamp_offset.drawio.svg"></p>
-<h4 id="lidar_timestamp_noise_window">lidar_timestamp_noise_window<a class="headerlink" href="#lidar_timestamp_noise_window" title="Permanent link">#</a></h4>
+<h5 id="lidar_timestamp_noise_window">lidar_timestamp_noise_window<a class="headerlink" href="#lidar_timestamp_noise_window" title="Permanent link">#</a></h5>
 <p>Additionally, due to the mechanical design of LiDARs, there may be some jitter in the timestamps of each scan, as shown in the image below. For example, if the scan frequency is set to 10 Hz (scanning every 100 ms), the timestamps between each scan might not be exactly 100 ms apart. To handle this noise, the <code>lidar_timestamp_noise_window</code> parameter is provided.</p>
 <p>Users can use <a href="https://github.com/tier4/timestamp_analyzer">this tool</a> to visualize the noise between each scan.</p>
 <p><img alt="jitter" src="../image/jitter.png"></p>
