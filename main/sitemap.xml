@@ -626,6 +626,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://autowarefoundation.github.io/autoware_universe/main/perception/autoware_tensorrt_bevdet/</loc>
+         <lastmod>2025-07-15</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://autowarefoundation.github.io/autoware_universe/main/perception/autoware_tensorrt_classifier/</loc>
          <lastmod>2025-07-15</lastmod>
          <changefreq>daily</changefreq>
@@ -1512,6 +1517,11 @@
     </url>
     <url>
          <loc>https://autowarefoundation.github.io/autoware_universe/main/visualization/autoware_bag_time_manager_rviz_plugin/</loc>
+         <lastmod>2025-07-15</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://autowarefoundation.github.io/autoware_universe/main/visualization/autoware_traffic_light_rviz_plugin/</loc>
          <lastmod>2025-07-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
