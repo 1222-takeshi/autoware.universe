@@ -14273,9 +14273,9 @@
 <td>N/A</td>
 </tr>
 <tr>
-<td>th_dist_hysteresis_m</td>
+<td>th_point_merge_distance_m</td>
 <td>float</td>
-<td>Minimum distance between critical points to avoid duplicates [m].</td>
+<td>Distance threshold to merge nearby points [m].</td>
 <td>1.0</td>
 <td>N/A</td>
 </tr>
@@ -14298,6 +14298,41 @@
 <td>float</td>
 <td>Minimum goal shift distance to trigger module reset [m].</td>
 <td>1.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>th_cutoff_time_s.predicted_path</td>
+<td>float</td>
+<td>Cutoff time to consider from predicted path [s].</td>
+<td>3.5</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>th_cutoff_time_s.near_boundary</td>
+<td>float</td>
+<td>Cutoff time to consider departure point as near boundary type [s].</td>
+<td>3.5</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>th_cutoff_time_s.departure</td>
+<td>float</td>
+<td>Cutoff time to consider departure point as critical departure type, anything more than is considered approaching departure [s].</td>
+<td>2.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>on_time_buffer_s</td>
+<td>float</td>
+<td>Continuous detection time threshold to insert departure point into departure interval. [s]</td>
+<td>0.15</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>off_time_buffer_s</td>
+<td>float</td>
+<td>Continuous detection time threshold to reset departure interval. [s]</td>
+<td>0.15</td>
 <td>N/A</td>
 </tr>
 <tr>
