@@ -8,20 +8,20 @@
       
       
       
-        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/latest/planning/motion_velocity_planner/autoware_motion_velocity_run_out_module/">
+        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/latest/planning/planning_validator/autoware_planning_validator_rear_collision_checker/">
       
       
-        <link rel="prev" href="../autoware_motion_velocity_road_user_stop_module/">
+        <link rel="prev" href="../autoware_planning_validator_intersection_collision_checker/">
       
       
-        <link rel="next" href="../../planning_validator/autoware_planning_validator/">
+        <link rel="next" href="../autoware_planning_validator_trajectory_checker/">
       
       <link rel="icon" href="../../../docs/assets/images/autoware-foundation.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.20">
     
     
       
-        <title>Run Out - Autoware Universe Documentation</title>
+        <title>Rear Collision Checker - Autoware Universe Documentation</title>
       
     
     
@@ -77,7 +77,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#macro-rendering-error" class="md-skip">
+        <a href="#rear-collision-checker" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Run Out
+              Rear Collision Checker
             
           </span>
         </div>
@@ -8736,7 +8736,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../autoware_motion_velocity_obstacle_slow_down_module/" class="md-nav__link">
+      <a href="../../motion_velocity_planner/autoware_motion_velocity_obstacle_slow_down_module/" class="md-nav__link">
         Obstacle Slow Down
       </a>
     </li>
@@ -8750,7 +8750,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../autoware_motion_velocity_obstacle_cruise_module/" class="md-nav__link">
+      <a href="../../motion_velocity_planner/autoware_motion_velocity_obstacle_cruise_module/" class="md-nav__link">
         Obstacle Cruise
       </a>
     </li>
@@ -8764,7 +8764,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../autoware_motion_velocity_dynamic_obstacle_stop_module/" class="md-nav__link">
+      <a href="../../motion_velocity_planner/autoware_motion_velocity_dynamic_obstacle_stop_module/" class="md-nav__link">
         Dynamic Obstacle Stop
       </a>
     </li>
@@ -8778,7 +8778,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../autoware_motion_velocity_out_of_lane_module/" class="md-nav__link">
+      <a href="../../motion_velocity_planner/autoware_motion_velocity_out_of_lane_module/" class="md-nav__link">
         Out of Lane
       </a>
     </li>
@@ -8792,7 +8792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../autoware_motion_velocity_obstacle_velocity_limiter_module/" class="md-nav__link">
+      <a href="../../motion_velocity_planner/autoware_motion_velocity_obstacle_velocity_limiter_module/" class="md-nav__link">
         Obstacle Velocity Limiter
       </a>
     </li>
@@ -8806,7 +8806,7 @@
   
   
     <li class="md-nav__item">
-      <a href="./" class="md-nav__link">
+      <a href="../../motion_velocity_planner/autoware_motion_velocity_run_out_module/" class="md-nav__link">
         Run Out
       </a>
     </li>
@@ -9251,7 +9251,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../planning_validator/autoware_planning_validator" class="md-nav__link">
+      <a href="../autoware_planning_validator" class="md-nav__link">
         About Planning Validator
       </a>
     </li>
@@ -9265,7 +9265,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../planning_validator/autoware_planning_validator_trajectory_checker" class="md-nav__link">
+      <a href="../autoware_planning_validator_trajectory_checker" class="md-nav__link">
         Trajectory Checker
       </a>
     </li>
@@ -9279,7 +9279,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../planning_validator/autoware_planning_validator_intersection_collision_checker" class="md-nav__link">
+      <a href="../autoware_planning_validator_intersection_collision_checker" class="md-nav__link">
         Intersection Collision Checker
       </a>
     </li>
@@ -13931,6 +13931,89 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inner-workings" class="md-nav__link">
+    Inner Workings
+  </a>
+  
+    <nav class="md-nav" aria-label="Inner Workings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flowchart" class="md-nav__link">
+    Flowchart
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#general-parameters" class="md-nav__link">
+    General Parameters
+  </a>
+  
+    <nav class="md-nav" aria-label="General Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pointcloud-preprocess" class="md-nav__link">
+    Pointcloud Preprocess
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-filtering" class="md-nav__link">
+    Object Filtering
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ttc" class="md-nav__link">
+    TTC
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ego-behavior" class="md-nav__link">
+    Ego Behavior
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collision-check-for-blind-spot" class="md-nav__link">
+    Collision Check For Blind Spot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collision-check-for-adjacent-lane" class="md-nav__link">
+    Collision Check For Adjacent Lane
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -13947,29 +14030,512 @@
   
 
 
-<div><h1 id="macro-rendering-error"><em>Macro Rendering Error</em><a class="headerlink" href="#macro-rendering-error" title="Permanent link">#</a></h1>
-<p><em>File</em>: <code>planning/motion_velocity_planner/autoware_motion_velocity_run_out_module/README.md</code></p>
-<p><em>KeyError</em>: 'description'</p>
-<div class="highlight"><pre><span></span><code>Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/mkdocs_macros/plugin.py", line 703, in render
-    return md_template.render(**page_variables)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/jinja2/environment.py", line 1295, in render
-    self.environment.handle_exception()
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/jinja2/environment.py", line 942, in handle_exception
-    raise rewrite_traceback_stack(source=source)
-  File "&lt;template&gt;", line 203, in top-level template code
-  File "/home/runner/work/autoware.universe/autoware.universe/mkdocs_macros.py", line 73, in json_to_markdown
-    return format_json(data)
-  File "/home/runner/work/autoware.universe/autoware.universe/mkdocs_macros.py", line 64, in format_json
-    markdown_table = tabulate(extract_parameter_info(parameters), headers="keys", tablefmt="github")
-  File "/home/runner/work/autoware.universe/autoware.universe/mkdocs_macros.py", line 57, in extract_parameter_info
-    params.extend(extract_parameter_info(v["properties"], k + "."))
-  File "/home/runner/work/autoware.universe/autoware.universe/mkdocs_macros.py", line 57, in extract_parameter_info
-    params.extend(extract_parameter_info(v["properties"], k + "."))
-  File "/home/runner/work/autoware.universe/autoware.universe/mkdocs_macros.py", line 52, in extract_parameter_info
-    param["Description"] = v["description"]
-KeyError: 'description'
-</code></pre></div></div>
+<div><h1 id="rear-collision-checker">Rear Collision Checker<a class="headerlink" href="#rear-collision-checker" title="Permanent link">#</a></h1>
+<p>The <code>rear_collision_checker</code> is a plugin module of the <code>autoware_planning_validator</code> node. It validates the planned trajectory by verifying that it does <strong>not</strong> lead to a collision with other road users (primarily vehicles, but also pedestrian/cyclists/motorcycles) approaching from lateral/rear directions. In particular, it is designed to detect potential rear-end collisions and entrapment risks when the ego vehicle is making a right/left turn or merging into an adjacent lane.</p>
+<h2 id="inner-workings">Inner Workings<a class="headerlink" href="#inner-workings" title="Permanent link">#</a></h2>
+<p>The module operates by:</p>
+<ol>
+<li>
+<p><strong>Identifying conflict lanes</strong></p>
+<ul>
+<li>Uses the current route and lanelet topology to determine lanes that the ego vehicle’s trajectory may intersect with during right/left turns or lane changes.</li>
+<li>Focuses on lanes where vehicles, bicycles, or motorcycles could approach from behind or from a lateral direction, posing a potential rear-end or entrapment risk.</li>
+<li>Considers the <code>turn_direction</code> of the approaching lanelets to filter out irrelevant lanes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Filtering perception data</strong></p>
+<ul>
+<li>Subscribes to obstacle pointcloud and first filters by the conflict region, keeping only points that fall within relevant spatial bounds.</li>
+<li>Performs <strong>clustering</strong> on the filtered points to form obstacle candidates.</li>
+<li>Associates clusters with nearby lanelets and computes the <strong>nearest face of each obstacle along the lane direction</strong>.</li>
+<li>Applies configurable range gates (forward/backward, lateral, height) and basic outlier rejection to discard distant or irrelevant clusters.</li>
+</ul>
+</li>
+<li>
+<p><strong>Estimating motion</strong></p>
+<ul>
+<li>For each selected object, determines its motion relative to the lane direction.</li>
+<li>Estimates speed and direction based on frame-to-frame position changes along the lane’s centerline.</li>
+<li>Maintains a per-lane tracking list to stabilize velocity estimation and reduce noise from perception flicker.</li>
+</ul>
+</li>
+<li>
+<p><strong>Calculating metrics</strong></p>
+<ul>
+<li><strong>Depending on the selected metric (e.g., TTC, RSS), the calculation method and decision logic differ.</strong> The chosen metric is computed, and the result is used to determine whether there is a potential collision risk.</li>
+</ul>
+</li>
+<li>
+<p><strong>Judging collision risk</strong></p>
+<ul>
+<li>Evaluates the selected metric results against predefined thresholds to determine whether a collision is likely.</li>
+<li>Applies hysteresis logic:<ul>
+<li><strong><code>on_time_buffer</code></strong>: Hazardous state must persist for this duration before marking the trajectory unsafe.</li>
+<li><strong><code>off_time_buffer</code></strong>: Safe state must persist for this duration before clearing the unsafe flag.</li>
+</ul>
+</li>
+<li>If <code>check_on_unstoppable=false</code>, the module will skip collision warnings in cases where the ego vehicle cannot realistically stop before the conflict area (to prevent unnecessary alerts when stopping is already infeasible).</li>
+</ul>
+</li>
+</ol>
+<h3 id="flowchart">Flowchart<a class="headerlink" href="#flowchart" title="Permanent link">#</a></h3>
+<p>WIP</p>
+<h2 id="general-parameters">General Parameters<a class="headerlink" href="#general-parameters" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th>Unit</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>on_time_buffer</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Time buffer before enabling detection after a relevant condition is met</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td align="left"><code>off_time_buffer</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Time buffer before disabling detection after the condition clears</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td align="left"><code>check_on_unstoppable</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>If <code>true</code>, the module continues collision checking even when the ego vehicle cannot stop before entering a potential collision area, and outputs an <strong>ERROR</strong> if a collision risk is detected. If <code>false</code>, checking is skipped in such cases to avoid unnecessary warnings.</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pointcloud-preprocess">Pointcloud Preprocess<a class="headerlink" href="#pointcloud-preprocess" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th>Unit</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>pointcloud.range.dead_zone</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Distance in front of the ego vehicle ignored for collision detection</td>
+<td>0.3</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.range.buffer</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Additional margin around detection range</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.crop_box_filter.x.max</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Maximum X coordinate for cropped detection range</td>
+<td>30.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.crop_box_filter.x.min</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Minimum X coordinate for cropped detection range</td>
+<td>-100.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.crop_box_filter.z.max</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Maximum Z coordinate for cropped detection range</td>
+<td>-1.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.crop_box_filter.z.min</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Minimum Z coordinate for cropped detection range</td>
+<td>0.3</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.voxel_grid_filter.x</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Voxel grid filter size in X direction</td>
+<td>0.1</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.voxel_grid_filter.y</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Voxel grid filter size in Y direction</td>
+<td>0.1</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.voxel_grid_filter.z</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Voxel grid filter size in Z direction</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.clustering.cluster_tolerance</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Maximum distance between points to be considered part of the same cluster</td>
+<td>0.15</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.clustering.min_cluster_height</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Minimum height of a cluster to be considered valid</td>
+<td>0.1</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.clustering.min_cluster_size</code></td>
+<td>[points]</td>
+<td>int</td>
+<td>Minimum number of points in a valid cluster</td>
+<td>5</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.clustering.max_cluster_size</code></td>
+<td>[points]</td>
+<td>int</td>
+<td>Maximum number of points in a valid cluster</td>
+<td>10000</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.velocity_estimation.observation_time</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Time window used for velocity estimation</td>
+<td>0.3</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.velocity_estimation.max_acceleration</code></td>
+<td>[m/s^2]</td>
+<td>double</td>
+<td>Maximum allowed acceleration in velocity estimation</td>
+<td>10.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.latency</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Assumed system latency for point cloud processing</td>
+<td>0.3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="object-filtering">Object Filtering<a class="headerlink" href="#object-filtering" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th>Unit</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>filter.min_velocity</code></td>
+<td>[m/s]</td>
+<td>double</td>
+<td>Minimum velocity threshold for objects to be considered moving</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>filter.moving_time</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Minimum time duration an object must be moving to be considered as such</td>
+<td>0.5</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ttc">TTC<a class="headerlink" href="#ttc" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th>Unit</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>time_to_collision.margin</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Additional margin added to time-to-collision calculation</td>
+<td>2.0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ego-behavior">Ego Behavior<a class="headerlink" href="#ego-behavior" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th>Unit</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>ego.reaction_time</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Reaction time of the ego vehicle</td>
+<td>1.2</td>
+</tr>
+<tr>
+<td align="left"><code>ego.min_velocity</code></td>
+<td>[m/s]</td>
+<td>double</td>
+<td>Minimum considered velocity of the ego vehicle</td>
+<td>1.38</td>
+</tr>
+<tr>
+<td align="left"><code>ego.max_velocity</code></td>
+<td>[m/s]</td>
+<td>double</td>
+<td>Maximum considered velocity of the ego vehicle</td>
+<td>16.6</td>
+</tr>
+<tr>
+<td align="left"><code>ego.max_acceleration</code></td>
+<td>[m/s^2]</td>
+<td>double</td>
+<td>Maximum considered acceleration of the ego vehicle</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td align="left"><code>ego.max_deceleration</code></td>
+<td>[m/s^2]</td>
+<td>double</td>
+<td>Maximum considered deceleration of the ego vehicle (negative value)</td>
+<td>-4.0</td>
+</tr>
+<tr>
+<td align="left"><code>ego.max_positive_jerk</code></td>
+<td>[m/s^3]</td>
+<td>double</td>
+<td>Maximum allowed positive jerk for the ego vehicle</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td align="left"><code>ego.max_negative_jerk</code></td>
+<td>[m/s^3]</td>
+<td>double</td>
+<td>Maximum allowed negative jerk for the ego vehicle</td>
+<td>-5.0</td>
+</tr>
+<tr>
+<td align="left"><code>ego.nominal_deceleration</code></td>
+<td>[m/s^2]</td>
+<td>double</td>
+<td>Nominal deceleration used for calculations</td>
+<td>-1.5</td>
+</tr>
+<tr>
+<td align="left"><code>ego.nominal_positive_jerk</code></td>
+<td>[m/s^3]</td>
+<td>double</td>
+<td>Nominal positive jerk used for calculations</td>
+<td>0.6</td>
+</tr>
+<tr>
+<td align="left"><code>ego.nominal_negative_jerk</code></td>
+<td>[m/s^3]</td>
+<td>double</td>
+<td>Nominal negative jerk used for calculations</td>
+<td>-0.6</td>
+</tr>
+</tbody>
+</table>
+<h3 id="collision-check-for-blind-spot">Collision Check For Blind Spot<a class="headerlink" href="#collision-check-for-blind-spot" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th>Unit</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>blind_spot.lookahead_time</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Lookahead time for blind spot detection</td>
+<td>4.0</td>
+</tr>
+<tr>
+<td align="left"><code>blind_spot.metric</code></td>
+<td>[-]</td>
+<td>string</td>
+<td>Metric used for blind spot detection (<code>ttc</code>, etc.)</td>
+<td>ttc</td>
+</tr>
+<tr>
+<td align="left"><code>blind_spot.check.front</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>Whether to check for blind spot in the front</td>
+<td>false</td>
+</tr>
+<tr>
+<td align="left"><code>blind_spot.check.left</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>Whether to check for blind spot on the left</td>
+<td>true</td>
+</tr>
+<tr>
+<td align="left"><code>blind_spot.check.right</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>Whether to check for blind spot on the right</td>
+<td>false</td>
+</tr>
+<tr>
+<td align="left"><code>blind_spot.check.yaw_th</code></td>
+<td>[rad]</td>
+<td>double</td>
+<td>Yaw threshold for blind spot detection</td>
+<td>0.78</td>
+</tr>
+<tr>
+<td align="left"><code>blind_spot.offset.inner</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Inner offset for blind spot detection zone</td>
+<td>0.1</td>
+</tr>
+<tr>
+<td align="left"><code>blind_spot.offset.outer</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Outer offset for blind spot detection zone</td>
+<td>0.3</td>
+</tr>
+<tr>
+<td align="left"><code>blind_spot.participants.reaction_time</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Reaction time of participants in blind spot detection</td>
+<td>1.2</td>
+</tr>
+<tr>
+<td align="left"><code>blind_spot.participants.max_velocity</code></td>
+<td>[m/s]</td>
+<td>double</td>
+<td>Maximum velocity of participants in blind spot detection</td>
+<td>5.5</td>
+</tr>
+<tr>
+<td align="left"><code>blind_spot.participants.max_deceleration</code></td>
+<td>[m/s^2]</td>
+<td>double</td>
+<td>Maximum deceleration of participants in blind spot detection</td>
+<td>-2.0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="collision-check-for-adjacent-lane">Collision Check For Adjacent Lane<a class="headerlink" href="#collision-check-for-adjacent-lane" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th>Unit</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>adjacent_lane.lookahead_time</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Lookahead time for adjacent lane collision detection</td>
+<td>4.0</td>
+</tr>
+<tr>
+<td align="left"><code>adjacent_lane.metric</code></td>
+<td>[-]</td>
+<td>string</td>
+<td>Metric used for adjacent lane collision detection (<code>rss</code>, etc.)</td>
+<td>rss</td>
+</tr>
+<tr>
+<td align="left"><code>adjacent_lane.check.front</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>Whether to check for adjacent lane collision in the front</td>
+<td>true</td>
+</tr>
+<tr>
+<td align="left"><code>adjacent_lane.offset.left</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Left offset for adjacent lane collision detection</td>
+<td>-0.5</td>
+</tr>
+<tr>
+<td align="left"><code>adjacent_lane.offset.right</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Right offset for adjacent lane collision detection</td>
+<td>-0.5</td>
+</tr>
+<tr>
+<td align="left"><code>adjacent_lane.participants.reaction_time</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Reaction time of participants in adjacent lane collision detection</td>
+<td>1.2</td>
+</tr>
+<tr>
+<td align="left"><code>adjacent_lane.participants.max_velocity</code></td>
+<td>[m/s]</td>
+<td>double</td>
+<td>Maximum velocity of participants in adjacent lane collision detection</td>
+<td>16.6</td>
+</tr>
+<tr>
+<td align="left"><code>adjacent_lane.participants.max_deceleration</code></td>
+<td>[m/s^2]</td>
+<td>double</td>
+<td>Maximum deceleration of participants in adjacent lane collision detection</td>
+<td>-2.0</td>
+</tr>
+</tbody>
+</table></div>
 
 
 
@@ -13996,7 +14562,7 @@ KeyError: 'description'
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../autoware_motion_velocity_road_user_stop_module/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Road User Stop" rel="prev">
+          <a href="../autoware_planning_validator_intersection_collision_checker/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Intersection Collision Checker" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -14005,20 +14571,20 @@ KeyError: 'description'
                 Previous
               </span>
               <div class="md-ellipsis">
-                Road User Stop
+                Intersection Collision Checker
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../planning_validator/autoware_planning_validator/" class="md-footer__link md-footer__link--next" aria-label="Next: Planning Validator" rel="next">
+          <a href="../autoware_planning_validator_trajectory_checker/" class="md-footer__link md-footer__link--next" aria-label="Next: Trajectory Checker" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Planning Validator
+                Trajectory Checker
               </div>
             </div>
             <div class="md-footer__button md-icon">
