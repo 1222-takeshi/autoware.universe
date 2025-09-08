@@ -826,6 +826,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://autowarefoundation.github.io/autoware_universe/latest/planning/autoware_trajectory_ranker/</loc>
+         <lastmod>2025-09-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://autowarefoundation.github.io/autoware_universe/latest/planning/behavior_path_planner/autoware_behavior_path_avoidance_by_lane_change_module/</loc>
          <lastmod>2025-09-08</lastmod>
          <changefreq>daily</changefreq>
