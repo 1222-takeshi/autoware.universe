@@ -8,20 +8,20 @@
       
       
       
-        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/main/planning/autoware_trajectory_concatenator/">
+        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/main/planning/autoware_trajectory_adapter/">
       
       
-        <link rel="prev" href="../autoware_trajectory_adapter/">
+        <link rel="prev" href="../autoware_surround_obstacle_checker/surround_obstacle_checker-design.ja/">
       
       
-        <link rel="next" href="../autoware_trajectory_modifier/">
+        <link rel="next" href="../autoware_trajectory_concatenator/">
       
       <link rel="icon" href="../../docs/assets/images/autoware-foundation.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.20">
     
     
       
-        <title>Trajectory Concatenator - Autoware Universe Documentation</title>
+        <title>Trajectory Adapter - Autoware Universe Documentation</title>
       
     
     
@@ -77,7 +77,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#trajectory-concatenator" class="md-skip">
+        <a href="#trajectory-adapter" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Trajectory Concatenator
+              Trajectory Adapter
             
           </span>
         </div>
@@ -14044,6 +14044,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#future-work" class="md-nav__link">
+    Future Work
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -14062,59 +14069,46 @@
   
 
 
-<div><h1 id="trajectory-concatenator">Trajectory Concatenator<a class="headerlink" href="#trajectory-concatenator" title="Permanent link">#</a></h1>
+<div><h1 id="trajectory-adapter">Trajectory Adapter<a class="headerlink" href="#trajectory-adapter" title="Permanent link">#</a></h1>
 <h2 id="purposerole">Purpose/Role<a class="headerlink" href="#purposerole" title="Permanent link">#</a></h2>
-<p>This node aggregates trajectory candidates from multiple trajectory generators into a single <code>autoware_internal_planning_msgs/msg/CandidateTrajectories</code> message. It is intended to be placed between trajectory generators and the selector/ranker.</p>
+<p>This node converts a set of ranked candidate trajectories into a single, cleaned‑up <a href="https://github.com/autowarefoundation/autoware_msgs/blob/main/autoware_planning_msgs/msg/Trajectory.msg">autoware_planning_msgs/msg/Trajectory</a>.</p>
 <h2 id="algorithm-overview">Algorithm Overview<a class="headerlink" href="#algorithm-overview" title="Permanent link">#</a></h2>
-<p>When a message arrives on <code>~/input/trajectories</code>, the node splits it by <code>generator_id</code> and updates an in-memory buffer so that only the most recent trajectory set for each generator is retained.</p>
-<p>A 100 ms timer then scans this buffer and drops any entry whose header stamp is older than the configured duration_time. Immediately after pruning, the timer concatenates all remaining trajectories and their accompanying <code>generator_info</code> arrays, publishes the aggregated message.</p>
+<p>Upon receiving a message, the node finds the candidate with the highest score.
+If no candidate is found an empty list would be published. The selected trajectory’s points are then processed, ensuring that successive points match the conditions to conduct control modules.</p>
 <h2 id="interface">Interface<a class="headerlink" href="#interface" title="Permanent link">#</a></h2>
 <h3 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">#</a></h3>
 <table>
 <thead>
 <tr>
 <th>Direction</th>
-<th>Topic name</th>
+<th>Topic Name</th>
 <th>Message Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Subscriber</td>
+<td>Subscribe</td>
 <td><code>~/input/trajectories</code></td>
-<td><code>autoware_internal_planning_msgs/msg/CandidateTrajectories</code></td>
-<td>Trajectory sets produced by each generator</td>
+<td><code>autoware_internal_planning_msgs/msg/ScoredCandidateTrajectories</code></td>
+<td>Candidate trajectories with scores</td>
 </tr>
 <tr>
-<td>Publisher</td>
-<td><code>~/output/trajectories</code></td>
-<td><code>autoware_internal_planning_msgs/msg/CandidateTrajectories</code></td>
-<td>Concatenated list of all buffered trajectories</td>
+<td>Publish</td>
+<td><code>~/output/trajectory</code></td>
+<td><code>autoware_planning_msgs/msg/Trajectory</code></td>
+<td>Re-arranged best‑score trajectory</td>
 </tr>
 </tbody>
 </table>
 <h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h3>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-<th>Range</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>duration_time</td>
-<td>float</td>
-<td>Duration time to keep the trajectory (it will be deleted once exceeding this value)</td>
-<td>0.2</td>
-<td>≥0.0</td>
-</tr>
-</tbody>
-</table></div>
+<p>The current implementation does not expose any ROS parameters. All behavior is hard‑coded.</p>
+<h2 id="future-work">Future Work<a class="headerlink" href="#future-work" title="Permanent link">#</a></h2>
+<p>The following features and improvements are planned for future development:</p>
+<ul>
+<li><strong>Turn Signal Control</strong>: Implement proper turn signal activation based on trajectory curvature and lane change intentions</li>
+<li><strong>Hazard Light Control</strong>: Add logic to activate hazard lights in emergency situations or when the vehicle needs to warn other traffic participants</li>
+</ul></div>
 
 
 
@@ -14141,7 +14135,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../autoware_trajectory_adapter/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Trajectory Adapter" rel="prev">
+          <a href="../autoware_surround_obstacle_checker/surround_obstacle_checker-design.ja/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Surround Obstacle Checker" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -14150,20 +14144,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Trajectory Adapter
+                Surround Obstacle Checker
               </div>
             </div>
           </a>
         
         
           
-          <a href="../autoware_trajectory_modifier/" class="md-footer__link md-footer__link--next" aria-label="Next: Autoware Trajectory Modifier" rel="next">
+          <a href="../autoware_trajectory_concatenator/" class="md-footer__link md-footer__link--next" aria-label="Next: Trajectory Concatenator" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Autoware Trajectory Modifier
+                Trajectory Concatenator
               </div>
             </div>
             <div class="md-footer__button md-icon">

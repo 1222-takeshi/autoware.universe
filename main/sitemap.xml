@@ -811,6 +811,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://autowarefoundation.github.io/autoware_universe/main/planning/autoware_trajectory_adapter/</loc>
+         <lastmod>2025-09-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://autowarefoundation.github.io/autoware_universe/main/planning/autoware_trajectory_concatenator/</loc>
          <lastmod>2025-09-08</lastmod>
          <changefreq>daily</changefreq>
