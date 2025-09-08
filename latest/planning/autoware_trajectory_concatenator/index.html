@@ -8,20 +8,20 @@
       
       
       
-        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/latest/planning/autoware_trajectory_modifier/">
+        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/latest/planning/autoware_trajectory_concatenator/">
       
       
-        <link rel="prev" href="../autoware_trajectory_concatenator/">
+        <link rel="prev" href="../autoware_surround_obstacle_checker/surround_obstacle_checker-design.ja/">
       
       
-        <link rel="next" href="../autoware_trajectory_optimizer/">
+        <link rel="next" href="../autoware_trajectory_modifier/">
       
       <link rel="icon" href="../../docs/assets/images/autoware-foundation.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.20">
     
     
       
-        <title>Autoware Trajectory Modifier - Autoware Universe Documentation</title>
+        <title>Trajectory Concatenator - Autoware Universe Documentation</title>
       
     
     
@@ -77,7 +77,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#autoware-trajectory-modifier" class="md-skip">
+        <a href="#trajectory-concatenator" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Autoware Trajectory Modifier
+              Trajectory Concatenator
             
           </span>
         </div>
@@ -14004,64 +14004,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    Features
+  <a href="#purposerole" class="md-nav__link">
+    Purpose/Role
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
-    Architecture
+  <a href="#algorithm-overview" class="md-nav__link">
+    Algorithm Overview
   </a>
   
-    <nav class="md-nav" aria-label="Architecture">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interface" class="md-nav__link">
+    Interface
+  </a>
+  
+    <nav class="md-nav" aria-label="Interface">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#plugin-interface" class="md-nav__link">
-    Plugin Interface
+  <a href="#topics" class="md-nav__link">
+    Topics
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#current-plugins" class="md-nav__link">
-    Current Plugins
+  <a href="#parameters" class="md-nav__link">
+    Parameters
   </a>
   
 </li>
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dependencies" class="md-nav__link">
-    Dependencies
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#inputoutput" class="md-nav__link">
-    Input/Output
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-new-modifier-plugins" class="md-nav__link">
-    Adding New Modifier Plugins
-  </a>
   
 </li>
       
@@ -14083,62 +14062,59 @@
   
 
 
-<div><h1 id="autoware-trajectory-modifier">Autoware Trajectory Modifier<a class="headerlink" href="#autoware-trajectory-modifier" title="Permanent link">#</a></h1>
-<p>The <code>autoware_trajectory_modifier</code> package provides a plugin-based architecture for post-processing trajectory points to improve trajectory quality and ensure vehicle safety. It takes candidate trajectories and applies various modification algorithms to enhance their feasibility and safety characteristics.</p>
-<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">#</a></h2>
-<ul>
-<li>Plugin-based architecture for extensible trajectory modifications</li>
-<li>Stop point fixing to prevent trajectory issues near stationary conditions</li>
-<li>Configurable parameters to adjust modification behavior</li>
-</ul>
-<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">#</a></h2>
-<p>The trajectory modifier uses a plugin-based system where different modification algorithms can be implemented as plugins. Each plugin inherits from the <code>TrajectoryModifierPluginBase</code> class and implements the required interface.</p>
-<h3 id="plugin-interface">Plugin Interface<a class="headerlink" href="#plugin-interface" title="Permanent link">#</a></h3>
-<p>All modifier plugins must inherit from <code>TrajectoryModifierPluginBase</code> and implement:</p>
-<ul>
-<li><code>modify_trajectory()</code> - Main method to modify trajectory points</li>
-<li><code>set_up_params()</code> - Initialize plugin parameters</li>
-<li><code>on_parameter()</code> - Handle parameter updates</li>
-<li><code>is_trajectory_modification_required()</code> - Determine if modification is needed</li>
-</ul>
-<h3 id="current-plugins">Current Plugins<a class="headerlink" href="#current-plugins" title="Permanent link">#</a></h3>
-<h4 id="stop-point-fixer">Stop Point Fixer<a class="headerlink" href="#stop-point-fixer" title="Permanent link">#</a></h4>
-<p>The Stop Point Fixer plugin addresses trajectory issues when the ego vehicle is stationary or moving at very low speeds. It prevents problematic trajectory points that could cause planning issues by:</p>
-<ul>
-<li>Monitoring ego vehicle velocity and trajectory distance</li>
-<li>Replacing the trajectory with a single stop point when conditions are met</li>
-<li>Ensuring smooth operation during stationary periods</li>
-</ul>
-<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">#</a></h2>
-<p>This package depends on the following packages:</p>
-<ul>
-<li><code>autoware_internal_planning_msgs</code>: For candidate trajectory message types</li>
-<li><code>autoware_planning_msgs</code>: For output trajectory message types</li>
-<li><code>autoware_motion_utils</code>: Motion-related utility functions</li>
-<li><code>autoware_trajectory</code>: Trajectory data structures and utilities</li>
-<li><code>autoware_utils</code>: Common utility functions</li>
-</ul>
-<h2 id="inputoutput">Input/Output<a class="headerlink" href="#inputoutput" title="Permanent link">#</a></h2>
-<ul>
-<li><strong>Input</strong>: <code>autoware_internal_planning_msgs::msg::CandidateTrajectories</code></li>
-<li><strong>Output</strong>: Modified <code>autoware_internal_planning_msgs::msg::CandidateTrajectories</code> and selected <code>autoware_planning_msgs::msg::Trajectory</code></li>
-</ul>
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
-<ul>
-<li><code>use_stop_point_fixer</code>: Enable the stop point fixer modifier plugin (default: true)</li>
-<li><code>stop_point_fixer.velocity_threshold_mps</code>: Velocity threshold below which ego vehicle is considered stationary (default: 0.1 m/s)</li>
-<li><code>stop_point_fixer.min_distance_threshold_m</code>: Minimum distance threshold to trigger trajectory replacement (default: 1.0 m)</li>
-</ul>
-<p>Parameters can be set via YAML configuration files in the <code>config/</code> directory.</p>
-<h2 id="adding-new-modifier-plugins">Adding New Modifier Plugins<a class="headerlink" href="#adding-new-modifier-plugins" title="Permanent link">#</a></h2>
-<p>To add a new modifier plugin:</p>
-<ol>
-<li>Create header and source files in <code>trajectory_modifier_plugins/</code></li>
-<li>Inherit from <code>TrajectoryModifierPluginBase</code></li>
-<li>Implement the required virtual methods</li>
-<li>Register the plugin in the main node's <code>initialize_modifiers()</code> method</li>
-<li>Add plugin-specific parameters to the schema and config files</li>
-</ol></div>
+<div><h1 id="trajectory-concatenator">Trajectory Concatenator<a class="headerlink" href="#trajectory-concatenator" title="Permanent link">#</a></h1>
+<h2 id="purposerole">Purpose/Role<a class="headerlink" href="#purposerole" title="Permanent link">#</a></h2>
+<p>This node aggregates trajectory candidates from multiple trajectory generators into a single <code>autoware_internal_planning_msgs/msg/CandidateTrajectories</code> message. It is intended to be placed between trajectory generators and the selector/ranker.</p>
+<h2 id="algorithm-overview">Algorithm Overview<a class="headerlink" href="#algorithm-overview" title="Permanent link">#</a></h2>
+<p>When a message arrives on <code>~/input/trajectories</code>, the node splits it by <code>generator_id</code> and updates an in-memory buffer so that only the most recent trajectory set for each generator is retained.</p>
+<p>A 100 ms timer then scans this buffer and drops any entry whose header stamp is older than the configured duration_time. Immediately after pruning, the timer concatenates all remaining trajectories and their accompanying <code>generator_info</code> arrays, publishes the aggregated message.</p>
+<h2 id="interface">Interface<a class="headerlink" href="#interface" title="Permanent link">#</a></h2>
+<h3 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Direction</th>
+<th>Topic name</th>
+<th>Message Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Subscriber</td>
+<td><code>~/input/trajectories</code></td>
+<td><code>autoware_internal_planning_msgs/msg/CandidateTrajectories</code></td>
+<td>Trajectory sets produced by each generator</td>
+</tr>
+<tr>
+<td>Publisher</td>
+<td><code>~/output/trajectories</code></td>
+<td><code>autoware_internal_planning_msgs/msg/CandidateTrajectories</code></td>
+<td>Concatenated list of all buffered trajectories</td>
+</tr>
+</tbody>
+</table>
+<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>duration_time</td>
+<td>float</td>
+<td>Duration time to keep the trajectory (it will be deleted once exceeding this value)</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+</tbody>
+</table></div>
 
 
 
@@ -14165,7 +14141,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../autoware_trajectory_concatenator/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Trajectory Concatenator" rel="prev">
+          <a href="../autoware_surround_obstacle_checker/surround_obstacle_checker-design.ja/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Surround Obstacle Checker" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -14174,20 +14150,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Trajectory Concatenator
+                Surround Obstacle Checker
               </div>
             </div>
           </a>
         
         
           
-          <a href="../autoware_trajectory_optimizer/" class="md-footer__link md-footer__link--next" aria-label="Next: Autoware Trajectory Optimizer" rel="next">
+          <a href="../autoware_trajectory_modifier/" class="md-footer__link md-footer__link--next" aria-label="Next: Autoware Trajectory Modifier" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Autoware Trajectory Optimizer
+                Autoware Trajectory Modifier
               </div>
             </div>
             <div class="md-footer__button md-icon">
