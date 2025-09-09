@@ -8736,6 +8736,8 @@
         
           
         
+          
+        
       
       
         <label class="md-nav__link" for="__nav_8_6_5_2" id="__nav_8_6_5_2_label" tabindex="0">
@@ -8756,36 +8758,8 @@
   
   
     <li class="md-nav__item">
-      <a href="https://autowarefoundation.github.io/autoware_core/main/planning/motion_velocity_planner/autoware_motion_velocity_obstacle_stop_module/" class="md-nav__link">
-        Obstacle Stop
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../autoware_motion_velocity_obstacle_slow_down_module/" class="md-nav__link">
-        Obstacle Slow Down
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../autoware_motion_velocity_obstacle_cruise_module/" class="md-nav__link">
-        Obstacle Cruise
+      <a href="./" class="md-nav__link">
+        Boundary Departure Prevention
       </a>
     </li>
   
@@ -8812,8 +8786,36 @@
   
   
     <li class="md-nav__item">
-      <a href="../autoware_motion_velocity_out_of_lane_module/" class="md-nav__link">
-        Out of Lane
+      <a href="../autoware_motion_velocity_obstacle_cruise_module/" class="md-nav__link">
+        Obstacle Cruise
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../autoware_motion_velocity_obstacle_slow_down_module/" class="md-nav__link">
+        Obstacle Slow Down
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://autowarefoundation.github.io/autoware_core/main/planning/motion_velocity_planner/autoware_motion_velocity_obstacle_stop_module/" class="md-nav__link">
+        Obstacle Stop
       </a>
     </li>
   
@@ -8828,6 +8830,20 @@
     <li class="md-nav__item">
       <a href="../autoware_motion_velocity_obstacle_velocity_limiter_module/" class="md-nav__link">
         Obstacle Velocity Limiter
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../autoware_motion_velocity_out_of_lane_module/" class="md-nav__link">
+        Out of Lane
       </a>
     </li>
   
@@ -14026,22 +14042,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#localization-abnormality" class="md-nav__link">
-    Localization Abnormality
+  <a href="#2-localization-abnormality" class="md-nav__link">
+    2. Localization Abnormality
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#steering-abnormality" class="md-nav__link">
-    Steering Abnormality
+  <a href="#3-steering-abnormality" class="md-nav__link">
+    3. Steering Abnormality
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#longitudinal-tracking-abnormality" class="md-nav__link">
-    Longitudinal Tracking Abnormality
+  <a href="#4-longitudinal-tracking-abnormality" class="md-nav__link">
+    4. Longitudinal Tracking Abnormality
   </a>
   
 </li>
@@ -14086,30 +14102,92 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#processing-flow" class="md-nav__link">
-    Processing Flow
+  <a href="#general-process" class="md-nav__link">
+    General process
   </a>
   
-    <nav class="md-nav" aria-label="Processing Flow">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#generating-abnormalities-data" class="md-nav__link">
     Generating abnormalities data
   </a>
   
 </li>
+      
+        <li class="md-nav__item">
+  <a href="#determining-closest-projection-to-boundaries" class="md-nav__link">
+    Determining Closest Projection to Boundaries
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-departure-points-and-finding-critical-departure" class="md-nav__link">
+    Getting Departure Points and finding Critical Departure
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-and-updating-departure-intervals" class="md-nav__link">
+    Get and updating departure intervals
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handling-unstable-predictions-with-time-buffers" class="md-nav__link">
+    Handling Unstable Predictions with Time Buffers
+  </a>
+  
+    <nav class="md-nav" aria-label="Handling Unstable Predictions with Time Buffers">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#find-and-update-departure-intervals" class="md-nav__link">
-    Find and update departure intervals
+  <a href="#1-preventing-unnecessary-actions" class="md-nav__link">
+    1. Preventing Unnecessary Actions
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-slow-down-intervals" class="md-nav__link">
-    Get slow down intervals
+  <a href="#2-preventing-prematurely-ending-actions" class="md-nav__link">
+    2. Preventing Prematurely Ending Actions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculate-slow-down" class="md-nav__link">
+    Calculate slow down
+  </a>
+  
+    <nav class="md-nav" aria-label="Calculate slow down">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-target-velocity-from-lateral-clearance" class="md-nav__link">
+    1. Target Velocity from Lateral Clearance
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-longitudinal-feasibility-and-deceleration-tiers" class="md-nav__link">
+    2. Longitudinal feasibility and deceleration tiers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-commanded-speed-via-an-analytic-s-curve-with-equations" class="md-nav__link">
+    3) Commanded speed via an analytic S-curve (with equations)
   </a>
   
 </li>
@@ -14157,7 +14235,7 @@
 <p>The module addresses the following types of abnormalities:</p>
 <h3 id="1-normal-no-abnormality">1. Normal (No Abnormality)<a class="headerlink" href="#1-normal-no-abnormality" title="Permanent link">#</a></h3>
 <p>In typical operation, the MPC trajectory may contain small deviations or noise, especially when the vehicle cannot track the planned path perfectly. These deviations are minor and not necessarily the result of a malfunction, but they are still accounted for to ensure safe boundary handling.</p>
-<h3 id="localization-abnormality">Localization Abnormality<a class="headerlink" href="#localization-abnormality" title="Permanent link">#</a></h3>
+<h3 id="2-localization-abnormality">2. Localization Abnormality<a class="headerlink" href="#2-localization-abnormality" title="Permanent link">#</a></h3>
 <p>Localization errors can cause the ego vehicle to misjudge its position relative to road boundaries such as curbs or road edges. This can happen due to:</p>
 <ul>
 <li><strong>Sensor noise or drift</strong>, leading to inaccurate pose estimation.</li>
@@ -14168,7 +14246,7 @@
 <h4 id="how-footprint-expansion-helps-with-localization-and-map-errors">How Footprint Expansion Helps with Localization and Map Errors<a class="headerlink" href="#how-footprint-expansion-helps-with-localization-and-map-errors" title="Permanent link">#</a></h4>
 <ul>
 <li><strong>Provides a conservative buffer for localization errors</strong>: If the ego vehicle’s estimated position is off due to GPS drift or sensor noise, the expanded footprint increases the likelihood of detecting potential boundary conflicts. While this may lead to conservative (and possibly false) detections, it helps ensure safety by accounting for uncertainty in the vehicle’s true position.</li>
-<li><strong>Compensates for map inaccuracies</strong>: Slight misalignments in Lanelet2 map geometries, such as curb or road edge misplacement, can make it difficult to rely on raw map boundaries. Expanding the footprint ensures that even with these inaccuracies, the system remains cautious and avoids unintentional boundary violations.</li>
+<li><strong>Compensates for map inaccuracies</strong>: Slight misalignments in Lanelet2 map geometries, such as curb or road edge misplacement, can make it difficult to rely on raw map boundaries. Expanding the footprint ensures that even with these inaccuracies, the module remains cautious and avoids unintentional boundary violations.</li>
 </ul>
 <div align="center">
   <table style="table-layout: fixed; width: 600px;">
@@ -14183,8 +14261,8 @@
   </table>
 </div>
 
-<p>By expanding the footprint, the system introduces a safety margin that accounts for minor localization and mapping uncertainties, especially critical at higher speeds.he expanded footprint creates a small buffer or "safety margin," allowing the vehicle to operate safely despite minor abnormality.</p>
-<h3 id="steering-abnormality">Steering Abnormality<a class="headerlink" href="#steering-abnormality" title="Permanent link">#</a></h3>
+<p>By expanding the footprint, the module introduces a safety margin that accounts for minor localization and mapping uncertainties, especially critical at higher speeds.he expanded footprint creates a small buffer or "safety margin," allowing the vehicle to operate safely despite minor abnormality.</p>
+<h3 id="3-steering-abnormality">3. Steering Abnormality<a class="headerlink" href="#3-steering-abnormality" title="Permanent link">#</a></h3>
 <p>Unexpected steering behavior can cause the vehicle to deviate from its planned trajectory. Instead of using a simple margin, this module simulates a future trajectory based on a bicycle model with modified steering commands to predict potential deviations. This can occur due to:</p>
 <ul>
 <li><strong>Actuator faults</strong>: such as delayed or stuck steering commands.</li>
@@ -14214,13 +14292,13 @@
 </tr>
 </tbody>
 </table>
-<h3 id="longitudinal-tracking-abnormality">Longitudinal Tracking Abnormality<a class="headerlink" href="#longitudinal-tracking-abnormality" title="Permanent link">#</a></h3>
+<h3 id="4-longitudinal-tracking-abnormality">4. Longitudinal Tracking Abnormality<a class="headerlink" href="#4-longitudinal-tracking-abnormality" title="Permanent link">#</a></h3>
 <p>Sometimes, the actual motion of the vehicle along the longitudinal axis does not match the MPC-predicted trajectory. For instance:</p>
 <p>The ego vehicle might be ahead or behind the predicted position due to mismatches in acceleration or braking behavior.</p>
 <p>This discrepancy becomes more problematic when the vehicle is near an uncrossable boundary, as it reduces the reliability of future footprint predictions.</p>
 <h4 id="how-longitudinal-expansion-helps-with-tracking-abnormality">How Longitudinal Expansion Helps with Tracking Abnormality<a class="headerlink" href="#how-longitudinal-expansion-helps-with-tracking-abnormality" title="Permanent link">#</a></h4>
 <ul>
-<li><strong>Accounts for ego being ahead of the predicted pose</strong>: During lane changes, avoidance maneuvers, or turns on curved roads, the ego vehicle may move faster than expected or take a slightly different path than predicted. By extending the footprint longitudinally (in the direction of motion), the system accounts for the ego vehicle possibly being ahead of the current MPC trajectory point.</li>
+<li><strong>Accounts for ego being ahead of the predicted pose</strong>: During lane changes, avoidance maneuvers, or turns on curved roads, the ego vehicle may move faster than expected or take a slightly different path than predicted. By extending the footprint longitudinally (in the direction of motion), the module accounts for the ego vehicle possibly being ahead of the current MPC trajectory point.</li>
 <li><strong>Uses speed-scaled margins</strong>: The longitudinal margin is scaled based on the current vehicle speed, with an added buffer. At higher speeds, a larger margin is used to reflect the increased risk and reduced reaction time.</li>
 <li><strong>Captures mismatches during dynamic maneuvers</strong>: In situations where heading is changing quickly, like on curved roads or during lateral motion, the ego’s actual position may significantly deviate from the MPC path. The extended footprint covers this discrepancy and helps detect boundary risks even if the predicted path appears safe.</li>
 </ul>
@@ -14237,7 +14315,7 @@
   </table>
 </div>
 
-<p>This approach helps bridge the gap between prediction and reality. By expanding the footprint in the heading direction, the system ensures safe operation even when there are longitudinal tracking mismatches due to control delay, road surface changes, or other dynamic factors.</p>
+<p>This approach helps bridge the gap between prediction and reality. By expanding the footprint in the heading direction, the module ensures safe operation even when there are longitudinal tracking mismatches due to control delay, road surface changes, or other dynamic factors.</p>
 <h2 id="types-of-departure">Types of Departure<a class="headerlink" href="#types-of-departure" title="Permanent link">#</a></h2>
 <p>The Boundary Departure Prevention Module classifies boundary risk into three types, each representing a different level of severity based on the proximity between the predicted footprint (including abnormality margins) and the road boundary.</p>
 <div align="center">
@@ -14263,20 +14341,20 @@
 <h3 id="2-approaching-departure">2. Approaching Departure<a class="headerlink" href="#2-approaching-departure" title="Permanent link">#</a></h3>
 <p>The ego vehicle is still some distance away from the boundary, but its predicted path will eventually lead to a critical departure if no action is taken. This condition is triggered only when a critical departure is detected at a future point along the path.</p>
 <h3 id="3-critical-departure">3. Critical Departure<a class="headerlink" href="#3-critical-departure" title="Permanent link">#</a></h3>
-<p>A portion of the normal (non-expanded) ego footprint crosses an uncrossable boundary. This condition is treated as a safety-critical violation.</p>
-<p>Unlike other departure types, abnormality margins are not considered in this judgment. Including them would increase the risk of false positives, especially on narrow or constrained roads. Instead, only the actual predicted footprint is used to determine a critical departure. Upon detecting a critical departure:</p>
+<p>A portion of the <strong>normal (non-expanded) ego footprint</strong> crosses an uncrossable boundary. This condition is treated as a safety-critical violation.</p>
+<p>Unlike <strong>near-boundary</strong> departure type, <strong>abnormality margins</strong> are not considered in this judgment. Including them would result in high number of false positives, especially on narrow or constrained roads. Instead, only the actual predicted footprint is used to determine a critical departure. Upon detecting a critical departure:</p>
 <ul>
 <li>The module does not insert a stop, but instead, it relies on previously triggered Approaching Departure to have already reduced the vehicle’s speed.</li>
 <li>The module can publish a diagnostic status, which can be configured to escalate to ERROR level.</li>
 <li>The ERROR level diagnostic can be connected to an external MRM (Minimum Risk Maneuver) system, which is responsible for issuing a full stop command.</li>
 </ul>
-<h2 id="processing-flow">Processing Flow<a class="headerlink" href="#processing-flow" title="Permanent link">#</a></h2>
+<h2 id="general-process">General process<a class="headerlink" href="#general-process" title="Permanent link">#</a></h2>
 <p>The following diagram shows the high-level processing flow of the Boundary Departure Prevention Module. It outlines the steps from checking proximity to the goal, through trajectory and abnormality analysis, to the publication of debug and diagnostic data.</p>
-<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IkFDVElWSVRZIiBoZWlnaHQ9IjY5M3B4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6NTg2cHg7aGVpZ2h0OjY5M3B4O2JhY2tncm91bmQ6I0ZGRkZGRjsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDU4NiA2OTMiIHdpZHRoPSI1ODZweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PHRpdGxlPkdlbmVyYWwgUHJvY2Vzc2luZyBGbG93PC90aXRsZT48ZGVmcy8+PGc+PGcgY2xhc3M9InRpdGxlIiBkYXRhLXNvdXJjZS1saW5lPSI0Ij48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTk0LjI5MSIgeD0iMTk0LjU2ODQiIHk9IjMyLjk5NTEiPkdlbmVyYWwgUHJvY2Vzc2luZyBGbG93PC90ZXh0PjwvZz48ZWxsaXBzZSBjeD0iMjc5LjE3MzMiIGN5PSI1Ny4yOTY5IiBmaWxsPSIjMjIyMjIyIiByeD0iMTAiIHJ5PSIxMCIgc3R5bGU9InN0cm9rZTojMjIyMjIyO3N0cm9rZS13aWR0aDoxOyIvPjxwb2x5Z29uIGZpbGw9IiNGMUYxRjEiIHBvaW50cz0iMjMyLjAyNTksODcuMjk2OSwzMjYuMzIwOCw4Ny4yOTY5LDMzOC4zMjA4LDk5LjI5NjksMzI2LjMyMDgsMTExLjI5NjksMjMyLjAyNTksMTExLjI5NjksMjIwLjAyNTksOTkuMjk2OSwyMzIuMDI1OSw4Ny4yOTY5IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMSIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSI5NC4yOTQ5IiB4PSIyMzIuMDI1OSIgeT0iMTAzLjEwNSI+SXMgZWdvIG5lYXIgZ29hbD88L3RleHQ+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTkuMDA4MyIgeD0iMjAxLjAxNzYiIHk9Ijk2LjcwMjYiPnllczwvdGV4dD48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMSIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIxMy43MDE3IiB4PSIzMzguMzIwOCIgeT0iOTYuNzAyNiI+bm88L3RleHQ+PHJlY3QgZmlsbD0iI0ZGQjZDMSIgaGVpZ2h0PSIzMy45Njg4IiByeD0iMTIuNSIgcnk9IjEyLjUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9IjI0NC4xMzI4IiB4PSIxMSIgeT0iMTIxLjI5NjkiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyMjQuMTMyOCIgeD0iMjEiIHk9IjE0Mi40MzU1Ij5EaXNhYmxlIEJvdW5kYXJ5IERlcGFydHVyZSBDaGVja2VyPC90ZXh0PjxlbGxpcHNlIGN4PSIxMzMuMDY2NCIgY3k9IjE4Ni4yNjU2IiBmaWxsPSJub25lIiByeD0iMTEiIHJ5PSIxMSIgc3R5bGU9InN0cm9rZTojMjIyMjIyO3N0cm9rZS13aWR0aDoxOyIvPjxlbGxpcHNlIGN4PSIxMzMuMDY2NCIgY3k9IjE4Ni4yNjU2IiBmaWxsPSIjMjIyMjIyIiByeD0iNiIgcnk9IjYiIHN0eWxlPSJzdHJva2U6IzIyMjIyMjtzdHJva2Utd2lkdGg6MTsiLz48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjMzLjk2ODgiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iMTk5Ljg4ODciIHg9IjMyNS4zMzU5IiB5PSIxMjEuMjk2OSIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjE3OS44ODg3IiB4PSIzMzUuMzM1OSIgeT0iMTQyLjQzNTUiPkdlbmVyYXRlIHJlZmVyZW5jZSB0cmFqZWN0b3J5PC90ZXh0PjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMzMuOTY4OCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIzMDAuMjk0OSIgeD0iMjc1LjEzMjgiIHk9IjE3NS4yNjU2Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMjgwLjI5NDkiIHg9IjI4NS4xMzI4IiB5PSIxOTYuNDA0MyI+Q2hlY2sgaWYgZ29hbCBzaGlmdGVkLiBSZXNldCB0aGUgbW9kdWxlIGlmIHRydWUuPC90ZXh0PjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMzMuOTY4OCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIxNTguMjgxMyIgeD0iMzQ2LjEzOTYiIHk9IjIyOS4yMzQ0Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTM4LjI4MTMiIHg9IjM1Ni4xMzk2IiB5PSIyNTAuMzczIj5HZXQgYWJub3JtYWxpdGllcyBkYXRhPC90ZXh0PjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMzMuOTY4OCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIyMzcuNzkzIiB4PSIzMDYuMzgzOCIgeT0iMjgzLjIwMzEiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyMTcuNzkzIiB4PSIzMTYuMzgzOCIgeT0iMzA0LjM0MTgiPkdldCBjbG9zZXN0IHByb2plY3Rpb24gdG8gYm91bmRhcmllczwvdGV4dD48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjMzLjk2ODgiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iMTQ1LjQwMjMiIHg9IjM1Mi41NzkxIiB5PSIzMzcuMTcxOSIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjEyNS40MDIzIiB4PSIzNjIuNTc5MSIgeT0iMzU4LjMxMDUiPkdldCBkZXBhcnR1cmUgcG9pbnRzPC90ZXh0PjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMzMuOTY4OCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIxODkuNDA2MyIgeD0iMzMwLjU3NzEiIHk9IjM5MS4xNDA2Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTY5LjQwNjMiIHg9IjM0MC41NzcxIiB5PSI0MTIuMjc5MyI+R2V0IGNyaXRpY2FsIGRlcGFydHVyZSBwb2ludHM8L3RleHQ+PHJlY3QgZmlsbD0iI0YxRjFGMSIgaGVpZ2h0PSIzMy45Njg4IiByeD0iMTIuNSIgcnk9IjEyLjUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9IjIzNy4xMDc0IiB4PSIzMDYuNzI2NiIgeT0iNDQ1LjEwOTQiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyMTcuMTA3NCIgeD0iMzE2LjcyNjYiIHk9IjQ2Ni4yNDgiPkZpbmQgYW5kIHVwZGF0ZSBkZXBhcnR1cmUgaW50ZXJ2YWxzPC90ZXh0PjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iMzMuOTY4OCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIxNjMuOTUzMSIgeD0iMzQzLjMwMzciIHk9IjQ5OS4wNzgxIi8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTQzLjk1MzEiIHg9IjM1My4zMDM3IiB5PSI1MjAuMjE2OCI+R2V0IHNsb3cgZG93biBpbnRlcnZhbHM8L3RleHQ+PHJlY3QgZmlsbD0iI0FERDhFNiIgaGVpZ2h0PSIzMy45Njg4IiByeD0iMTIuNSIgcnk9IjEyLjUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIgd2lkdGg9IjEzMC45NTkiIHg9IjIxMy42OTM4IiB5PSI1NTMuMDQ2OSIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjExMC45NTkiIHg9IjIyMy42OTM4IiB5PSI1NzQuMTg1NSI+UHVibGlzaCBkZWJ1ZyBpbmZvPC90ZXh0PjxyZWN0IGZpbGw9IiNBREQ4RTYiIGhlaWdodD0iMzMuOTY4OCIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIxMzQuODA4NiIgeD0iMjExLjc2OSIgeT0iNjA3LjAxNTYiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIxMTQuODA4NiIgeD0iMjIxLjc2OSIgeT0iNjI4LjE1NDMiPlB1Ymxpc2ggZGlhZ25vc3RpY3M8L3RleHQ+PGVsbGlwc2UgY3g9IjI3OS4xNzMzIiBjeT0iNjcxLjk4NDQiIGZpbGw9Im5vbmUiIHJ4PSIxMSIgcnk9IjExIiBzdHlsZT0ic3Ryb2tlOiMyMjIyMjI7c3Ryb2tlLXdpZHRoOjE7Ii8+PGVsbGlwc2UgY3g9IjI3OS4xNzMzIiBjeT0iNjcxLjk4NDQiIGZpbGw9IiMyMjIyMjIiIHJ4PSI2IiByeT0iNiIgc3R5bGU9InN0cm9rZTojMjIyMjIyO3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSIxMzMuMDY2NCIgeDI9IjEzMy4wNjY0IiB5MT0iMTU1LjI2NTYiIHkyPSIxNzUuMjY1NiIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMTI5LjA2NjQsMTY1LjI2NTYsMTMzLjA2NjQsMTc1LjI2NTYsMTM3LjA2NjQsMTY1LjI2NTYsMTMzLjA2NjQsMTY5LjI2NTYiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iNDI1LjI4MDMiIHgyPSI0MjUuMjgwMyIgeTE9IjE1NS4yNjU2IiB5Mj0iMTc1LjI2NTYiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjQyMS4yODAzLDE2NS4yNjU2LDQyNS4yODAzLDE3NS4yNjU2LDQyOS4yODAzLDE2NS4yNjU2LDQyNS4yODAzLDE2OS4yNjU2IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgeDE9IjQyNS4yODAzIiB4Mj0iNDI1LjI4MDMiIHkxPSIyMDkuMjM0NCIgeTI9IjIyOS4yMzQ0Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI0MjEuMjgwMywyMTkuMjM0NCw0MjUuMjgwMywyMjkuMjM0NCw0MjkuMjgwMywyMTkuMjM0NCw0MjUuMjgwMywyMjMuMjM0NCIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSI0MjUuMjgwMyIgeDI9IjQyNS4yODAzIiB5MT0iMjYzLjIwMzEiIHkyPSIyODMuMjAzMSIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iNDIxLjI4MDMsMjczLjIwMzEsNDI1LjI4MDMsMjgzLjIwMzEsNDI5LjI4MDMsMjczLjIwMzEsNDI1LjI4MDMsMjc3LjIwMzEiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iNDI1LjI4MDMiIHgyPSI0MjUuMjgwMyIgeTE9IjMxNy4xNzE5IiB5Mj0iMzM3LjE3MTkiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjQyMS4yODAzLDMyNy4xNzE5LDQyNS4yODAzLDMzNy4xNzE5LDQyOS4yODAzLDMyNy4xNzE5LDQyNS4yODAzLDMzMS4xNzE5IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgeDE9IjQyNS4yODAzIiB4Mj0iNDI1LjI4MDMiIHkxPSIzNzEuMTQwNiIgeTI9IjM5MS4xNDA2Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI0MjEuMjgwMywzODEuMTQwNiw0MjUuMjgwMywzOTEuMTQwNiw0MjkuMjgwMywzODEuMTQwNiw0MjUuMjgwMywzODUuMTQwNiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSI0MjUuMjgwMyIgeDI9IjQyNS4yODAzIiB5MT0iNDI1LjEwOTQiIHkyPSI0NDUuMTA5NCIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iNDIxLjI4MDMsNDM1LjEwOTQsNDI1LjI4MDMsNDQ1LjEwOTQsNDI5LjI4MDMsNDM1LjEwOTQsNDI1LjI4MDMsNDM5LjEwOTQiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iNDI1LjI4MDMiIHgyPSI0MjUuMjgwMyIgeTE9IjQ3OS4wNzgxIiB5Mj0iNDk5LjA3ODEiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjQyMS4yODAzLDQ4OS4wNzgxLDQyNS4yODAzLDQ5OS4wNzgxLDQyOS4yODAzLDQ4OS4wNzgxLDQyNS4yODAzLDQ5My4wNzgxIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgeDE9IjIyMC4wMjU5IiB4Mj0iMTMzLjA2NjQiIHkxPSI5OS4yOTY5IiB5Mj0iOTkuMjk2OSIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSIxMzMuMDY2NCIgeDI9IjEzMy4wNjY0IiB5MT0iOTkuMjk2OSIgeTI9IjEyMS4yOTY5Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSIxMjkuMDY2NCwxMTEuMjk2OSwxMzMuMDY2NCwxMjEuMjk2OSwxMzcuMDY2NCwxMTEuMjk2OSwxMzMuMDY2NCwxMTUuMjk2OSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSIzMzguMzIwOCIgeDI9IjQyNS4yODAzIiB5MT0iOTkuMjk2OSIgeTI9Ijk5LjI5NjkiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iNDI1LjI4MDMiIHgyPSI0MjUuMjgwMyIgeTE9Ijk5LjI5NjkiIHkyPSIxMjEuMjk2OSIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iNDIxLjI4MDMsMTExLjI5NjksNDI1LjI4MDMsMTIxLjI5NjksNDI5LjI4MDMsMTExLjI5NjksNDI1LjI4MDMsMTE1LjI5NjkiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iNDI1LjI4MDMiIHgyPSI0MjUuMjgwMyIgeTE9IjUzMy4wNDY5IiB5Mj0iNTM4LjA0NjkiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iNDI1LjI4MDMiIHgyPSIyNzkuMTczMyIgeTE9IjUzOC4wNDY5IiB5Mj0iNTM4LjA0NjkiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iMjc5LjE3MzMiIHgyPSIyNzkuMTczMyIgeTE9IjUzOC4wNDY5IiB5Mj0iNTUzLjA0NjkiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjI3NS4xNzMzLDU0My4wNDY5LDI3OS4xNzMzLDU1My4wNDY5LDI4My4xNzMzLDU0My4wNDY5LDI3OS4xNzMzLDU0Ny4wNDY5IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgeDE9IjI3OS4xNzMzIiB4Mj0iMjc5LjE3MzMiIHkxPSI2Ny4yOTY5IiB5Mj0iODcuMjk2OSIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMjc1LjE3MzMsNzcuMjk2OSwyNzkuMTczMyw4Ny4yOTY5LDI4My4xNzMzLDc3LjI5NjksMjc5LjE3MzMsODEuMjk2OSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSIyNzkuMTczMyIgeDI9IjI3OS4xNzMzIiB5MT0iNTg3LjAxNTYiIHkyPSI2MDcuMDE1NiIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMjc1LjE3MzMsNTk3LjAxNTYsMjc5LjE3MzMsNjA3LjAxNTYsMjgzLjE3MzMsNTk3LjAxNTYsMjc5LjE3MzMsNjAxLjAxNTYiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iMjc5LjE3MzMiIHgyPSIyNzkuMTczMyIgeTE9IjY0MC45ODQ0IiB5Mj0iNjYwLjk4NDQiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjI3NS4xNzMzLDY1MC45ODQ0LDI3OS4xNzMzLDY2MC45ODQ0LDI4My4xNzMzLDY1MC45ODQ0LDI3OS4xNzMzLDY1NC45ODQ0IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PCEtLVNSQz1bUlA0blJuaW4zOEx0X0dlMk1VbWJGeTBVWVlQZnNXMFRaMjkwUHZ4NGtzQ2lhbVVJUWtmX05ydGpmMXFvSThGVXF0a1ZBMy1vQjZYdVdhOFpqWGhGejNpLUx2eGFIMUFHLXFRTV9EcXJPM3ZFZmF0QWxMT3JrRmR2eFVkdklxaDFLR2MtYWYxWFhPRGY5ZFVNMkh3aGxZT0ZqNFd5bWtSOVdJTzU4SklPNUVrZEJTSEMwZmlwLUpSVFZFVGZaV0ZCU1ZWMFphRUZsNWt4cUN4bUc5cVdjWDdTcHZJRlBGaVVncWtZd1dHUnFNdFFOVWczbTZXYTh5YTRPVlgyRVRKRS14SnhVbjR3bmplQ0ZsQ09MNnhYMXBkNVlXNGRCUXJ0VGFUT2V6bHo2WGMwV3dZVGk3OG1FSEdDbDBndmdmQzdCQVBoMlFqMEEwbU51a3d6c2lleC1ROGl5TlFTaEdWYzNsQTFfaVhJMEZqZ0lyYVZ6Q18yd3VWeW1sZ011ZHMtS0ZITF9iVDgyZV9OUVR4TEhoajM2b2h4dDdFNkRkTmRnRmlGUFNQOXIza01Od1J4MW0wMF0tLT48L2c+PC9zdmc+" class="uml" alt="uml diagram" title=""></p>
-<h3 id="generating-abnormalities-data">Generating abnormalities data<a class="headerlink" href="#generating-abnormalities-data" title="Permanent link">#</a></h3>
+<p><img src="data:image/svg+xml;base64,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" class="uml" alt="uml diagram" title=""></p>
+<h2 id="generating-abnormalities-data">Generating abnormalities data<a class="headerlink" href="#generating-abnormalities-data" title="Permanent link">#</a></h2>
 <p>The diagram below illustrates how the module processes predicted trajectory points to generate footprints with embedded abnormality margins and find their projections relative to nearby map boundaries.</p>
-<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IkFDVElWSVRZIiBoZWlnaHQ9IjM3OHB4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6MzQ5cHg7aGVpZ2h0OjM3OHB4O2JhY2tncm91bmQ6I0ZGRkZGRjsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDM0OSAzNzgiIHdpZHRoPSIzNDlweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PHRpdGxlPkdldHRpbmcgYWJub3JtYWxpdGllcyBkYXRhPC90aXRsZT48ZGVmcy8+PGc+PGcgY2xhc3M9InRpdGxlIiBkYXRhLXNvdXJjZS1saW5lPSI0Ij48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMjEzLjQyNDgiIHg9IjY2LjUxNDIiIHk9IjMyLjk5NTEiPkdldHRpbmcgYWJub3JtYWxpdGllcyBkYXRhPC90ZXh0PjwvZz48ZWxsaXBzZSBjeD0iMTc0LjcyNjYiIGN5PSI1Ny4yOTY5IiBmaWxsPSIjMjIyMjIyIiByeD0iMTAiIHJ5PSIxMCIgc3R5bGU9InN0cm9rZTojMjIyMjIyO3N0cm9rZS13aWR0aDoxOyIvPjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iNDcuOTM3NSIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIyNzAuNzI4NSIgeD0iMzkuMzYyMyIgeT0iODcuMjk2OSIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjI1MC43Mjg1IiB4PSI0OS4zNjIzIiB5PSIxMDguNDM1NSI+R2VuZXJhdGUgaW5pdGlhbCBtYXJnaW4gZm9vdHByaW50J3MgbWFyZ2luPC90ZXh0Pjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjIyOC41NzQyIiB4PSI2MC40Mzk1IiB5PSIxMjIuNDA0MyI+Y29uc2lkZXJpbmcgY3VycmVudCBwb3NlJ3MgY292YXJpYW5jZTwvdGV4dD48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjMzLjk2ODgiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iMjgyLjU0MSIgeD0iMzMuNDU2MSIgeT0iMTU1LjIzNDQiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyNjIuNTQxIiB4PSI0My40NTYxIiB5PSIxNzYuMzczIj5HZW5lcmF0ZSBmb290cHJpbnRzIGZvciBhbGwgQWJub3JtYWxpdHlUeXBlPC90ZXh0PjxyZWN0IGZpbGw9IiNGMUYxRjEiIGhlaWdodD0iNDcuOTM3NSIgcng9IjEyLjUiIHJ5PSIxMi41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiIHdpZHRoPSIzMDUuMDcwMyIgeD0iMjIuMTkxNCIgeT0iMjA5LjIwMzEiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyODUuMDcwMyIgeD0iMzIuMTkxNCIgeT0iMjMwLjM0MTgiPkZpbmQgc2VnbWVudHMgbmVhcmVzdCB0byBlZ28ncyBwcmVkaWN0ZWQgcGF0aC48L3RleHQ+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMjcwLjYzODciIHg9IjM5LjQwNzIiIHk9IjI0NC4zMTA1Ij5UaGUgc2VnbWVudHMgYXJlIHNlcGFyYXRlZCB0byBsZWZ0IGFuZCByaWdodDwvdGV4dD48cmVjdCBmaWxsPSIjRjFGMUYxIiBoZWlnaHQ9IjQ3LjkzNzUiIHJ4PSIxMi41IiByeT0iMTIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7IiB3aWR0aD0iMzI3LjQ1MzEiIHg9IjExIiB5PSIyNzcuMTQwNiIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjMwNy40NTMxIiB4PSIyMSIgeT0iMjk4LjI3OTMiPlByb2plY3QgbGVmdCBzaWRlIG9mIGVnbyB0byB0aGUgbmVhcmVzdCBsZWZ0IHNlZ21lbnQsPC90ZXh0Pjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjMwMS43ODEzIiB4PSIyMy44MzU5IiB5PSIzMTIuMjQ4Ij5hbmQgcmlnaHQgc2lkZSBvZiBlZ28gdG8gdGhlIG5lYXJlc3QgcmlnaHQgc2VnbWVudDwvdGV4dD48ZWxsaXBzZSBjeD0iMTc0LjcyNjYiIGN5PSIzNTYuMDc4MSIgZmlsbD0ibm9uZSIgcng9IjExIiByeT0iMTEiIHN0eWxlPSJzdHJva2U6IzIyMjIyMjtzdHJva2Utd2lkdGg6MTsiLz48ZWxsaXBzZSBjeD0iMTc0LjcyNjYiIGN5PSIzNTYuMDc4MSIgZmlsbD0iIzIyMjIyMiIgcng9IjYiIHJ5PSI2IiBzdHlsZT0ic3Ryb2tlOiMyMjIyMjI7c3Ryb2tlLXdpZHRoOjE7Ii8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgeDE9IjE3NC43MjY2IiB4Mj0iMTc0LjcyNjYiIHkxPSI2Ny4yOTY5IiB5Mj0iODcuMjk2OSIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMTcwLjcyNjYsNzcuMjk2OSwxNzQuNzI2Niw4Ny4yOTY5LDE3OC43MjY2LDc3LjI5NjksMTc0LjcyNjYsODEuMjk2OSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSIxNzQuNzI2NiIgeDI9IjE3NC43MjY2IiB5MT0iMTM1LjIzNDQiIHkyPSIxNTUuMjM0NCIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMTcwLjcyNjYsMTQ1LjIzNDQsMTc0LjcyNjYsMTU1LjIzNDQsMTc4LjcyNjYsMTQ1LjIzNDQsMTc0LjcyNjYsMTQ5LjIzNDQiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48bGluZSBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7IiB4MT0iMTc0LjcyNjYiIHgyPSIxNzQuNzI2NiIgeTE9IjE4OS4yMDMxIiB5Mj0iMjA5LjIwMzEiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjE3MC43MjY2LDE5OS4yMDMxLDE3NC43MjY2LDIwOS4yMDMxLDE3OC43MjY2LDE5OS4yMDMxLDE3NC43MjY2LDIwMy4yMDMxIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PGxpbmUgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgeDE9IjE3NC43MjY2IiB4Mj0iMTc0LjcyNjYiIHkxPSIyNTcuMTQwNiIgeTI9IjI3Ny4xNDA2Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSIxNzAuNzI2NiwyNjcuMTQwNiwxNzQuNzI2NiwyNzcuMTQwNiwxNzguNzI2NiwyNjcuMTQwNiwxNzQuNzI2NiwyNzEuMTQwNiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxsaW5lIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiIHgxPSIxNzQuNzI2NiIgeDI9IjE3NC43MjY2IiB5MT0iMzI1LjA3ODEiIHkyPSIzNDUuMDc4MSIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iMTcwLjcyNjYsMzM1LjA3ODEsMTc0LjcyNjYsMzQ1LjA3ODEsMTc4LjcyNjYsMzM1LjA3ODEsMTc0LjcyNjYsMzM5LjA3ODEiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48IS0tU1JDPVtWUDJuSldDbjM4UnRVbWZCMzJvODF3MUpYUTJtQ1BwNHFpTERWQWJmcGV1UzV6NnQ5ejZMV3VhYklrQkZOX3d1ZGJXQTZpdUdRUzlwemY2LVY5aXZvS3BZNERmMkRqSUxFYzB1OVRFcG40VkRRZDNwX2w4d0ZXczNpc1UyN1JjcDlDMjNnQ3NPc1BhZ0g3R1NnZ0Z2eUIwWjhLQ2RPNmI1cDMyWjlIUU9MQnFPWXpfTXd6TFVXYWhiSURRRHVNcE0wbk1qcjkyV2RzWUM0Y1pwbnhiQVFqaVFPQ3dtTlBEU25hbGZ6M0RCWDRnZl93LTI0MWZMMXJVV2ZDclNaMjg3Zm1XNV9OWV9iXzU4bHRZM3N3NkZlWEVqQVRGYVdDcmVkOHhVejYtYzduSHlBVkp1ZTVETlR6WVJ3a1YxZlJ2dXhfUW9BbHhoa0c5QnFzUGVDek5vM0cwMF0tLT48L2c+PC9zdmc+" class="uml" alt="uml diagram" title=""></p>
-<h4 id="determining-closest-projection-to-boundaries">Determining Closest Projection to Boundaries<a class="headerlink" href="#determining-closest-projection-to-boundaries" title="Permanent link">#</a></h4>
+<p><img src="data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAA2EAAADHAQAAAAC42mb8AAAJ/ElEQVR4AezYB67cNhAG4FEYYB4qD5DClAsE1d1MTpUeSnG7Fhc+SJiObqYTMM0/Q0rc8tzk3rYNZkeEPlVqsITn+BqflnbUjtpRO2pH7agdtQnwtlejfnZaJkIhV4i3VXWvsYUBf6qWLIAAgB9FS2QLbQ2iZ6tFMoWGvloi90y1QLps9yjva9k+QLvxmNpFXcy4GInDTkvmAZp6DE0DvnBB6JrOz1wD4nLQoinPVpug9jSL56ClnYZnd5WIpsTb19bfb6+aZl4rjbHZHcGkAQxA0csgB++22qYtg+SuakkjBANGNGu1wvCiuUVj+ZJLF5VC+MIW0oVM15hcIueR3icxkvUKgVi0kddp5GYtLFpWIpNJZ+kKQrKJOBN37W2ysiwgXSSu2kiiKdFoWKnpWRuxaCQy6fTJrEXiRKprJFTTzs4aiSYQF6KVGjct9eGFLPw3nD7ebLBJNhiOZthqX+jwjY4ufmFU1VRwwYzgzN6t09SsbQ8FaUzgxH81zbvfg9t0bSj6x9I0d6VqkornOJm4UhtmjXvVM67gStK3PSbR8F9A6Joq/Ds42vAlNlWzyQZE0SRZowl3at+CAotmECTaCdjsNAbfqkq4PWuuaZajW6mBvmva9omdCIybVXMq2StVi3saRDEes4aqparllZpvGrZaIeh6xhAdN+2mZAdaNpsDzXBENo+kBbstf7dolzlZBq7cpelpTxOIw2otXG5aFG0cGn+ZaKhruqybNhLta4WLvgJMTYuLRrRSi7OWTNfCg7XYtDw0bXxMLW+1+P6ivXtPbeTCCqFpmR5ZswrToaYB0fK7ZjlvwE4rgwQxP6taPFk0AI+ppa6d3EvLQr3FGDZVC2efQAP2tXJi9zQFTFVLhvG9Ltw0n55Q+080njWatanVuxYdY9TZNO1K19xaLdgJ6kAzswZyy1xyWvOma30uWa+5pqVF++s+2lA/ogVULdmm8SNr3o2F7+y6oHpoZ22UOPXmZ0RRXQt2X4ui2XXaLYzwhbOLXXNBiDtdq08cBweMNvG9tfZ8ww9rtB8LIZzVWXu3aGa0I/7Yau73YLMDvA730bxoGmaNFmiQr85EXZPM26lqG9GCuRF1cHUg6aZ9x4gumalqKtrgRnBWaaWmBDCiLcU0dzZdi8RJ/LYVpmrxYtWyHqo2Bdu7oJUaC2CzoL3nGhBn7WfMHV7TamwakUv1lxFtJDV3eCu1SAb54B8MyTJx1wr1ZlFi1dJQtUKfVs2fqNgOsCe3RkMdNgDe9GqQjMQC/m/HPnQbR+4wgFPhwkwV06tgpgc95RqJJTzpPfEjpFwROqxcowHFI2OLLoAhpicCBM9bpBc5XpgphoiOoGWp0NCg3pLglSE0N//MULTW5fpJTuOn+lHlB7ANyaeLLyEYmsV0szwhkGsswHax+0hcEwon0avrXJVWaZX2f6dVWqVVWqVVWqVVWqV1tHeCDKsxKF6BpcAYnAvHi9Q071hLIFm+Zs81HJ3R/IVpYLFC4e+ca2i4dA0KbXqhWia11HrsjAZL0mKl+a9eprYPhtIYOrCGttSuv1NqwmSo9ya+ZcZd8K8AaHibCbTzrVesabwGjNuRecPoKO1PttS4HpmPvZox/Z86+BoIbUtrb6HGJ/Er1Wy+obaAuLsfFHMy8qTGsrh75e+MjaOnoecCb7ddt2013FestT0mNe9WEMSFlhTaNAi6jKXpGKC3Box7oiG1LfRKNd7iWO25jjXGlAZ+7PNWzGKpIUi4B6v2qrsgDW5rzxQaPqFZkPIW9OzeIrQNrdC6pQZK41ZH9/n7Ik1qvlFo/jt32gvTuHFSE4bUxAdm2vZMe9ONRWit2f7xCyc1uOKD1GJQWrR4LQ2UhpNSG0sNjJnGcKFdifgCNK/QYqVxNC61NFBaWmhcah5Yi9LwXLP2Zto0DaZKE1LrccyU1k0WobVdpY2vBfH4H5quNA2x8Tj2wWee0mys9iUoSBehbWlKS2pBnFgds9T0RJca15SmAdfklxaj4RowSdwbxAxFaKYJg5k+3BT6bAtQYwDcmr5irTp6rbRKq7RKq7RKqzSVxHoWLQwghLPJAYBC+aQSwPMkP/mSwSxoaIAKPa11T2r8rIYAgAB0QUXg59Oc01p3rF74GQ29GA29dM1Kn1WbnpuTN8/OSaWVefp55uTNmSZUW8McVM5q2TmNPI9Gn0cjM61gXO8Qn9dGZvTnLVNYxs+Ju3ovT+D78n1uXkmoL6z3Ucfcg0FX1Otexq+vfWe1vRcxzPMklxWttKG7d4S2wZDFcMDYh+1s78/eHZPPWG70de/N7+QNCub+0cdva8Oha/C6/v2ve/VP8Qh3vBWDGbVh02KGRm2jAwNdvN6wKb+0ulFvbw83kHhw6GSy6g7onWi1JvSiCEODzoOd4cfumLzKdIP6xhvf6L2eckOL3ntiTgaNmD/e6o02Dy5zinsOJSzeDB9AOW007XiABy1wY6llvdZBm47u+KN4MJRa1sscuDy4t7cpykJc2H3wd0Ejm2wGTrjbfHB0+ZDyp106wLe1sJ/xdk5GD04wj4HckZE8y8kRzrK1ppOt4UEOTvbmL/BMfqNNycdBfIT0JRBmbwFrrXmYgypS293C5A4eDqRGHbLbvCNEhzQXW83dk9rPdeHWyFGygnlaaimJYKZpSrP1H66XWscGKLX4R+BrSotVKTV2Sts5r/UBGkCOMoE5K7XvkaNSQyA1B+Ya4RjMmfaWLgSISu0tqpTajWNtkNwRul99Vu0QSKo0gWeaQyb4lBZYxxog8KWmagCZ0sSDqpTa4Fiz2YOhc3heG0yfGX2XpPlTmD+OiUNJTp2QopwqjWCpudNSs2n4yzvAD+14pj1ImqPNmVauJVJLD6TW+3iWKc0Fl57QkvWBzus1krIVzCNMbOMKM5xhkzBDaZ1C02ca1SK5ggMZurqqIeid5qh2rF3RoKO0d65sUntPLzVDO6mxdWII6wqZijrmCZA1a59bnaQZCktpEUgNGbf+WGg7SeI9CCQRd/AsrIXQjWhYg5oqDuyrrXu4vtt4YJO6sS/npHuJImN/rr2cTOc7MgJnM5/CsfimBfMsWROIh2QR2tPzkQc9twbmeDEavCito0fWQjQ+V59HS6wE/w8cc1VapVVapTF84mQhX7YWoYvUgj9epBbCXKNiE4BchEYLrbVsLeDtvkmS+7Dl6Mkd6JK5VC1O3L6Jom+6ptQ+sbpkLc0GHkUH9zaoE/J00ERL1Vg8yCd41Pz5RGrZgC5X402l7Tb7k02p9ZesCakdQaH5LOtPlq39PD2Cwfq7Ji2Sx/0DvFTtd/c6WQo7I3t0L8mpPVqu1kmUNhy26/oV9hG3rt+xTG2P5VkGN4YCvWWff8RdX66mkl3oaEr/h7XwQjX/v+MoqNIqrdIqrdIqrdL+BRHP3ADfQwzjAAAAAElFTkSuQmCC" class="uml" alt="uml diagram" title=""></p>
+<h2 id="determining-closest-projection-to-boundaries">Determining Closest Projection to Boundaries<a class="headerlink" href="#determining-closest-projection-to-boundaries" title="Permanent link">#</a></h2>
 <p>To assess how close the ego vehicle is to nearby uncrossable boundaries, the <code>BoundaryDepartureChecker</code> class calculates the nearest lateral projection between each predicted footprint and the map boundary segments. This is done separately for the left and right sides of the vehicle.</p>
 <p>Each footprint includes left and right edge segments. These segments are projected onto nearby map segments to compute the shortest lateral distance from the vehicle to the boundary.</p>
 <p>For each pair of ego-side and boundary segments:</p>
@@ -14305,16 +14383,175 @@
 <li>Red arrows show the closest projection to the left boundary.</li>
 <li>Purple arrows show the closest projection to the right boundary.</li>
 </ul>
-<h3 id="find-and-update-departure-intervals">Find and update departure intervals<a class="headerlink" href="#find-and-update-departure-intervals" title="Permanent link">#</a></h3>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>TBA</p>
+<h2 id="getting-departure-points-and-finding-critical-departure">Getting Departure Points and finding Critical Departure<a class="headerlink" href="#getting-departure-points-and-finding-critical-departure" title="Permanent link">#</a></h2>
+<p>Once the closest projections to boundaries are obtained, the module filters and classifies potential departure points to determine the appropriate response.</p>
+<p>The classification of a potential departure point is determined by its lateral distance from the road boundary and the type of prediction that generated it. The module processes a series of predicted points along a trajectory, from the closest to the farthest.</p>
+<ul>
+<li><strong>Critical Departure</strong>: This is the most severe type and has the highest work priority. A point is classified as a critical departure if it indicates the vehicle has already crossed the boundary, which is when the lateral distance is less than a minimum threshold, <code>th_dist_to_boundary_m.min</code>. Once a critical departure is found, all other departure points farther along the trajectory are ignored.</li>
+<li><strong>Near Boundary</strong>: If a point is not a critical departure, it is then checked to see if it is a near boundary departure. This classification applies to any point where the lateral distance is less than or equal to a maximum threshold, <code>th_dist_to_boundary_m.max</code>. The module selects the point with the minimum lateral distance from among all prediction types.</li>
+</ul>
+<p>The module calculates two key braking distances to inform the departure classification:</p>
+<ul>
+<li><strong><code>minimum braking dist</code></strong>: The shortest distance required for the ego vehicle to stop safely without departing the lane. This is calculated using the maximum allowed acceleration and jerk (<code>th_acc_mps2.max</code> and <code>th_jerk_mps3.max</code>).</li>
+<li><strong><code>maximum braking dist</code></strong>: The longest distance required for a comfortable deceleration before the vehicle gets too close to the boundary. This is calculated using the minimum allowed acceleration and jerk (<code>th_acc_mps2.min</code> and <code>th_jerk_mps3.min</code>).</li>
+</ul>
+<p>Following equation is used</p>
+<div class="arithmatex">\[
+d_{\text{total}} =
+\begin{cases}
+d_1 + d_2, &amp; v_2 \le 0, \quad
+t_2 = \dfrac{
+-a_{\text{max}} - \sqrt{a_0^2 - 2 j v_0}
+}{j} \\[12pt]
+d_1 + d_2 + d_3, &amp; v_2 &gt; 0, \quad
+t_2 = \dfrac{a_{\text{max}} - a_0}{j}
+\end{cases}
+\]</div>
+<p>where</p>
+<ul>
+<li><span class="arithmatex">\(d_1 = v_0 \cdot t_1\)</span>: distance during delay</li>
+<li><span class="arithmatex">\(d_2 = v_0 t_2 + \dfrac{1}{2} a_0 t_2^2 + \dfrac{1}{6} j t_2^3\)</span>: distance during jerk-limited deceleration</li>
+<li><span class="arithmatex">\(d_3 = -\dfrac{v_2^2}{2 a_{\text{max}}}\)</span>: distance under constant deceleration (if needed)</li>
+<li><span class="arithmatex">\(v_2 = v_0 + \dfrac{a_{\text{max}}^2 - a_0^2}{2j}\)</span>: velocity after jerk ramp</li>
+</ul>
+<p>These distances are used to determine if a predicted departure is within a reachable range. Specifically, the module uses these distances to make two key decisions:</p>
+<ol>
+<li>A <code>Near Boundary</code> point is only considered for a slowdown if it is within <code>max_braking_dist</code>.</li>
+<li>A <code>Critical Departure</code> point is only considered for an emergency stop if it is within <code>min_braking_dist</code>.</li>
+<li>A <code>Critical Departure</code> point is reclassified as an <code>Approaching Departure</code> if it is found beyond <code>min_braking_dist</code>, as it is too far for an immediate emergency response.<ul>
+<li>Any preceding points are also reclassified to <code>Approaching Departure</code> if they are within <code>max_braking_dist</code> of the critical point.</li>
+</ul>
+</li>
+</ol>
+<p>The module also filters closely spaced departure points. This process ensures that multiple, minor issues are treated as a single event, simplifying the module's response.</p>
+<div align="center">
+  <table style="table-layout: fixed; width: 800px;">
+    <tr>
+      <th style="text-align: center; width: 25%; word-wrap: break-word; white-space: normal;">Closest points to boundaries</th>
+      <th style="text-align: center; width: 25%; word-wrap: break-word; white-space: normal;">Departure points</th>
+      <th style="text-align: center; width: 25%; word-wrap: break-word; white-space: normal;">Grouping nearby points</th>
+      <th style="text-align: center; width: 25%; word-wrap: break-word; white-space: normal;">Remaining points after merging</th>
+    </tr>
+    <tr>
+      <td style="text-align: center;"><img src="./images/departure_interval-closest_pts_to_boundaries.png" alt="Closest_1" width="350"></td>
+      <td style="text-align: center;"><img src="./images/departure_interval-departure_points.png" alt="dpt_pts" width="350"></td>
+      <td style="text-align: center;"><img src="./images/departure_intervals-group_nearby_pts.png" alt="group_nearby" width="350"></td>
+      <td style="text-align: center;"><img src="./images/departure_interval-dpt_pts_after_merge.png" alt="after_combine" width="350"></td>
+    </tr>
+  </table>
 </div>
-<h3 id="get-slow-down-intervals">Get slow down intervals<a class="headerlink" href="#get-slow-down-intervals" title="Permanent link">#</a></h3>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>TBA</p>
+
+<h2 id="get-and-updating-departure-intervals">Get and updating departure intervals<a class="headerlink" href="#get-and-updating-departure-intervals" title="Permanent link">#</a></h2>
+<p>Path chattering is a problem that occurs when a slowdown command shortens the vehicle's predicted trajectory. This shortened path might temporarily eliminate the very departure point that caused the slowdown, leading the module to believe the risk is gone and to cancel the command. The path then lengthens again, the departure is re-detected, and the cycle repeats.</p>
+<p>The module uses departure intervals to maintain stable slowdown commands and prevent path chattering. Instead of simply reacting to a single departure point, which could change rapidly from one moment to the next, the module defines a continuous segment of the trajectory where a slowdown is active. This approach avoids a "fluttering" effect where the vehicle repeatedly slows down, then accelerates, then slows down again.</p>
+<p><img alt="departure_interval" src="images/departure_intervals-find_interval.png"></p>
+<p>The module merges any new departure points or existing intervals that overlap with each other. For instance, if a new point is detected that is close to an existing slowdown interval, that interval will be extended to include the new point. This ensures the module issues one cohesive command rather than multiple, conflicting ones. This merging process prevents the vehicle from starting and stopping a slowdown for every minor deviation, promoting a smoother and safer ride.</p>
+<div align="center">
+  <table style="table-layout: fixed; width: 800px;">
+    <tr>
+      <th style="text-align: center; width: 50%; word-wrap: break-word; white-space: normal;">Before merge</th>
+      <th style="text-align: center; width: 50%; word-wrap: break-word; white-space: normal;">After merge</th>
+    </tr>
+    <tr>
+      <td style="text-align: center;"><img src="./images/departure_interval-before_merge_1.png" alt="Before merge 1" width="350"></td>
+      <td style="text-align: center;"><img src="./images/departure_interval-after_merge_1.png" alt="After merge  1" width="350"></td>
+    </tr>
+    <tr>
+      <td style="text-align: center;"><img src="./images/departure_interval-before_merge_2.png" alt="Before merge 2" width="350"></td>
+      <td style="text-align: center;"><img src="./images/departure_interval-after_merge_2.png" alt="After merge  2" width="350"></td>
+    </tr>
+    <tr>
+      <td style="text-align: center;"><img src="./images/departure_interval-before_merge_3.png" alt="Before merge 3" width="350"></td>
+      <td style="text-align: center;"><img src="./images/departure_interval-after_merge_3.png" alt="After merge 3" width="350"></td>
+    </tr>
+  </table>
 </div>
+
+<h2 id="handling-unstable-predictions-with-time-buffers">Handling Unstable Predictions with Time Buffers<a class="headerlink" href="#handling-unstable-predictions-with-time-buffers" title="Permanent link">#</a></h2>
+<p>The module employs a continuous detection mechanism to stabilize its response to boundary predictions, preventing two types of errors: unnecessary deceleration (<strong>false positives</strong>) and sudden, late deceleration (<strong>false negatives</strong>).</p>
+<h3 id="1-preventing-unnecessary-actions">1. Preventing Unnecessary Actions<a class="headerlink" href="#1-preventing-unnecessary-actions" title="Permanent link">#</a></h3>
+<p>The <strong><code>on_time_buffer_s</code></strong> is a filter that prevents the module from overreacting to fleeting or unstable predictions. The module will only insert a departure into a list if a potential boundary departure is detected continuously for a specific duration.</p>
+<ul>
+<li><strong>Near Boundary</strong>: A slowdown is initiated only after a potential departure is detected for a duration greater than or equal to <code>on_time_buffer_s.near_boundary</code>. This handles general cases of the vehicle getting close to a boundary, acting as a safeguard against <strong>false positives</strong>.</li>
+<li><strong>Critical Departure</strong>: For more severe, high-risk situations, a separate check uses <strong><code>on_time_buffer_s.critical_departure</code></strong>. A critical departure is added to a <strong>critical departure points list</strong> only if a critical departure is consistently detected over this dedicated time period. For further usage of this list, refer to the Diagnostic Section.</li>
+</ul>
+<h3 id="2-preventing-prematurely-ending-actions">2. Preventing Prematurely Ending Actions<a class="headerlink" href="#2-preventing-prematurely-ending-actions" title="Permanent link">#</a></h3>
+<p>The <strong><code>off_time_buffer_s</code></strong> is a filter that prevents the module from prematurely ending a response. Once an action is active, it won't be cleared until the module is confident the risk has passed.</p>
+<ul>
+<li><strong>Near Boundary</strong>: A slowdown is only cleared when no departure points are detected for a continuous duration greater than or equal to <code>off_time_buffer_s.near_boundary</code>. This prevents a <strong>false negative</strong>, where a brief absence of a prediction causes the vehicle to accelerate again, even if it's still in a dangerous state.</li>
+<li><strong>Critical Departure</strong>: The module uses <code>off_time_buffer_s.critical_departure</code> to manage a critical departure list. This list is cleared only after a critical departure has not been detected for a continuous period.</li>
+</ul>
+<h2 id="calculate-slow-down">Calculate slow down<a class="headerlink" href="#calculate-slow-down" title="Permanent link">#</a></h2>
+<h3 id="1-target-velocity-from-lateral-clearance">1. Target Velocity from Lateral Clearance<a class="headerlink" href="#1-target-velocity-from-lateral-clearance" title="Permanent link">#</a></h3>
+<p>The target velocity, <span class="arithmatex">\(v_{\text{target}}\)</span>, is determined based on the vehicle's lateral distance from the boundary. This process ensures the vehicle's speed is reduced as it gets closer to the specified boundary (e.g. <code>road_border</code>).</p>
+<ul>
+<li><strong>Concept</strong>: The module defines a <strong>minimum velocity</strong> (<span class="arithmatex">\(v_{\min}\)</span>) and a <strong>maximum velocity</strong> (<span class="arithmatex">\(v_{\max}\)</span>). It also sets a <strong>safe lateral zone</strong> between a minimum distance (<span class="arithmatex">\(d_{\text{lat,min}}\)</span>) and a maximum distance (<span class="arithmatex">\(d_{\text{lat,max}}\)</span>).</li>
+<li><strong>How it Works</strong>:<ul>
+<li>If the vehicle is too close to the boundary (at or within <span class="arithmatex">\(d_{\text{lat,min}}\)</span>), the module commands the minimum velocity, <span class="arithmatex">\(v_{\min}\)</span>.</li>
+<li>If the vehicle is well within its lane (at or beyond <span class="arithmatex">\(d_{\text{lat,max}}\)</span>), it is permitted to drive at the maximum velocity, <span class="arithmatex">\(v_{\max}\)</span>.</li>
+<li>If the vehicle is between these two distances, its target velocity is scaled between <span class="arithmatex">\(v_{\min}\)</span> and <span class="arithmatex">\(v_{\max}\)</span>. This is achieved by a linear interpolation.</li>
+</ul>
+</li>
+</ul>
+<p>The target velocity, <span class="arithmatex">\(v_{\text{target}}\)</span>, is calculated using the following formula:</p>
+<div class="arithmatex">\[
+v_{\text{target}}(d_{\text{lat}})=
+\begin{cases}
+v_{\min}, &amp;
+d_{\text{lat}} \le d_{\text{lat,min}},\\[8pt]
+v_{\min}
++\displaystyle \frac{d_{\text{lat}}-d_{\text{lat,min}}}{\,d_{\text{lat,max}}-d_{\text{lat,min}}\,}
+\,(v_{\max}-v_{\min}), &amp;
+d_{\text{lat,min}}&lt; d_{\text{lat}} &lt; d_{\text{lat,max}},\\[12pt]
+v_{\max}, &amp;
+d_{\text{lat}} \ge d_{\text{lat,max}}.
+\end{cases}
+\]</div>
+<h3 id="2-longitudinal-feasibility-and-deceleration-tiers">2. Longitudinal feasibility and deceleration tiers<a class="headerlink" href="#2-longitudinal-feasibility-and-deceleration-tiers" title="Permanent link">#</a></h3>
+<p>Once the <span class="arithmatex">\(v_{\text{target}}\)</span> is determined, the distance to the start of target interval (i.e.: <strong>longitudinal gap</strong>, ), is used to decide on the appropriate deceleration profile. The module prioritizes comfort and only uses more aggressive braking when necessary.</p>
+<p>The module chooses one of three deceleration tiers:</p>
+<ul>
+<li><strong>Comfort</strong>: The module first checks if it can slow down to the target velocity using a comfortable deceleration profile. This profile is defined by gentle limits on jerk and acceleration (<span class="arithmatex">\((j_{\text{comfort}}\le0,\ a_{\text{comfort}}\le0)\)</span>). If the distance to the start of target interval is sufficient for this gentle braking, the comfort profile is selected.</li>
+<li><strong>Feasible</strong>: If the comfort profile is not sufficient to stop in time, the module finds the <strong>least-negative</strong> (or most gentle) acceleration that will still allow the vehicle to reach the target velocity within the available gap. This is like pressing the brake pedal a bit harder, but only as much as needed. The jerk remains at the comfortable limit (<span class="arithmatex">\(j_{\text{brake}} = j_{\text{comfort}}\)</span>) to avoid abrupt changes.</li>
+<li><strong>Hard</strong>: If neither of the above profiles is sufficient, the module applies the <strong>maximum possible braking</strong> (the "hard" limits on jerk and acceleration, <span class="arithmatex">\((j_{\max}\le0,\ a_{\max}\le0)\)</span>). This is used in situations where a quick, forceful stop is required to avoid prevent ego from driving onto the road boundary.</li>
+</ul>
+<h3 id="3-commanded-speed-via-an-analytic-s-curve-with-equations">3) Commanded speed via an analytic S-curve (with equations)<a class="headerlink" href="#3-commanded-speed-via-an-analytic-s-curve-with-equations" title="Permanent link">#</a></h3>
+<p>This section details how the module calculates the final slow down velocity based on the deceleration profile selected in Section 2. It uses an analytic S-curve to ensure a smooth, comfortable deceleration to the target velocity at the specified distance. An S-curve motion profile provides a smooth transition by controlling the rate of change of acceleration, or jerk.</p>
+<p>The values for <strong>jerk</strong> (<span class="arithmatex">\(j_{\text{brake}}\)</span>) and <strong>braking acceleration</strong> (<span class="arithmatex">\(a_{\text{brake}}\)</span>) used in the following steps are determined by the <strong>longitudinal feasibility tier</strong> selected earlier (Comfort, Feasible, or Hard).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To prevent sudden, unintended deceleration, the module returns the largest safe velocity if the longitudinal gap is very small. This ensures that the vehicle does not brake abruptly when approaching the target point.</p>
+</div>
+<h4 id="1-deceleration-selection">1. Deceleration Selection**<a class="headerlink" href="#1-deceleration-selection" title="Permanent link">#</a></h4>
+<p>The module begins by selecting the initial active acceleration, <span class="arithmatex">\(a_{\text{act}}\)</span>, which is the lesser (more negative) of the current acceleration and the braking acceleration value from the selected tier. The jerk, <span class="arithmatex">\(j\)</span>, is also set to the value from the selected tier.</p>
+<div class="arithmatex">\[
+a_{\text{act}}=\min(a_{\text{curr}},\ a_{\text{brake}})\le 0,\qquad j=j_{\text{brake}}\le 0.
+\]</div>
+<h4 id="2-jerk-ramp">2. <strong>Jerk Ramp</strong><a class="headerlink" href="#2-jerk-ramp" title="Permanent link">#</a></h4>
+<p>The vehicle enters a jerk phase where its acceleration changes smoothly over time. The equations below describe the vehicle's acceleration, velocity, and distance during this phase.</p>
+<div class="arithmatex">\[
+\begin{aligned}
+a(t)&amp;=a_{\text{act}}+j\,t,\\
+v(t)&amp;=v_0+a_{\text{act}}\,t+\tfrac12 j t^2,\\
+s(t)&amp;=v_0\,t+\tfrac12 a_{\text{act}}\,t^2+\tfrac16 j t^3,\\[4pt]
+t_j&amp;=\frac{a_{\text{brake}}-a_{\text{act}}}{j}\ (\ge 0),\\
+v_1&amp;=v(t_j)=v_0+\tfrac12\frac{a_{\text{brake}}^{2}-a_{\text{act}}^{2}}{j},\\
+s_j&amp;=s(t_j).
+\end{aligned}
+\]</div>
+<h4 id="3-waypoint-inside-the-jerk-ramp">3. <strong>Waypoint Inside the Jerk Ramp</strong><a class="headerlink" href="#3-waypoint-inside-the-jerk-ramp" title="Permanent link">#</a></h4>
+<p>If the longitudinal distance to the start of the target interval, <span class="arithmatex">\(s_\star\)</span>, falls within the distance covered during the initial jerk phase (<span class="arithmatex">\(s_\star \in [0, s_j]\)</span>), the module finds the required time and corresponding velocity to reach that point. The slow down velocity, <span class="arithmatex">\(v_{\text{cmd}}\)</span>, is then set to the greater of the target velocity and the velocity calculated for that point, ensuring a safe and controlled deceleration.</p>
+<div class="arithmatex">\[v_{\text{cmd}} = \max\left(v_{\text{target}},\, v(t^\star)\right)\]</div>
+<h4 id="4-waypoint-after-the-jerk-ramp">4. <strong>Waypoint After the Jerk Ramp</strong><a class="headerlink" href="#4-waypoint-after-the-jerk-ramp" title="Permanent link">#</a></h4>
+<p>If the target point is farther away (<span class="arithmatex">\(s_\star &gt; s_j\)</span>), the vehicle will have completed its initial jerk phase. The remaining distance, <span class="arithmatex">\(s_{\text{rem}}\)</span>, is used to calculate the final velocity. The slow down velocity is determined based on the constant deceleration phase that follows the initial jerk.</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\Delta &amp;= v_1^2 - v_{\text{target}}^2 + 2\,a_{\text{brake}}\,s_{\text{rem}}, \\
+\text{if } \Delta &lt; 0 &amp;: \quad v_{\text{cmd}} = v_{\text{target}}, \\
+\text{else } \quad t_a &amp;= \frac{-v_1 + \sqrt{\Delta}}{a_{\text{brake}}}, \qquad
+v_{\text{cmd}} = \max\left(v_{\text{target}},\, v_1 + a_{\text{brake}}\,t_a\right)
+\end{aligned}
+\]</div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
 <thead>
