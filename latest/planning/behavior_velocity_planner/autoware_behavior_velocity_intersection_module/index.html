@@ -14144,6 +14144,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#map-based-forced-rtc" class="md-nav__link">
+    Map-based forced RTC
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -14621,6 +14628,12 @@
 <p>If the flag <code>occlusion.request_approval_wo_traffic_light</code> is <code>true</code>, <code>intersection_occlusion</code> requests approval from RTC operator. If it is <code>false</code>, it does not request approval after tbe brief stop even if occlusion is not sufficiently cleared.</p>
 <p>While ego is creeping, yellow intersection_wall appears in front ego.</p>
 <p><img alt="occlusion-wo-tl-creeping" src="docs/occlusion-wo-tl-creeping.png"></p>
+<h3 id="map-based-forced-rtc">Map-based forced RTC<a class="headerlink" href="#map-based-forced-rtc" title="Permanent link">#</a></h3>
+<p>RTC can be enabled for specific intersection lanelets such that even if approval is not required by default, it will be required before crossing the corresponding intersection lanelets.
+The following attribute should be added to the lanelet in intersection in the map file:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;tag</span><span class="w"> </span><span class="na">k=</span><span class="s">'rtc_approval_required_v1'</span><span class="w"> </span><span class="na">v=</span><span class="s">'intersection'</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<p>The value can be set to <code>intersection</code>, <code>intersection_occlusion</code>, or <code>intersection,intersection_occlusion</code>, to adjust which modules will require approvals.</p>
 <h2 id="traffic-signal-specific-behavior">Traffic signal specific behavior<a class="headerlink" href="#traffic-signal-specific-behavior" title="Permanent link">#</a></h2>
 <h3 id="collision-detection_1">Collision detection<a class="headerlink" href="#collision-detection_1" title="Permanent link">#</a></h3>
 <p>TTC parameter varies depending on the traffic light color/shape as follows.</p>
