@@ -14215,28 +14215,38 @@
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
+<th>Default</th>
+<th>Range</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>use_height</code></td>
-<td>bool</td>
-<td>use point.z for clustering</td>
+<td>max_cluster_size</td>
+<td>integer</td>
+<td>The maximum number of points that a cluster needs to contain in order to be considered valid.</td>
+<td>1000</td>
+<td>N/A</td>
 </tr>
 <tr>
-<td><code>min_cluster_size</code></td>
-<td>int</td>
-<td>the minimum number of points that a cluster needs to contain in order to be considered valid</td>
+<td>min_cluster_size</td>
+<td>integer</td>
+<td>The minimum number of points that a cluster needs to contain in order to be considered valid.</td>
+<td>10</td>
+<td>N/A</td>
 </tr>
 <tr>
-<td><code>max_cluster_size</code></td>
-<td>int</td>
-<td>the maximum number of points that a cluster needs to contain in order to be considered valid</td>
-</tr>
-<tr>
-<td><code>tolerance</code></td>
+<td>tolerance</td>
 <td>float</td>
-<td>the spatial cluster tolerance as a measure in the L2 Euclidean space</td>
+<td>The spatial cluster tolerance as a measure in the L2 Euclidean space.</td>
+<td>0.7</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>use_height</td>
+<td>boolean</td>
+<td>Whether to use point.z for clustering.</td>
+<td>0</td>
+<td>N/A</td>
 </tr>
 </tbody>
 </table>
@@ -14247,53 +14257,73 @@
 <th>Name</th>
 <th>Type</th>
 <th>Description</th>
+<th>Default</th>
+<th>Range</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>use_height</code></td>
-<td>bool</td>
-<td>use point.z for clustering</td>
-</tr>
-<tr>
-<td><code>min_cluster_size</code></td>
-<td>int</td>
-<td>the minimum number of voxels that a cluster needs to contain in order to be considered valid</td>
-</tr>
-<tr>
-<td><code>max_cluster_size</code></td>
-<td>int</td>
-<td>the maximum number of voxels that a cluster needs to contain in order to be considered valid</td>
-</tr>
-<tr>
-<td><code>tolerance</code></td>
+<td>tolerance</td>
 <td>float</td>
-<td>the spatial cluster tolerance as a measure in the L2 Euclidean space</td>
+<td>The spatial cluster tolerance as a measure in the L2 Euclidean space.</td>
+<td>0.7</td>
+<td>N/A</td>
 </tr>
 <tr>
-<td><code>voxel_leaf_size</code></td>
+<td>voxel_leaf_size</td>
 <td>float</td>
-<td>the voxel leaf size of x and y</td>
+<td>The voxel leaf size of x and y.</td>
+<td>0.3</td>
+<td>N/A</td>
 </tr>
 <tr>
-<td><code>min_points_number_per_voxel</code></td>
-<td>int</td>
-<td>the minimum number of points for a voxel</td>
+<td>min_points_number_per_voxel</td>
+<td>integer</td>
+<td>The minimum number of points required per voxel.</td>
+<td>1</td>
+<td>N/A</td>
 </tr>
 <tr>
-<td><code>min_voxel_cluster_size_for_filtering</code></td>
-<td>int</td>
+<td>min_cluster_size</td>
+<td>integer</td>
+<td>The minimum number of points that a cluster needs to contain in order to be considered valid.</td>
+<td>10</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>max_cluster_size</td>
+<td>integer</td>
+<td>The maximum number of points that a cluster needs to contain in order to be considered valid.</td>
+<td>3000</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>max_voxel_cluster_for_output</td>
+<td>integer</td>
+<td>Maximum number of voxels in a cluster when outputted.</td>
+<td>800</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>min_voxel_cluster_size_for_filtering</td>
+<td>integer</td>
 <td>The minimum voxel cluster size for a cluster to be checked for being a large cluster.</td>
+<td>65</td>
+<td>N/A</td>
 </tr>
 <tr>
-<td><code>max_points_per_voxel_in_large_cluster</code></td>
-<td>int</td>
+<td>max_points_per_voxel_in_large_cluster</td>
+<td>integer</td>
 <td>The maximum points per voxel allowed in large clusters (used for filtering dense clusters).</td>
+<td>10</td>
+<td>N/A</td>
 </tr>
 <tr>
-<td><code>max_voxel_cluster_for_output</code></td>
-<td>int</td>
-<td>The maximum number of voxel clusters to output. If the voxels exceeds this value, the cluster will be skipped.</td>
+<td>use_height</td>
+<td>boolean</td>
+<td>Use point.z for clustering.</td>
+<td>0</td>
+<td>N/A</td>
 </tr>
 </tbody>
 </table>
