@@ -8,20 +8,20 @@
       
       
       
-        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/main/planning/behavior_velocity_planner/autoware_behavior_velocity_virtual_traffic_light_module/">
+        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/main/planning/behavior_velocity_planner/autoware_behavior_velocity_roundabout_module/">
       
       
-        <link rel="prev" href="../autoware_behavior_velocity_traffic_light_module/">
+        <link rel="prev" href="../autoware_behavior_velocity_occlusion_spot_module/">
       
       
-        <link rel="next" href="../autoware_behavior_velocity_walkway_module/">
+        <link rel="next" href="../autoware_behavior_velocity_rtc_interface/">
       
       <link rel="icon" href="../../../docs/assets/images/autoware-foundation.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.20">
     
     
       
-        <title>Index - Autoware Universe Documentation</title>
+        <title>Roundabout Behavior Velocity Module - Autoware Universe Documentation</title>
       
     
     
@@ -77,7 +77,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#virtual-traffic-light" class="md-skip">
+        <a href="#roundabout-behavior-velocity-module" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Index
+              Roundabout Behavior Velocity Module
             
           </span>
         </div>
@@ -8105,7 +8105,7 @@
   
   
     <li class="md-nav__item">
-      <a href="." class="md-nav__link">
+      <a href="../autoware_behavior_velocity_virtual_traffic_light_module" class="md-nav__link">
         Virtual Traffic Light
       </a>
     </li>
@@ -14010,6 +14010,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -14018,16 +14020,85 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#virtual-traffic-light" class="md-nav__link">
-    Virtual Traffic Light
+  <a href="#role" class="md-nav__link">
+    Role
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#system-configuration-diagram" class="md-nav__link">
-    System Configuration Diagram
+  <a href="#activation" class="md-nav__link">
+    Activation
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requirementslimitations" class="md-nav__link">
+    Requirements/Limitations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#attention-area" class="md-nav__link">
+    Attention area
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stoplines" class="md-nav__link">
+    Stoplines
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entry-collision-checking-logic" class="md-nav__link">
+    Entry Collision Checking Logic
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flowchart" class="md-nav__link">
+    Flowchart
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#module-parameters" class="md-nav__link">
+    Module Parameters
+  </a>
+  
+    <nav class="md-nav" aria-label="Module Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common" class="md-nav__link">
+    common
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collision_detection" class="md-nav__link">
+    collision_detection
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-enable_rtc" class="md-nav__link">
+    debug / enable_rtc
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -14049,64 +14120,126 @@
   
 
 
-  <h1>Index</h1>
+<div><h1 id="roundabout-behavior-velocity-module">Roundabout Behavior Velocity Module<a class="headerlink" href="#roundabout-behavior-velocity-module" title="Permanent link">#</a></h1>
+<h2 id="role">Role<a class="headerlink" href="#role" title="Permanent link">#</a></h2>
+<p>This module is responsible for safely managing entry into roundabouts by performing collision checks against vehicles in the attention area just before entry. Currently, it is designed to work with single-lane roundabouts due to the complexity of multi-lane scenarios.</p>
+<h2 id="activation">Activation<a class="headerlink" href="#activation" title="Permanent link">#</a></h2>
+<ul>
+<li>A module instance is launched on a lane that is an entry lanelet of a Roundabout regulatory element on the path.</li>
+</ul>
+<h2 id="requirementslimitations">Requirements/Limitations<a class="headerlink" href="#requirementslimitations" title="Permanent link">#</a></h2>
+<ul>
+<li>The HDMap needs to have the roundabout regulatory element defined with correct lanelet topology (entry/exit/inner lanes).</li>
+<li>WIP(perception requirements/limitations)</li>
+<li>WIP(sensor visibility requirements/limitations)</li>
+</ul>
+<h2 id="attention-area">Attention area<a class="headerlink" href="#attention-area" title="Permanent link">#</a></h2>
+<p>The attention area for a roundabout is defined as the lanelets within the Roundabout regulatory element that conflict with the ego path. The attention area is used to determine which objects are relevant for collision checking when ego is about to enter the roundabout.</p>
+<h2 id="stoplines">Stoplines<a class="headerlink" href="#stoplines" title="Permanent link">#</a></h2>
+<p>The module computes the following stoplines:</p>
+<ul>
+<li><strong>default_stopline</strong>: A stopline placed before the first attention area, with a margin defined by <code>default_stopline_margin</code>. This is used to stop the vehicle before entering the roundabout, if necessary.</li>
+<li><strong>first_attention_stopline</strong>: A stopline placed at the first attention area boundary, which is used to judge whether the vehicle can safely pass through the roundabout.</li>
+<li><strong>first_pass_judge_line</strong>: A line placed one braking distance before the first attention boundary. The module records whether the ego vehicle has safely passed this line for the first time. If a collision is detected after passing this line, the module categorizes the object as <code>too_late_detect</code> or <code>misjudge</code> for diagnostics.</li>
+</ul>
+<h2 id="entry-collision-checking-logic">Entry Collision Checking Logic<a class="headerlink" href="#entry-collision-checking-logic" title="Permanent link">#</a></h2>
+<p>The following process is performed for the targets objects to determine whether ego can enter the roundabout safely. If it is judged that ego cannot enter the roundabout with enough margin, this module inserts a stopline on the path.</p>
+<ol>
+<li>predict the time <span class="arithmatex">\(t\)</span> when the object intersects with ego path for the first time from the predicted path time step. Only the predicted whose confidence is greater than <code>collision_detection.min_predicted_path_confidence</code> is used.</li>
+<li>detect collision between the predicted path and ego's predicted path in the following process<ol>
+<li>calculate the collision interval of [<span class="arithmatex">\(t\)</span> - <code>collision_detection.collision_start_margin_time</code>, <span class="arithmatex">\(t\)</span> + <code>collision_detection.collision_end_margin_time</code>]</li>
+<li>calculate the passing area of ego during the collision interval from the array of (time, distance) obtained by smoothed velocity profile</li>
+<li>check if ego passing area and object predicted path interval collides</li>
+</ol>
+</li>
+<li>if collision is detected, the module inserts a stopline</li>
+<li>if ego is over the pass_judge_line, collision checking is skipped to avoid sudden braking and/or unnecessary stop in the inside of the roundabout.</li>
+</ol>
+<p>The parameters <code>collision_detection.collision_start_margin_time</code> and <code>collision_detection.collision_end_margin_time</code> can be interpreted as follows:</p>
+<ul>
+<li>If ego was to enter the roundabout earlier than the target object, collision would be detected if the time difference between the two was less than <code>collision_detection.collision_start_margin_time</code>.</li>
+<li>If ego was to enter the roundabout later than the target object, collision would be detected if the time difference between the two was less than <code>collision_detection.collision_end_margin_time</code>.</li>
+</ul>
+<p>If collision is detected, the state transits to "STOP" immediately. On the other hand, the state does not transit to "GO" unless safe judgement continues for a certain period <code>collision_detection.collision_detection_hold_time</code> to prevent the chattering of decisions.</p>
+<p>Currently, the roundabout module uses <code>motion_velocity_smoother</code> feature to precisely calculate ego velocity profile along the roundabout lane under longitudinal/lateral constraints. If the flag <code>collision_detection.velocity_profile.use_upstream</code> is true, the target velocity profile of the original path is used. Otherwise the target velocity is set to <code>collision.velocity_profile.default_velocity</code>. In the trajectory smoothing process the target velocity at/before ego trajectory points are set to ego current velocity. The smoothed trajectory is then converted to an array of (time, distance) which indicates the arrival time to each trajectory point on the path from current ego position. You can visualize this array by adding the lane id to <code>debug.ttc</code> and running</p>
+<div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>run<span class="w"> </span>behavior_velocity_roundabout_module<span class="w"> </span>ttc.py<span class="w"> </span>--lane_id<span class="w"> </span>&lt;lane_id&gt;
+</code></pre></div>
+<h2 id="flowchart">Flowchart<a class="headerlink" href="#flowchart" title="Permanent link">#</a></h2>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; modifyPathVelocity
+    modifyPathVelocity: modifyPathVelocity
 
-<div><h3 id="virtual-traffic-light">Virtual Traffic Light<a class="headerlink" href="#virtual-traffic-light" title="Permanent link">#</a></h3>
-<h4 id="role">Role<a class="headerlink" href="#role" title="Permanent link">#</a></h4>
-<p>Autonomous vehicles have to cooperate with the infrastructures such as:</p>
-<ul>
-<li>Warehouse shutters</li>
-<li>Traffic lights with V2X support</li>
-<li>Communication devices at intersections</li>
-<li>Fleet Management Systems (FMS)</li>
-</ul>
-<p>The following items are example cases:</p>
-<ol>
-<li>
-<p>Traffic control by traffic lights with V2X support
-   <img alt="traffic_light" src="docs/V2X_support_traffic_light.png"></p>
-</li>
-<li>
-<p>Intersection coordination of multiple vehicles by FMS.
-   <img alt="FMS" src="docs/intersection-coordination.png"></p>
-</li>
-</ol>
-<p>It's possible to make each function individually, however, the use cases can be generalized with these three elements.</p>
-<ol>
-<li><code>start</code>: Start a cooperation procedure after the vehicle enters a certain zone.</li>
-<li><code>stop</code>: Stop at a defined stop line according to the status received from infrastructures.</li>
-<li><code>end</code>: Finalize the cooperation procedure after the vehicle reaches the exit zone. This should be done within the range of stable communication.</li>
-</ol>
-<p>This module sends/receives status from infrastructures and plans the velocity of the cooperation result.</p>
-<h3 id="system-configuration-diagram">System Configuration Diagram<a class="headerlink" href="#system-configuration-diagram" title="Permanent link">#</a></h3>
-<p><img src="data:image/svg+xml;base64,PCFET0NUWVBFIGh0bWw+CjwhLS1baWYgbHQgSUUgN10+IDxodG1sIGNsYXNzPSJuby1qcyBpZTYgb2xkaWUiIGxhbmc9ImVuLVVTIj4gPCFbZW5kaWZdLS0+CjwhLS1baWYgSUUgN10+ICAgIDxodG1sIGNsYXNzPSJuby1qcyBpZTcgb2xkaWUiIGxhbmc9ImVuLVVTIj4gPCFbZW5kaWZdLS0+CjwhLS1baWYgSUUgOF0+ICAgIDxodG1sIGNsYXNzPSJuby1qcyBpZTggb2xkaWUiIGxhbmc9ImVuLVVTIj4gPCFbZW5kaWZdLS0+CjwhLS1baWYgZ3QgSUUgOF0+PCEtLT4gPGh0bWwgY2xhc3M9Im5vLWpzIiBsYW5nPSJlbi1VUyI+IDwhLS08IVtlbmRpZl0tLT4KPGhlYWQ+Cgo8dGl0bGU+cGxhbnR1bWwuY29tIHwgNTIwOiBXZWIgc2VydmVyIGlzIHJldHVybmluZyBhbiB1bmtub3duIGVycm9yPC90aXRsZT4KPG1ldGEgY2hhcnNldD0iVVRGLTgiIC8+CjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PVVURi04IiAvPgo8bWV0YSBodHRwLWVxdWl2PSJYLVVBLUNvbXBhdGlibGUiIGNvbnRlbnQ9IklFPUVkZ2UiIC8+CjxtZXRhIG5hbWU9InJvYm90cyIgY29udGVudD0ibm9pbmRleCwgbm9mb2xsb3ciIC8+CjxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsaW5pdGlhbC1zY2FsZT0xIiAvPgo8bGluayByZWw9InN0eWxlc2hlZXQiIGlkPSJjZl9zdHlsZXMtY3NzIiBocmVmPSIvY2RuLWNnaS9zdHlsZXMvbWFpbi5jc3MiIC8+CjwvaGVhZD4KPGJvZHk+CjxkaXYgaWQ9ImNmLXdyYXBwZXIiPgogICAgPGRpdiBpZD0iY2YtZXJyb3ItZGV0YWlscyIgY2xhc3M9InAtMCI+CiAgICAgICAgPGhlYWRlciBjbGFzcz0ibXgtYXV0byBwdC0xMCBsZzpwdC02IGxnOnB4LTggdy0yNDAgbGc6dy1mdWxsIG1iLTgiPgogICAgICAgICAgICA8aDEgY2xhc3M9ImlubGluZS1ibG9jayBzbTpibG9jayBzbTptYi0yIGZvbnQtbGlnaHQgdGV4dC02MCBsZzp0ZXh0LTR4bCB0ZXh0LWJsYWNrLWRhcmsgbGVhZGluZy10aWdodCBtci0yIj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJpbmxpbmUtYmxvY2siPldlYiBzZXJ2ZXIgaXMgcmV0dXJuaW5nIGFuIHVua25vd24gZXJyb3I8L3NwYW4+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iY29kZS1sYWJlbCI+RXJyb3IgY29kZSA1MjA8L3NwYW4+CiAgICAgICAgICAgIDwvaDE+CiAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICBWaXNpdCA8YSBocmVmPSJodHRwczovL3d3dy5jbG91ZGZsYXJlLmNvbS81eHgtZXJyb3ItbGFuZGluZz91dG1fc291cmNlPWVycm9yY29kZV81MjAmdXRtX2NhbXBhaWduPXd3dy5wbGFudHVtbC5jb20iIHRhcmdldD0iX2JsYW5rIiByZWw9Im5vb3BlbmVyIG5vcmVmZXJyZXIiPmNsb3VkZmxhcmUuY29tPC9hPiBmb3IgbW9yZSBpbmZvcm1hdGlvbi4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9Im10LTMiPjIwMjUtMDktMTIgMDg6MzM6MTkgVVRDPC9kaXY+CiAgICAgICAgPC9oZWFkZXI+CiAgICAgICAgPGRpdiBjbGFzcz0ibXktOCBiZy1ncmFkaWVudC1ncmF5Ij4KICAgICAgICAgICAgPGRpdiBjbGFzcz0idy0yNDAgbGc6dy1mdWxsIG14LWF1dG8iPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iY2xlYXJmaXggbWQ6cHgtOCI+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iY2YtYnJvd3Nlci1zdGF0dXMiIGNsYXNzPSIgcmVsYXRpdmUgdy0xLzMgbWQ6dy1mdWxsIHB5LTE1IG1kOnAtMCBtZDpweS04IG1kOnRleHQtbGVmdCBtZDpib3JkZXItc29saWQgbWQ6Ym9yZGVyLTAgbWQ6Ym9yZGVyLWIgbWQ6Ym9yZGVyLWdyYXktNDAwIG92ZXJmbG93LWhpZGRlbiBmbG9hdC1sZWZ0IG1kOmZsb2F0LW5vbmUgdGV4dC1jZW50ZXIiPgogIDxkaXYgY2xhc3M9InJlbGF0aXZlIG1iLTEwIG1kOm0tMCI+CiAgICAKICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLWJyb3dzZXIgYmxvY2sgbWQ6aGlkZGVuIGgtMjAgYmctY2VudGVyIGJnLW5vLXJlcGVhdCI+PC9zcGFuPgogICAgPHNwYW4gY2xhc3M9ImNmLWljb24tb2sgdy0xMiBoLTEyIGFic29sdXRlIGxlZnQtMS8yIG1kOmxlZnQtYXV0byBtZDpyaWdodC0wIG1kOnRvcC0wIC1tbC02IC1ib3R0b20tNCI+PC9zcGFuPgogICAgCiAgPC9kaXY+CiAgPHNwYW4gY2xhc3M9Im1kOmJsb2NrIHctZnVsbCB0cnVuY2F0ZSI+WW91PC9zcGFuPgogIDxoMyBjbGFzcz0ibWQ6aW5saW5lLWJsb2NrIG10LTMgbWQ6bXQtMCB0ZXh0LTJ4bCB0ZXh0LWdyYXktNjAwIGZvbnQtbGlnaHQgbGVhZGluZy0xLjMiPgogIAogICAgQnJvd3NlcgogIAogIDwvaDM+CiAgCiAgPHNwYW4gY2xhc3M9ImxlYWRpbmctMS4zIHRleHQtMnhsIHRleHQtZ3JlZW4tc3VjY2VzcyI+V29ya2luZzwvc3Bhbj4KICAKPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iY2YtY2xvdWRmbGFyZS1zdGF0dXMiIGNsYXNzPSIgcmVsYXRpdmUgdy0xLzMgbWQ6dy1mdWxsIHB5LTE1IG1kOnAtMCBtZDpweS04IG1kOnRleHQtbGVmdCBtZDpib3JkZXItc29saWQgbWQ6Ym9yZGVyLTAgbWQ6Ym9yZGVyLWIgbWQ6Ym9yZGVyLWdyYXktNDAwIG92ZXJmbG93LWhpZGRlbiBmbG9hdC1sZWZ0IG1kOmZsb2F0LW5vbmUgdGV4dC1jZW50ZXIiPgogIDxkaXYgY2xhc3M9InJlbGF0aXZlIG1iLTEwIG1kOm0tMCI+CiAgICA8YSBocmVmPSJodHRwczovL3d3dy5jbG91ZGZsYXJlLmNvbS81eHgtZXJyb3ItbGFuZGluZz91dG1fc291cmNlPWVycm9yY29kZV81MjAmIzM4O3V0bV9jYW1wYWlnbj13d3cucGxhbnR1bWwuY29tIiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciBub3JlZmVycmVyIj4KICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLWNsb3VkIGJsb2NrIG1kOmhpZGRlbiBoLTIwIGJnLWNlbnRlciBiZy1uby1yZXBlYXQiPjwvc3Bhbj4KICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLW9rIHctMTIgaC0xMiBhYnNvbHV0ZSBsZWZ0LTEvMiBtZDpsZWZ0LWF1dG8gbWQ6cmlnaHQtMCBtZDp0b3AtMCAtbWwtNiAtYm90dG9tLTQiPjwvc3Bhbj4KICAgIDwvYT4KICA8L2Rpdj4KICA8c3BhbiBjbGFzcz0ibWQ6YmxvY2sgdy1mdWxsIHRydW5jYXRlIj5DaGljYWdvPC9zcGFuPgogIDxoMyBjbGFzcz0ibWQ6aW5saW5lLWJsb2NrIG10LTMgbWQ6bXQtMCB0ZXh0LTJ4bCB0ZXh0LWdyYXktNjAwIGZvbnQtbGlnaHQgbGVhZGluZy0xLjMiPgogIDxhIGhyZWY9Imh0dHBzOi8vd3d3LmNsb3VkZmxhcmUuY29tLzV4eC1lcnJvci1sYW5kaW5nP3V0bV9zb3VyY2U9ZXJyb3Jjb2RlXzUyMCZ1dG1fY2FtcGFpZ249d3d3LnBsYW50dW1sLmNvbSIgdGFyZ2V0PSJfYmxhbmsiIHJlbD0ibm9vcGVuZXIgbm9yZWZlcnJlciI+CiAgICBDbG91ZGZsYXJlCiAgPC9hPgogIDwvaDM+CiAgCiAgPHNwYW4gY2xhc3M9ImxlYWRpbmctMS4zIHRleHQtMnhsIHRleHQtZ3JlZW4tc3VjY2VzcyI+V29ya2luZzwvc3Bhbj4KICAKPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iY2YtaG9zdC1zdGF0dXMiIGNsYXNzPSJjZi1lcnJvci1zb3VyY2UgcmVsYXRpdmUgdy0xLzMgbWQ6dy1mdWxsIHB5LTE1IG1kOnAtMCBtZDpweS04IG1kOnRleHQtbGVmdCBtZDpib3JkZXItc29saWQgbWQ6Ym9yZGVyLTAgbWQ6Ym9yZGVyLWIgbWQ6Ym9yZGVyLWdyYXktNDAwIG92ZXJmbG93LWhpZGRlbiBmbG9hdC1sZWZ0IG1kOmZsb2F0LW5vbmUgdGV4dC1jZW50ZXIiPgogIDxkaXYgY2xhc3M9InJlbGF0aXZlIG1iLTEwIG1kOm0tMCI+CiAgICAKICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLXNlcnZlciBibG9jayBtZDpoaWRkZW4gaC0yMCBiZy1jZW50ZXIgYmctbm8tcmVwZWF0Ij48L3NwYW4+CiAgICA8c3BhbiBjbGFzcz0iY2YtaWNvbi1lcnJvciB3LTEyIGgtMTIgYWJzb2x1dGUgbGVmdC0xLzIgbWQ6bGVmdC1hdXRvIG1kOnJpZ2h0LTAgbWQ6dG9wLTAgLW1sLTYgLWJvdHRvbS00Ij48L3NwYW4+CiAgICAKICA8L2Rpdj4KICA8c3BhbiBjbGFzcz0ibWQ6YmxvY2sgdy1mdWxsIHRydW5jYXRlIj53d3cucGxhbnR1bWwuY29tPC9zcGFuPgogIDxoMyBjbGFzcz0ibWQ6aW5saW5lLWJsb2NrIG10LTMgbWQ6bXQtMCB0ZXh0LTJ4bCB0ZXh0LWdyYXktNjAwIGZvbnQtbGlnaHQgbGVhZGluZy0xLjMiPgogIAogICAgSG9zdAogIAogIDwvaDM+CiAgCiAgPHNwYW4gY2xhc3M9ImxlYWRpbmctMS4zIHRleHQtMnhsIHRleHQtcmVkLWVycm9yIj5FcnJvcjwvc3Bhbj4KICAKPC9kaXY+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CgogICAgICAgIDxkaXYgY2xhc3M9InctMjQwIGxnOnctZnVsbCBteC1hdXRvIG1iLTggbGc6cHgtOCI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImNsZWFyZml4Ij4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InctMS8yIG1kOnctZnVsbCBmbG9hdC1sZWZ0IHByLTYgbWQ6cGItMTAgbWQ6cHItMCBsZWFkaW5nLXJlbGF4ZWQiPgogICAgICAgICAgICAgICAgICAgIDxoMiBjbGFzcz0idGV4dC0zeGwgZm9udC1ub3JtYWwgbGVhZGluZy0xLjMgbWItNCI+V2hhdCBoYXBwZW5lZD88L2gyPgogICAgICAgICAgICAgICAgICAgIDxwPlRoZXJlIGlzIGFuIHVua25vd24gY29ubmVjdGlvbiBpc3N1ZSBiZXR3ZWVuIENsb3VkZmxhcmUgYW5kIHRoZSBvcmlnaW4gd2ViIHNlcnZlci4gQXMgYSByZXN1bHQsIHRoZSB3ZWIgcGFnZSBjYW4gbm90IGJlIGRpc3BsYXllZC48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InctMS8yIG1kOnctZnVsbCBmbG9hdC1sZWZ0IGxlYWRpbmctcmVsYXhlZCI+CiAgICAgICAgICAgICAgICAgICAgPGgyIGNsYXNzPSJ0ZXh0LTN4bCBmb250LW5vcm1hbCBsZWFkaW5nLTEuMyBtYi00Ij5XaGF0IGNhbiBJIGRvPzwvaDI+CiAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICA8aDMgY2xhc3M9InRleHQtMTUgZm9udC1zZW1pYm9sZCBtYi0yIj5JZiB5b3UgYXJlIGEgdmlzaXRvciBvZiB0aGlzIHdlYnNpdGU6PC9oMz4KICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJtYi02Ij5QbGVhc2UgdHJ5IGFnYWluIGluIGEgZmV3IG1pbnV0ZXMuPC9wPgoKICAgICAgICAgICAgICAgIDxoMyBjbGFzcz0idGV4dC0xNSBmb250LXNlbWlib2xkIG1iLTIiPklmIHlvdSBhcmUgdGhlIG93bmVyIG9mIHRoaXMgd2Vic2l0ZTo8L2gzPgogICAgICAgICAgICAgICAgPHA+PHNwYW4+VGhlcmUgaXMgYW4gaXNzdWUgYmV0d2VlbiBDbG91ZGZsYXJlJ3MgY2FjaGUgYW5kIHlvdXIgb3JpZ2luIHdlYiBzZXJ2ZXIuIENsb3VkZmxhcmUgbW9uaXRvcnMgZm9yIHRoZXNlIGVycm9ycyBhbmQgYXV0b21hdGljYWxseSBpbnZlc3RpZ2F0ZXMgdGhlIGNhdXNlLiBUbyBoZWxwIHN1cHBvcnQgdGhlIGludmVzdGlnYXRpb24sIHlvdSBjYW4gcHVsbCB0aGUgY29ycmVzcG9uZGluZyBlcnJvciBsb2cgZnJvbSB5b3VyIHdlYiBzZXJ2ZXIgYW5kIHN1Ym1pdCBpdCBvdXIgc3VwcG9ydCB0ZWFtLiAgUGxlYXNlIGluY2x1ZGUgdGhlIFJheSBJRCAod2hpY2ggaXMgYXQgdGhlIGJvdHRvbSBvZiB0aGlzIGVycm9yIHBhZ2UpLjwvc3Bhbj4gPGEgcmVsPSJub29wZW5lciBub3JlZmVycmVyIiBocmVmPSAgICJodHRwczovL2RldmVsb3BlcnMuY2xvdWRmbGFyZS5jb20vc3VwcG9ydC90cm91Ymxlc2hvb3RpbmcvaHR0cC1zdGF0dXMtY29kZXMvY2xvdWRmbGFyZS01eHgtZXJyb3JzL2Vycm9yLTUyMC8iPkFkZGl0aW9uYWwgdHJvdWJsZXNob290aW5nIHJlc291cmNlczwvYT4uPC9wPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgoKICAgICAgICA8ZGl2IGNsYXNzPSJjZi1lcnJvci1mb290ZXIgY2Ytd3JhcHBlciB3LTI0MCBsZzp3LWZ1bGwgcHktMTAgc206cHktNCBzbTpweC04IG14LWF1dG8gdGV4dC1jZW50ZXIgc206dGV4dC1sZWZ0IGJvcmRlci1zb2xpZCBib3JkZXItMCBib3JkZXItdCBib3JkZXItZ3JheS0zMDAiPgogICAgPHAgY2xhc3M9InRleHQtMTMiPgogICAgICA8c3BhbiBjbGFzcz0iY2YtZm9vdGVyLWl0ZW0gc206YmxvY2sgc206bWItMSI+Q2xvdWRmbGFyZSBSYXkgSUQ6IDxzdHJvbmcgY2xhc3M9ImZvbnQtc2VtaWJvbGQiPjk3ZGUwZjFjZGZiN2FjYjI8L3N0cm9uZz48L3NwYW4+CiAgICAgIDxzcGFuIGNsYXNzPSJjZi1mb290ZXItc2VwYXJhdG9yIHNtOmhpZGRlbiI+JmJ1bGw7PC9zcGFuPgogICAgICA8c3BhbiBpZD0iY2YtZm9vdGVyLWl0ZW0taXAiIGNsYXNzPSJjZi1mb290ZXItaXRlbSBoaWRkZW4gc206YmxvY2sgc206bWItMSI+CiAgICAgICAgWW91ciBJUDoKICAgICAgICA8YnV0dG9uIHR5cGU9ImJ1dHRvbiIgaWQ9ImNmLWZvb3Rlci1pcC1yZXZlYWwiIGNsYXNzPSJjZi1mb290ZXItaXAtcmV2ZWFsLWJ0biI+Q2xpY2sgdG8gcmV2ZWFsPC9idXR0b24+CiAgICAgICAgPHNwYW4gY2xhc3M9ImhpZGRlbiIgaWQ9ImNmLWZvb3Rlci1pcCI+MTM1LjIzMi4xNzcuMTEzPC9zcGFuPgogICAgICAgIDxzcGFuIGNsYXNzPSJjZi1mb290ZXItc2VwYXJhdG9yIHNtOmhpZGRlbiI+JmJ1bGw7PC9zcGFuPgogICAgICA8L3NwYW4+CiAgICAgIDxzcGFuIGNsYXNzPSJjZi1mb290ZXItaXRlbSBzbTpibG9jayBzbTptYi0xIj48c3Bhbj5QZXJmb3JtYW5jZSAmYW1wOyBzZWN1cml0eSBieTwvc3Bhbj4gPGEgcmVsPSJub29wZW5lciBub3JlZmVycmVyIiBocmVmPSJodHRwczovL3d3dy5jbG91ZGZsYXJlLmNvbS81eHgtZXJyb3ItbGFuZGluZz91dG1fc291cmNlPWVycm9yY29kZV81MjAmIzM4O3V0bV9jYW1wYWlnbj13d3cucGxhbnR1bWwuY29tIiBpZD0iYnJhbmRfbGluayIgdGFyZ2V0PSJfYmxhbmsiPkNsb3VkZmxhcmU8L2E+PC9zcGFuPgogICAgICAKICAgIDwvcD4KICAgIDxzY3JpcHQ+KGZ1bmN0aW9uKCl7ZnVuY3Rpb24gZCgpe3ZhciBiPWEuZ2V0RWxlbWVudEJ5SWQoImNmLWZvb3Rlci1pdGVtLWlwIiksYz1hLmdldEVsZW1lbnRCeUlkKCJjZi1mb290ZXItaXAtcmV2ZWFsIik7YiYmImNsYXNzTGlzdCJpbiBiJiYoYi5jbGFzc0xpc3QucmVtb3ZlKCJoaWRkZW4iKSxjLmFkZEV2ZW50TGlzdGVuZXIoImNsaWNrIixmdW5jdGlvbigpe2MuY2xhc3NMaXN0LmFkZCgiaGlkZGVuIik7YS5nZXRFbGVtZW50QnlJZCgiY2YtZm9vdGVyLWlwIikuY2xhc3NMaXN0LnJlbW92ZSgiaGlkZGVuIil9KSl9dmFyIGE9ZG9jdW1lbnQ7ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lciYmYS5hZGRFdmVudExpc3RlbmVyKCJET01Db250ZW50TG9hZGVkIixkKX0pKCk7PC9zY3JpcHQ+CiAgPC9kaXY+PCEtLSAvLmVycm9yLWZvb3RlciAtLT4KCiAgICA8L2Rpdj4KPC9kaXY+CjwvYm9keT4KPC9odG1sPg==" class="uml" alt="uml diagram" title=""></p>
-<p>Planner and each infrastructure communicate with each other using common abstracted messages.</p>
-<ul>
-<li>Special handling for each infrastructure is not scalable. The interface is defined as an Autoware API.</li>
-<li>The requirements for each infrastructure are slightly different, but will be handled flexibly.</li>
-</ul>
-<p>FMS: Intersection coordination when multiple vehicles are in operation and the relevant lane is occupied</p>
-<ul>
-<li>Automatic shutter: Open the shutter when approaching/close it when leaving</li>
-<li>Manual shutter: Have the driver open and close the shutter.</li>
-<li>Remote control signal: Have the driver change the signal status to match the direction of travel.</li>
-<li>Warning light: Activate the warning light</li>
-</ul>
-<p>Support different communication methods for different infrastructures</p>
-<ul>
-<li>HTTP</li>
-<li>Bluetooth</li>
-<li>ZigBee</li>
-</ul>
-<p>Have different meta-information for each geographic location</p>
-<ul>
-<li>Associated lane ID</li>
-<li>Hardware ID</li>
-<li>Communication method</li>
-</ul>
-<p>FMS: Fleet Management System</p>
-<p><img src="data:image/svg+xml;base64,PCFET0NUWVBFIGh0bWw+CjwhLS1baWYgbHQgSUUgN10+IDxodG1sIGNsYXNzPSJuby1qcyBpZTYgb2xkaWUiIGxhbmc9ImVuLVVTIj4gPCFbZW5kaWZdLS0+CjwhLS1baWYgSUUgN10+ICAgIDxodG1sIGNsYXNzPSJuby1qcyBpZTcgb2xkaWUiIGxhbmc9ImVuLVVTIj4gPCFbZW5kaWZdLS0+CjwhLS1baWYgSUUgOF0+ICAgIDxodG1sIGNsYXNzPSJuby1qcyBpZTggb2xkaWUiIGxhbmc9ImVuLVVTIj4gPCFbZW5kaWZdLS0+CjwhLS1baWYgZ3QgSUUgOF0+PCEtLT4gPGh0bWwgY2xhc3M9Im5vLWpzIiBsYW5nPSJlbi1VUyI+IDwhLS08IVtlbmRpZl0tLT4KPGhlYWQ+Cgo8dGl0bGU+cGxhbnR1bWwuY29tIHwgNTIwOiBXZWIgc2VydmVyIGlzIHJldHVybmluZyBhbiB1bmtub3duIGVycm9yPC90aXRsZT4KPG1ldGEgY2hhcnNldD0iVVRGLTgiIC8+CjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PVVURi04IiAvPgo8bWV0YSBodHRwLWVxdWl2PSJYLVVBLUNvbXBhdGlibGUiIGNvbnRlbnQ9IklFPUVkZ2UiIC8+CjxtZXRhIG5hbWU9InJvYm90cyIgY29udGVudD0ibm9pbmRleCwgbm9mb2xsb3ciIC8+CjxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsaW5pdGlhbC1zY2FsZT0xIiAvPgo8bGluayByZWw9InN0eWxlc2hlZXQiIGlkPSJjZl9zdHlsZXMtY3NzIiBocmVmPSIvY2RuLWNnaS9zdHlsZXMvbWFpbi5jc3MiIC8+CjwvaGVhZD4KPGJvZHk+CjxkaXYgaWQ9ImNmLXdyYXBwZXIiPgogICAgPGRpdiBpZD0iY2YtZXJyb3ItZGV0YWlscyIgY2xhc3M9InAtMCI+CiAgICAgICAgPGhlYWRlciBjbGFzcz0ibXgtYXV0byBwdC0xMCBsZzpwdC02IGxnOnB4LTggdy0yNDAgbGc6dy1mdWxsIG1iLTgiPgogICAgICAgICAgICA8aDEgY2xhc3M9ImlubGluZS1ibG9jayBzbTpibG9jayBzbTptYi0yIGZvbnQtbGlnaHQgdGV4dC02MCBsZzp0ZXh0LTR4bCB0ZXh0LWJsYWNrLWRhcmsgbGVhZGluZy10aWdodCBtci0yIj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJpbmxpbmUtYmxvY2siPldlYiBzZXJ2ZXIgaXMgcmV0dXJuaW5nIGFuIHVua25vd24gZXJyb3I8L3NwYW4+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iY29kZS1sYWJlbCI+RXJyb3IgY29kZSA1MjA8L3NwYW4+CiAgICAgICAgICAgIDwvaDE+CiAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICBWaXNpdCA8YSBocmVmPSJodHRwczovL3d3dy5jbG91ZGZsYXJlLmNvbS81eHgtZXJyb3ItbGFuZGluZz91dG1fc291cmNlPWVycm9yY29kZV81MjAmdXRtX2NhbXBhaWduPXd3dy5wbGFudHVtbC5jb20iIHRhcmdldD0iX2JsYW5rIiByZWw9Im5vb3BlbmVyIG5vcmVmZXJyZXIiPmNsb3VkZmxhcmUuY29tPC9hPiBmb3IgbW9yZSBpbmZvcm1hdGlvbi4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9Im10LTMiPjIwMjUtMDktMTIgMDg6MzM6MjIgVVRDPC9kaXY+CiAgICAgICAgPC9oZWFkZXI+CiAgICAgICAgPGRpdiBjbGFzcz0ibXktOCBiZy1ncmFkaWVudC1ncmF5Ij4KICAgICAgICAgICAgPGRpdiBjbGFzcz0idy0yNDAgbGc6dy1mdWxsIG14LWF1dG8iPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iY2xlYXJmaXggbWQ6cHgtOCI+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iY2YtYnJvd3Nlci1zdGF0dXMiIGNsYXNzPSIgcmVsYXRpdmUgdy0xLzMgbWQ6dy1mdWxsIHB5LTE1IG1kOnAtMCBtZDpweS04IG1kOnRleHQtbGVmdCBtZDpib3JkZXItc29saWQgbWQ6Ym9yZGVyLTAgbWQ6Ym9yZGVyLWIgbWQ6Ym9yZGVyLWdyYXktNDAwIG92ZXJmbG93LWhpZGRlbiBmbG9hdC1sZWZ0IG1kOmZsb2F0LW5vbmUgdGV4dC1jZW50ZXIiPgogIDxkaXYgY2xhc3M9InJlbGF0aXZlIG1iLTEwIG1kOm0tMCI+CiAgICAKICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLWJyb3dzZXIgYmxvY2sgbWQ6aGlkZGVuIGgtMjAgYmctY2VudGVyIGJnLW5vLXJlcGVhdCI+PC9zcGFuPgogICAgPHNwYW4gY2xhc3M9ImNmLWljb24tb2sgdy0xMiBoLTEyIGFic29sdXRlIGxlZnQtMS8yIG1kOmxlZnQtYXV0byBtZDpyaWdodC0wIG1kOnRvcC0wIC1tbC02IC1ib3R0b20tNCI+PC9zcGFuPgogICAgCiAgPC9kaXY+CiAgPHNwYW4gY2xhc3M9Im1kOmJsb2NrIHctZnVsbCB0cnVuY2F0ZSI+WW91PC9zcGFuPgogIDxoMyBjbGFzcz0ibWQ6aW5saW5lLWJsb2NrIG10LTMgbWQ6bXQtMCB0ZXh0LTJ4bCB0ZXh0LWdyYXktNjAwIGZvbnQtbGlnaHQgbGVhZGluZy0xLjMiPgogIAogICAgQnJvd3NlcgogIAogIDwvaDM+CiAgCiAgPHNwYW4gY2xhc3M9ImxlYWRpbmctMS4zIHRleHQtMnhsIHRleHQtZ3JlZW4tc3VjY2VzcyI+V29ya2luZzwvc3Bhbj4KICAKPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iY2YtY2xvdWRmbGFyZS1zdGF0dXMiIGNsYXNzPSIgcmVsYXRpdmUgdy0xLzMgbWQ6dy1mdWxsIHB5LTE1IG1kOnAtMCBtZDpweS04IG1kOnRleHQtbGVmdCBtZDpib3JkZXItc29saWQgbWQ6Ym9yZGVyLTAgbWQ6Ym9yZGVyLWIgbWQ6Ym9yZGVyLWdyYXktNDAwIG92ZXJmbG93LWhpZGRlbiBmbG9hdC1sZWZ0IG1kOmZsb2F0LW5vbmUgdGV4dC1jZW50ZXIiPgogIDxkaXYgY2xhc3M9InJlbGF0aXZlIG1iLTEwIG1kOm0tMCI+CiAgICA8YSBocmVmPSJodHRwczovL3d3dy5jbG91ZGZsYXJlLmNvbS81eHgtZXJyb3ItbGFuZGluZz91dG1fc291cmNlPWVycm9yY29kZV81MjAmIzM4O3V0bV9jYW1wYWlnbj13d3cucGxhbnR1bWwuY29tIiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciBub3JlZmVycmVyIj4KICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLWNsb3VkIGJsb2NrIG1kOmhpZGRlbiBoLTIwIGJnLWNlbnRlciBiZy1uby1yZXBlYXQiPjwvc3Bhbj4KICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLW9rIHctMTIgaC0xMiBhYnNvbHV0ZSBsZWZ0LTEvMiBtZDpsZWZ0LWF1dG8gbWQ6cmlnaHQtMCBtZDp0b3AtMCAtbWwtNiAtYm90dG9tLTQiPjwvc3Bhbj4KICAgIDwvYT4KICA8L2Rpdj4KICA8c3BhbiBjbGFzcz0ibWQ6YmxvY2sgdy1mdWxsIHRydW5jYXRlIj5DaGljYWdvPC9zcGFuPgogIDxoMyBjbGFzcz0ibWQ6aW5saW5lLWJsb2NrIG10LTMgbWQ6bXQtMCB0ZXh0LTJ4bCB0ZXh0LWdyYXktNjAwIGZvbnQtbGlnaHQgbGVhZGluZy0xLjMiPgogIDxhIGhyZWY9Imh0dHBzOi8vd3d3LmNsb3VkZmxhcmUuY29tLzV4eC1lcnJvci1sYW5kaW5nP3V0bV9zb3VyY2U9ZXJyb3Jjb2RlXzUyMCZ1dG1fY2FtcGFpZ249d3d3LnBsYW50dW1sLmNvbSIgdGFyZ2V0PSJfYmxhbmsiIHJlbD0ibm9vcGVuZXIgbm9yZWZlcnJlciI+CiAgICBDbG91ZGZsYXJlCiAgPC9hPgogIDwvaDM+CiAgCiAgPHNwYW4gY2xhc3M9ImxlYWRpbmctMS4zIHRleHQtMnhsIHRleHQtZ3JlZW4tc3VjY2VzcyI+V29ya2luZzwvc3Bhbj4KICAKPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iY2YtaG9zdC1zdGF0dXMiIGNsYXNzPSJjZi1lcnJvci1zb3VyY2UgcmVsYXRpdmUgdy0xLzMgbWQ6dy1mdWxsIHB5LTE1IG1kOnAtMCBtZDpweS04IG1kOnRleHQtbGVmdCBtZDpib3JkZXItc29saWQgbWQ6Ym9yZGVyLTAgbWQ6Ym9yZGVyLWIgbWQ6Ym9yZGVyLWdyYXktNDAwIG92ZXJmbG93LWhpZGRlbiBmbG9hdC1sZWZ0IG1kOmZsb2F0LW5vbmUgdGV4dC1jZW50ZXIiPgogIDxkaXYgY2xhc3M9InJlbGF0aXZlIG1iLTEwIG1kOm0tMCI+CiAgICAKICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLXNlcnZlciBibG9jayBtZDpoaWRkZW4gaC0yMCBiZy1jZW50ZXIgYmctbm8tcmVwZWF0Ij48L3NwYW4+CiAgICA8c3BhbiBjbGFzcz0iY2YtaWNvbi1lcnJvciB3LTEyIGgtMTIgYWJzb2x1dGUgbGVmdC0xLzIgbWQ6bGVmdC1hdXRvIG1kOnJpZ2h0LTAgbWQ6dG9wLTAgLW1sLTYgLWJvdHRvbS00Ij48L3NwYW4+CiAgICAKICA8L2Rpdj4KICA8c3BhbiBjbGFzcz0ibWQ6YmxvY2sgdy1mdWxsIHRydW5jYXRlIj53d3cucGxhbnR1bWwuY29tPC9zcGFuPgogIDxoMyBjbGFzcz0ibWQ6aW5saW5lLWJsb2NrIG10LTMgbWQ6bXQtMCB0ZXh0LTJ4bCB0ZXh0LWdyYXktNjAwIGZvbnQtbGlnaHQgbGVhZGluZy0xLjMiPgogIAogICAgSG9zdAogIAogIDwvaDM+CiAgCiAgPHNwYW4gY2xhc3M9ImxlYWRpbmctMS4zIHRleHQtMnhsIHRleHQtcmVkLWVycm9yIj5FcnJvcjwvc3Bhbj4KICAKPC9kaXY+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CgogICAgICAgIDxkaXYgY2xhc3M9InctMjQwIGxnOnctZnVsbCBteC1hdXRvIG1iLTggbGc6cHgtOCI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImNsZWFyZml4Ij4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InctMS8yIG1kOnctZnVsbCBmbG9hdC1sZWZ0IHByLTYgbWQ6cGItMTAgbWQ6cHItMCBsZWFkaW5nLXJlbGF4ZWQiPgogICAgICAgICAgICAgICAgICAgIDxoMiBjbGFzcz0idGV4dC0zeGwgZm9udC1ub3JtYWwgbGVhZGluZy0xLjMgbWItNCI+V2hhdCBoYXBwZW5lZD88L2gyPgogICAgICAgICAgICAgICAgICAgIDxwPlRoZXJlIGlzIGFuIHVua25vd24gY29ubmVjdGlvbiBpc3N1ZSBiZXR3ZWVuIENsb3VkZmxhcmUgYW5kIHRoZSBvcmlnaW4gd2ViIHNlcnZlci4gQXMgYSByZXN1bHQsIHRoZSB3ZWIgcGFnZSBjYW4gbm90IGJlIGRpc3BsYXllZC48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InctMS8yIG1kOnctZnVsbCBmbG9hdC1sZWZ0IGxlYWRpbmctcmVsYXhlZCI+CiAgICAgICAgICAgICAgICAgICAgPGgyIGNsYXNzPSJ0ZXh0LTN4bCBmb250LW5vcm1hbCBsZWFkaW5nLTEuMyBtYi00Ij5XaGF0IGNhbiBJIGRvPzwvaDI+CiAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICA8aDMgY2xhc3M9InRleHQtMTUgZm9udC1zZW1pYm9sZCBtYi0yIj5JZiB5b3UgYXJlIGEgdmlzaXRvciBvZiB0aGlzIHdlYnNpdGU6PC9oMz4KICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJtYi02Ij5QbGVhc2UgdHJ5IGFnYWluIGluIGEgZmV3IG1pbnV0ZXMuPC9wPgoKICAgICAgICAgICAgICAgIDxoMyBjbGFzcz0idGV4dC0xNSBmb250LXNlbWlib2xkIG1iLTIiPklmIHlvdSBhcmUgdGhlIG93bmVyIG9mIHRoaXMgd2Vic2l0ZTo8L2gzPgogICAgICAgICAgICAgICAgPHA+PHNwYW4+VGhlcmUgaXMgYW4gaXNzdWUgYmV0d2VlbiBDbG91ZGZsYXJlJ3MgY2FjaGUgYW5kIHlvdXIgb3JpZ2luIHdlYiBzZXJ2ZXIuIENsb3VkZmxhcmUgbW9uaXRvcnMgZm9yIHRoZXNlIGVycm9ycyBhbmQgYXV0b21hdGljYWxseSBpbnZlc3RpZ2F0ZXMgdGhlIGNhdXNlLiBUbyBoZWxwIHN1cHBvcnQgdGhlIGludmVzdGlnYXRpb24sIHlvdSBjYW4gcHVsbCB0aGUgY29ycmVzcG9uZGluZyBlcnJvciBsb2cgZnJvbSB5b3VyIHdlYiBzZXJ2ZXIgYW5kIHN1Ym1pdCBpdCBvdXIgc3VwcG9ydCB0ZWFtLiAgUGxlYXNlIGluY2x1ZGUgdGhlIFJheSBJRCAod2hpY2ggaXMgYXQgdGhlIGJvdHRvbSBvZiB0aGlzIGVycm9yIHBhZ2UpLjwvc3Bhbj4gPGEgcmVsPSJub29wZW5lciBub3JlZmVycmVyIiBocmVmPSAgICJodHRwczovL2RldmVsb3BlcnMuY2xvdWRmbGFyZS5jb20vc3VwcG9ydC90cm91Ymxlc2hvb3RpbmcvaHR0cC1zdGF0dXMtY29kZXMvY2xvdWRmbGFyZS01eHgtZXJyb3JzL2Vycm9yLTUyMC8iPkFkZGl0aW9uYWwgdHJvdWJsZXNob290aW5nIHJlc291cmNlczwvYT4uPC9wPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgoKICAgICAgICA8ZGl2IGNsYXNzPSJjZi1lcnJvci1mb290ZXIgY2Ytd3JhcHBlciB3LTI0MCBsZzp3LWZ1bGwgcHktMTAgc206cHktNCBzbTpweC04IG14LWF1dG8gdGV4dC1jZW50ZXIgc206dGV4dC1sZWZ0IGJvcmRlci1zb2xpZCBib3JkZXItMCBib3JkZXItdCBib3JkZXItZ3JheS0zMDAiPgogICAgPHAgY2xhc3M9InRleHQtMTMiPgogICAgICA8c3BhbiBjbGFzcz0iY2YtZm9vdGVyLWl0ZW0gc206YmxvY2sgc206bWItMSI+Q2xvdWRmbGFyZSBSYXkgSUQ6IDxzdHJvbmcgY2xhc3M9ImZvbnQtc2VtaWJvbGQiPjk3ZGUwZjMwY2E1YjAyNTI8L3N0cm9uZz48L3NwYW4+CiAgICAgIDxzcGFuIGNsYXNzPSJjZi1mb290ZXItc2VwYXJhdG9yIHNtOmhpZGRlbiI+JmJ1bGw7PC9zcGFuPgogICAgICA8c3BhbiBpZD0iY2YtZm9vdGVyLWl0ZW0taXAiIGNsYXNzPSJjZi1mb290ZXItaXRlbSBoaWRkZW4gc206YmxvY2sgc206bWItMSI+CiAgICAgICAgWW91ciBJUDoKICAgICAgICA8YnV0dG9uIHR5cGU9ImJ1dHRvbiIgaWQ9ImNmLWZvb3Rlci1pcC1yZXZlYWwiIGNsYXNzPSJjZi1mb290ZXItaXAtcmV2ZWFsLWJ0biI+Q2xpY2sgdG8gcmV2ZWFsPC9idXR0b24+CiAgICAgICAgPHNwYW4gY2xhc3M9ImhpZGRlbiIgaWQ9ImNmLWZvb3Rlci1pcCI+MTM1LjIzMi4xNzcuMTEzPC9zcGFuPgogICAgICAgIDxzcGFuIGNsYXNzPSJjZi1mb290ZXItc2VwYXJhdG9yIHNtOmhpZGRlbiI+JmJ1bGw7PC9zcGFuPgogICAgICA8L3NwYW4+CiAgICAgIDxzcGFuIGNsYXNzPSJjZi1mb290ZXItaXRlbSBzbTpibG9jayBzbTptYi0xIj48c3Bhbj5QZXJmb3JtYW5jZSAmYW1wOyBzZWN1cml0eSBieTwvc3Bhbj4gPGEgcmVsPSJub29wZW5lciBub3JlZmVycmVyIiBocmVmPSJodHRwczovL3d3dy5jbG91ZGZsYXJlLmNvbS81eHgtZXJyb3ItbGFuZGluZz91dG1fc291cmNlPWVycm9yY29kZV81MjAmIzM4O3V0bV9jYW1wYWlnbj13d3cucGxhbnR1bWwuY29tIiBpZD0iYnJhbmRfbGluayIgdGFyZ2V0PSJfYmxhbmsiPkNsb3VkZmxhcmU8L2E+PC9zcGFuPgogICAgICAKICAgIDwvcD4KICAgIDxzY3JpcHQ+KGZ1bmN0aW9uKCl7ZnVuY3Rpb24gZCgpe3ZhciBiPWEuZ2V0RWxlbWVudEJ5SWQoImNmLWZvb3Rlci1pdGVtLWlwIiksYz1hLmdldEVsZW1lbnRCeUlkKCJjZi1mb290ZXItaXAtcmV2ZWFsIik7YiYmImNsYXNzTGlzdCJpbiBiJiYoYi5jbGFzc0xpc3QucmVtb3ZlKCJoaWRkZW4iKSxjLmFkZEV2ZW50TGlzdGVuZXIoImNsaWNrIixmdW5jdGlvbigpe2MuY2xhc3NMaXN0LmFkZCgiaGlkZGVuIik7YS5nZXRFbGVtZW50QnlJZCgiY2YtZm9vdGVyLWlwIikuY2xhc3NMaXN0LnJlbW92ZSgiaGlkZGVuIil9KSl9dmFyIGE9ZG9jdW1lbnQ7ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lciYmYS5hZGRFdmVudExpc3RlbmVyKCJET01Db250ZW50TG9hZGVkIixkKX0pKCk7PC9zY3JpcHQ+CiAgPC9kaXY+PCEtLSAvLmVycm9yLWZvb3RlciAtLT4KCiAgICA8L2Rpdj4KPC9kaXY+CjwvYm9keT4KPC9odG1sPg==" class="uml" alt="uml diagram" title=""></p>
-<h4 id="module-parameters">Module Parameters<a class="headerlink" href="#module-parameters" title="Permanent link">#</a></h4>
+    modifyPathVelocity --&gt; initializeRTCStatus
+    initializeRTCStatus: initializeRTCStatus
+
+    initializeRTCStatus --&gt; modifyPathVelocityDetail
+    modifyPathVelocityDetail: modifyPathVelocityDetail
+
+    modifyPathVelocityDetail --&gt; prepareRoundaboutData
+    prepareRoundaboutData: prepareRoundaboutData
+
+    state prepare_data_check &lt;&lt;choice&gt;&gt;
+    prepareRoundaboutData --&gt; prepare_data_check
+
+    prepare_data_check --&gt; InternalError: prepare data failed
+    prepare_data_check --&gt; updateObjectInfoManagerArea: prepare data success
+
+    updateObjectInfoManagerArea: updateObjectInfoManagerArea
+
+    updateObjectInfoManagerArea --&gt; isOverPassJudgeLinesStatus
+    isOverPassJudgeLinesStatus: isOverPassJudgeLinesStatus
+
+    isOverPassJudgeLinesStatus --&gt; calcRoundaboutPassingTime
+
+    calcRoundaboutPassingTime --&gt; updateObjectInfoManagerCollision
+
+    updateObjectInfoManagerCollision --&gt; detectCollision
+    detectCollision: detectCollision
+
+    detectCollision --&gt; decision_logic
+
+    state "Decision Logic" as decision_logic {
+        [*] --&gt; is_permanent_go_check
+
+        state is_permanent_go_check &lt;&lt;choice&gt;&gt;
+        is_permanent_go_check --&gt; permanent_go_logic: true
+        is_permanent_go_check --&gt; normal_logic: false
+
+        state "Permanent Go Logic" as permanent_go_logic {
+            [*] --&gt; has_collision_with_margin_1
+
+            state has_collision_with_margin_1 &lt;&lt;choice&gt;&gt;
+            has_collision_with_margin_1 --&gt; can_smoothly_stop_check: true
+            has_collision_with_margin_1 --&gt; has_collision: false
+
+            state can_smoothly_stop_check &lt;&lt;choice&gt;&gt;
+            can_smoothly_stop_check --&gt; Collision_stop: true
+            can_smoothly_stop_check --&gt; has_collision: false
+
+            state has_collision &lt;&lt;choice&gt;&gt;
+            has_collision --&gt; OverPassJudge: OverPassJudge_with_risk
+            has_collision --&gt; OverPassJudge: OverPassJudge_safe
+        }
+
+        state "Normal Logic" as normal_logic {
+            [*] --&gt; has_collision_with_margin_2
+
+            state has_collision_with_margin_2 &lt;&lt;choice&gt;&gt;
+            has_collision_with_margin_2 --&gt; Collision_stop: true
+            has_collision_with_margin_2 --&gt; Safe: false
+        }
+
+        Safe
+        Collision_stop
+        OverPassJudge
+
+    }
+    decision_logic --&gt; prepareRTCStatus
+
+    prepareRTCStatus --&gt; reactRTCApproval
+</code></pre>
+<h2 id="module-parameters">Module Parameters<a class="headerlink" href="#module-parameters" title="Permanent link">#</a></h2>
+<h3 id="common">common<a class="headerlink" href="#common" title="Permanent link">#</a></h3>
 <table>
 <thead>
 <tr>
@@ -14117,65 +14250,116 @@
 </thead>
 <tbody>
 <tr>
-<td><code>max_delay_sec</code></td>
+<td>.attention_area_margin</td>
 <td>double</td>
-<td>[s] maximum allowed delay for command</td>
+<td>[m] Lateral distance margin for lane membership/object-in-lane checks</td>
 </tr>
 <tr>
-<td><code>near_line_distance</code></td>
+<td>.attention_area_angle_threshold</td>
 <td>double</td>
-<td>[m] threshold distance to stop line to check ego stop.</td>
+<td>[rad] Absolute heading difference threshold between object direction and lane direction</td>
 </tr>
 <tr>
-<td><code>dead_line_margin</code></td>
+<td>.default_stopline_margin</td>
 <td>double</td>
-<td>[m] threshold distance that this module continue to insert stop line.</td>
+<td>[m] Margin to place default stopline behind the first attention boundary</td>
 </tr>
 <tr>
-<td><code>hold_stop_margin_distance</code></td>
+<td>.path_interpolation_ds</td>
 <td>double</td>
-<td>[m] parameter for restart prevention (See following section)</td>
+<td>[m] Path interpolation step for geometric checks and stopline insertion</td>
 </tr>
 <tr>
-<td><code>check_timeout_after_stop_line</code></td>
+<td>.enable_pass_judge_before_default_stopline</td>
 <td>bool</td>
-<td>[-] check timeout to stop when linkage is disconnected</td>
+<td>[-] If true, allow pass-judge before reaching the default stopline</td>
 </tr>
 </tbody>
 </table>
-<h4 id="restart-prevention">Restart prevention<a class="headerlink" href="#restart-prevention" title="Permanent link">#</a></h4>
-<p>If it needs X meters (e.g. 0.5 meters) to stop once the vehicle starts moving due to the poor vehicle control performance, the vehicle goes over the stopping position that should be strictly observed when the vehicle starts to moving in order to approach the near stop point (e.g. 0.3 meters away).</p>
-<p>This module has parameter <code>hold_stop_margin_distance</code> in order to prevent from these redundant restart. If the vehicle is stopped within <code>hold_stop_margin_distance</code> meters from stop point of the module (_front_to_stop_line &lt; hold_stop_margin_distance), the module judges that the vehicle has already stopped for the module's stop point and plans to keep stopping current position even if the vehicle is stopped due to other factors.</p>
-<figure>
-<p><img alt="example" src="docs/restart_prevention.svg" width="1000">
-  </p>
-<figcaption>parameters</figcaption>
-</figure>
-<figure>
-<p><img alt="example" src="docs/restart.svg" width="1000">
-  </p>
-<figcaption>outside the hold_stop_margin_distance</figcaption>
-</figure>
-<figure>
-<p><img alt="example" src="docs/keep_stopping.svg" width="1000">
-  </p>
-<figcaption>inside the hold_stop_margin_distance</figcaption>
-</figure>
-<h4 id="flowchart">Flowchart<a class="headerlink" href="#flowchart" title="Permanent link">#</a></h4>
-<p><img src="data:image/svg+xml;base64,PCFET0NUWVBFIGh0bWw+CjwhLS1baWYgbHQgSUUgN10+IDxodG1sIGNsYXNzPSJuby1qcyBpZTYgb2xkaWUiIGxhbmc9ImVuLVVTIj4gPCFbZW5kaWZdLS0+CjwhLS1baWYgSUUgN10+ICAgIDxodG1sIGNsYXNzPSJuby1qcyBpZTcgb2xkaWUiIGxhbmc9ImVuLVVTIj4gPCFbZW5kaWZdLS0+CjwhLS1baWYgSUUgOF0+ICAgIDxodG1sIGNsYXNzPSJuby1qcyBpZTggb2xkaWUiIGxhbmc9ImVuLVVTIj4gPCFbZW5kaWZdLS0+CjwhLS1baWYgZ3QgSUUgOF0+PCEtLT4gPGh0bWwgY2xhc3M9Im5vLWpzIiBsYW5nPSJlbi1VUyI+IDwhLS08IVtlbmRpZl0tLT4KPGhlYWQ+Cgo8dGl0bGU+cGxhbnR1bWwuY29tIHwgNTIwOiBXZWIgc2VydmVyIGlzIHJldHVybmluZyBhbiB1bmtub3duIGVycm9yPC90aXRsZT4KPG1ldGEgY2hhcnNldD0iVVRGLTgiIC8+CjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PVVURi04IiAvPgo8bWV0YSBodHRwLWVxdWl2PSJYLVVBLUNvbXBhdGlibGUiIGNvbnRlbnQ9IklFPUVkZ2UiIC8+CjxtZXRhIG5hbWU9InJvYm90cyIgY29udGVudD0ibm9pbmRleCwgbm9mb2xsb3ciIC8+CjxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsaW5pdGlhbC1zY2FsZT0xIiAvPgo8bGluayByZWw9InN0eWxlc2hlZXQiIGlkPSJjZl9zdHlsZXMtY3NzIiBocmVmPSIvY2RuLWNnaS9zdHlsZXMvbWFpbi5jc3MiIC8+CjwvaGVhZD4KPGJvZHk+CjxkaXYgaWQ9ImNmLXdyYXBwZXIiPgogICAgPGRpdiBpZD0iY2YtZXJyb3ItZGV0YWlscyIgY2xhc3M9InAtMCI+CiAgICAgICAgPGhlYWRlciBjbGFzcz0ibXgtYXV0byBwdC0xMCBsZzpwdC02IGxnOnB4LTggdy0yNDAgbGc6dy1mdWxsIG1iLTgiPgogICAgICAgICAgICA8aDEgY2xhc3M9ImlubGluZS1ibG9jayBzbTpibG9jayBzbTptYi0yIGZvbnQtbGlnaHQgdGV4dC02MCBsZzp0ZXh0LTR4bCB0ZXh0LWJsYWNrLWRhcmsgbGVhZGluZy10aWdodCBtci0yIj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJpbmxpbmUtYmxvY2siPldlYiBzZXJ2ZXIgaXMgcmV0dXJuaW5nIGFuIHVua25vd24gZXJyb3I8L3NwYW4+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iY29kZS1sYWJlbCI+RXJyb3IgY29kZSA1MjA8L3NwYW4+CiAgICAgICAgICAgIDwvaDE+CiAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICBWaXNpdCA8YSBocmVmPSJodHRwczovL3d3dy5jbG91ZGZsYXJlLmNvbS81eHgtZXJyb3ItbGFuZGluZz91dG1fc291cmNlPWVycm9yY29kZV81MjAmdXRtX2NhbXBhaWduPXd3dy5wbGFudHVtbC5jb20iIHRhcmdldD0iX2JsYW5rIiByZWw9Im5vb3BlbmVyIG5vcmVmZXJyZXIiPmNsb3VkZmxhcmUuY29tPC9hPiBmb3IgbW9yZSBpbmZvcm1hdGlvbi4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9Im10LTMiPjIwMjUtMDktMTIgMDg6MzM6MjUgVVRDPC9kaXY+CiAgICAgICAgPC9oZWFkZXI+CiAgICAgICAgPGRpdiBjbGFzcz0ibXktOCBiZy1ncmFkaWVudC1ncmF5Ij4KICAgICAgICAgICAgPGRpdiBjbGFzcz0idy0yNDAgbGc6dy1mdWxsIG14LWF1dG8iPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iY2xlYXJmaXggbWQ6cHgtOCI+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iY2YtYnJvd3Nlci1zdGF0dXMiIGNsYXNzPSIgcmVsYXRpdmUgdy0xLzMgbWQ6dy1mdWxsIHB5LTE1IG1kOnAtMCBtZDpweS04IG1kOnRleHQtbGVmdCBtZDpib3JkZXItc29saWQgbWQ6Ym9yZGVyLTAgbWQ6Ym9yZGVyLWIgbWQ6Ym9yZGVyLWdyYXktNDAwIG92ZXJmbG93LWhpZGRlbiBmbG9hdC1sZWZ0IG1kOmZsb2F0LW5vbmUgdGV4dC1jZW50ZXIiPgogIDxkaXYgY2xhc3M9InJlbGF0aXZlIG1iLTEwIG1kOm0tMCI+CiAgICAKICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLWJyb3dzZXIgYmxvY2sgbWQ6aGlkZGVuIGgtMjAgYmctY2VudGVyIGJnLW5vLXJlcGVhdCI+PC9zcGFuPgogICAgPHNwYW4gY2xhc3M9ImNmLWljb24tb2sgdy0xMiBoLTEyIGFic29sdXRlIGxlZnQtMS8yIG1kOmxlZnQtYXV0byBtZDpyaWdodC0wIG1kOnRvcC0wIC1tbC02IC1ib3R0b20tNCI+PC9zcGFuPgogICAgCiAgPC9kaXY+CiAgPHNwYW4gY2xhc3M9Im1kOmJsb2NrIHctZnVsbCB0cnVuY2F0ZSI+WW91PC9zcGFuPgogIDxoMyBjbGFzcz0ibWQ6aW5saW5lLWJsb2NrIG10LTMgbWQ6bXQtMCB0ZXh0LTJ4bCB0ZXh0LWdyYXktNjAwIGZvbnQtbGlnaHQgbGVhZGluZy0xLjMiPgogIAogICAgQnJvd3NlcgogIAogIDwvaDM+CiAgCiAgPHNwYW4gY2xhc3M9ImxlYWRpbmctMS4zIHRleHQtMnhsIHRleHQtZ3JlZW4tc3VjY2VzcyI+V29ya2luZzwvc3Bhbj4KICAKPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iY2YtY2xvdWRmbGFyZS1zdGF0dXMiIGNsYXNzPSIgcmVsYXRpdmUgdy0xLzMgbWQ6dy1mdWxsIHB5LTE1IG1kOnAtMCBtZDpweS04IG1kOnRleHQtbGVmdCBtZDpib3JkZXItc29saWQgbWQ6Ym9yZGVyLTAgbWQ6Ym9yZGVyLWIgbWQ6Ym9yZGVyLWdyYXktNDAwIG92ZXJmbG93LWhpZGRlbiBmbG9hdC1sZWZ0IG1kOmZsb2F0LW5vbmUgdGV4dC1jZW50ZXIiPgogIDxkaXYgY2xhc3M9InJlbGF0aXZlIG1iLTEwIG1kOm0tMCI+CiAgICA8YSBocmVmPSJodHRwczovL3d3dy5jbG91ZGZsYXJlLmNvbS81eHgtZXJyb3ItbGFuZGluZz91dG1fc291cmNlPWVycm9yY29kZV81MjAmIzM4O3V0bV9jYW1wYWlnbj13d3cucGxhbnR1bWwuY29tIiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciBub3JlZmVycmVyIj4KICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLWNsb3VkIGJsb2NrIG1kOmhpZGRlbiBoLTIwIGJnLWNlbnRlciBiZy1uby1yZXBlYXQiPjwvc3Bhbj4KICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLW9rIHctMTIgaC0xMiBhYnNvbHV0ZSBsZWZ0LTEvMiBtZDpsZWZ0LWF1dG8gbWQ6cmlnaHQtMCBtZDp0b3AtMCAtbWwtNiAtYm90dG9tLTQiPjwvc3Bhbj4KICAgIDwvYT4KICA8L2Rpdj4KICA8c3BhbiBjbGFzcz0ibWQ6YmxvY2sgdy1mdWxsIHRydW5jYXRlIj5DaGljYWdvPC9zcGFuPgogIDxoMyBjbGFzcz0ibWQ6aW5saW5lLWJsb2NrIG10LTMgbWQ6bXQtMCB0ZXh0LTJ4bCB0ZXh0LWdyYXktNjAwIGZvbnQtbGlnaHQgbGVhZGluZy0xLjMiPgogIDxhIGhyZWY9Imh0dHBzOi8vd3d3LmNsb3VkZmxhcmUuY29tLzV4eC1lcnJvci1sYW5kaW5nP3V0bV9zb3VyY2U9ZXJyb3Jjb2RlXzUyMCZ1dG1fY2FtcGFpZ249d3d3LnBsYW50dW1sLmNvbSIgdGFyZ2V0PSJfYmxhbmsiIHJlbD0ibm9vcGVuZXIgbm9yZWZlcnJlciI+CiAgICBDbG91ZGZsYXJlCiAgPC9hPgogIDwvaDM+CiAgCiAgPHNwYW4gY2xhc3M9ImxlYWRpbmctMS4zIHRleHQtMnhsIHRleHQtZ3JlZW4tc3VjY2VzcyI+V29ya2luZzwvc3Bhbj4KICAKPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBpZD0iY2YtaG9zdC1zdGF0dXMiIGNsYXNzPSJjZi1lcnJvci1zb3VyY2UgcmVsYXRpdmUgdy0xLzMgbWQ6dy1mdWxsIHB5LTE1IG1kOnAtMCBtZDpweS04IG1kOnRleHQtbGVmdCBtZDpib3JkZXItc29saWQgbWQ6Ym9yZGVyLTAgbWQ6Ym9yZGVyLWIgbWQ6Ym9yZGVyLWdyYXktNDAwIG92ZXJmbG93LWhpZGRlbiBmbG9hdC1sZWZ0IG1kOmZsb2F0LW5vbmUgdGV4dC1jZW50ZXIiPgogIDxkaXYgY2xhc3M9InJlbGF0aXZlIG1iLTEwIG1kOm0tMCI+CiAgICAKICAgIDxzcGFuIGNsYXNzPSJjZi1pY29uLXNlcnZlciBibG9jayBtZDpoaWRkZW4gaC0yMCBiZy1jZW50ZXIgYmctbm8tcmVwZWF0Ij48L3NwYW4+CiAgICA8c3BhbiBjbGFzcz0iY2YtaWNvbi1lcnJvciB3LTEyIGgtMTIgYWJzb2x1dGUgbGVmdC0xLzIgbWQ6bGVmdC1hdXRvIG1kOnJpZ2h0LTAgbWQ6dG9wLTAgLW1sLTYgLWJvdHRvbS00Ij48L3NwYW4+CiAgICAKICA8L2Rpdj4KICA8c3BhbiBjbGFzcz0ibWQ6YmxvY2sgdy1mdWxsIHRydW5jYXRlIj53d3cucGxhbnR1bWwuY29tPC9zcGFuPgogIDxoMyBjbGFzcz0ibWQ6aW5saW5lLWJsb2NrIG10LTMgbWQ6bXQtMCB0ZXh0LTJ4bCB0ZXh0LWdyYXktNjAwIGZvbnQtbGlnaHQgbGVhZGluZy0xLjMiPgogIAogICAgSG9zdAogIAogIDwvaDM+CiAgCiAgPHNwYW4gY2xhc3M9ImxlYWRpbmctMS4zIHRleHQtMnhsIHRleHQtcmVkLWVycm9yIj5FcnJvcjwvc3Bhbj4KICAKPC9kaXY+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CgogICAgICAgIDxkaXYgY2xhc3M9InctMjQwIGxnOnctZnVsbCBteC1hdXRvIG1iLTggbGc6cHgtOCI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImNsZWFyZml4Ij4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InctMS8yIG1kOnctZnVsbCBmbG9hdC1sZWZ0IHByLTYgbWQ6cGItMTAgbWQ6cHItMCBsZWFkaW5nLXJlbGF4ZWQiPgogICAgICAgICAgICAgICAgICAgIDxoMiBjbGFzcz0idGV4dC0zeGwgZm9udC1ub3JtYWwgbGVhZGluZy0xLjMgbWItNCI+V2hhdCBoYXBwZW5lZD88L2gyPgogICAgICAgICAgICAgICAgICAgIDxwPlRoZXJlIGlzIGFuIHVua25vd24gY29ubmVjdGlvbiBpc3N1ZSBiZXR3ZWVuIENsb3VkZmxhcmUgYW5kIHRoZSBvcmlnaW4gd2ViIHNlcnZlci4gQXMgYSByZXN1bHQsIHRoZSB3ZWIgcGFnZSBjYW4gbm90IGJlIGRpc3BsYXllZC48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InctMS8yIG1kOnctZnVsbCBmbG9hdC1sZWZ0IGxlYWRpbmctcmVsYXhlZCI+CiAgICAgICAgICAgICAgICAgICAgPGgyIGNsYXNzPSJ0ZXh0LTN4bCBmb250LW5vcm1hbCBsZWFkaW5nLTEuMyBtYi00Ij5XaGF0IGNhbiBJIGRvPzwvaDI+CiAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICA8aDMgY2xhc3M9InRleHQtMTUgZm9udC1zZW1pYm9sZCBtYi0yIj5JZiB5b3UgYXJlIGEgdmlzaXRvciBvZiB0aGlzIHdlYnNpdGU6PC9oMz4KICAgICAgICAgICAgICAgIDxwIGNsYXNzPSJtYi02Ij5QbGVhc2UgdHJ5IGFnYWluIGluIGEgZmV3IG1pbnV0ZXMuPC9wPgoKICAgICAgICAgICAgICAgIDxoMyBjbGFzcz0idGV4dC0xNSBmb250LXNlbWlib2xkIG1iLTIiPklmIHlvdSBhcmUgdGhlIG93bmVyIG9mIHRoaXMgd2Vic2l0ZTo8L2gzPgogICAgICAgICAgICAgICAgPHA+PHNwYW4+VGhlcmUgaXMgYW4gaXNzdWUgYmV0d2VlbiBDbG91ZGZsYXJlJ3MgY2FjaGUgYW5kIHlvdXIgb3JpZ2luIHdlYiBzZXJ2ZXIuIENsb3VkZmxhcmUgbW9uaXRvcnMgZm9yIHRoZXNlIGVycm9ycyBhbmQgYXV0b21hdGljYWxseSBpbnZlc3RpZ2F0ZXMgdGhlIGNhdXNlLiBUbyBoZWxwIHN1cHBvcnQgdGhlIGludmVzdGlnYXRpb24sIHlvdSBjYW4gcHVsbCB0aGUgY29ycmVzcG9uZGluZyBlcnJvciBsb2cgZnJvbSB5b3VyIHdlYiBzZXJ2ZXIgYW5kIHN1Ym1pdCBpdCBvdXIgc3VwcG9ydCB0ZWFtLiAgUGxlYXNlIGluY2x1ZGUgdGhlIFJheSBJRCAod2hpY2ggaXMgYXQgdGhlIGJvdHRvbSBvZiB0aGlzIGVycm9yIHBhZ2UpLjwvc3Bhbj4gPGEgcmVsPSJub29wZW5lciBub3JlZmVycmVyIiBocmVmPSAgICJodHRwczovL2RldmVsb3BlcnMuY2xvdWRmbGFyZS5jb20vc3VwcG9ydC90cm91Ymxlc2hvb3RpbmcvaHR0cC1zdGF0dXMtY29kZXMvY2xvdWRmbGFyZS01eHgtZXJyb3JzL2Vycm9yLTUyMC8iPkFkZGl0aW9uYWwgdHJvdWJsZXNob290aW5nIHJlc291cmNlczwvYT4uPC9wPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgoKICAgICAgICA8ZGl2IGNsYXNzPSJjZi1lcnJvci1mb290ZXIgY2Ytd3JhcHBlciB3LTI0MCBsZzp3LWZ1bGwgcHktMTAgc206cHktNCBzbTpweC04IG14LWF1dG8gdGV4dC1jZW50ZXIgc206dGV4dC1sZWZ0IGJvcmRlci1zb2xpZCBib3JkZXItMCBib3JkZXItdCBib3JkZXItZ3JheS0zMDAiPgogICAgPHAgY2xhc3M9InRleHQtMTMiPgogICAgICA8c3BhbiBjbGFzcz0iY2YtZm9vdGVyLWl0ZW0gc206YmxvY2sgc206bWItMSI+Q2xvdWRmbGFyZSBSYXkgSUQ6IDxzdHJvbmcgY2xhc3M9ImZvbnQtc2VtaWJvbGQiPjk3ZGUwZjQ0Y2U0NmY0ZWI8L3N0cm9uZz48L3NwYW4+CiAgICAgIDxzcGFuIGNsYXNzPSJjZi1mb290ZXItc2VwYXJhdG9yIHNtOmhpZGRlbiI+JmJ1bGw7PC9zcGFuPgogICAgICA8c3BhbiBpZD0iY2YtZm9vdGVyLWl0ZW0taXAiIGNsYXNzPSJjZi1mb290ZXItaXRlbSBoaWRkZW4gc206YmxvY2sgc206bWItMSI+CiAgICAgICAgWW91ciBJUDoKICAgICAgICA8YnV0dG9uIHR5cGU9ImJ1dHRvbiIgaWQ9ImNmLWZvb3Rlci1pcC1yZXZlYWwiIGNsYXNzPSJjZi1mb290ZXItaXAtcmV2ZWFsLWJ0biI+Q2xpY2sgdG8gcmV2ZWFsPC9idXR0b24+CiAgICAgICAgPHNwYW4gY2xhc3M9ImhpZGRlbiIgaWQ9ImNmLWZvb3Rlci1pcCI+MTM1LjIzMi4xNzcuMTEzPC9zcGFuPgogICAgICAgIDxzcGFuIGNsYXNzPSJjZi1mb290ZXItc2VwYXJhdG9yIHNtOmhpZGRlbiI+JmJ1bGw7PC9zcGFuPgogICAgICA8L3NwYW4+CiAgICAgIDxzcGFuIGNsYXNzPSJjZi1mb290ZXItaXRlbSBzbTpibG9jayBzbTptYi0xIj48c3Bhbj5QZXJmb3JtYW5jZSAmYW1wOyBzZWN1cml0eSBieTwvc3Bhbj4gPGEgcmVsPSJub29wZW5lciBub3JlZmVycmVyIiBocmVmPSJodHRwczovL3d3dy5jbG91ZGZsYXJlLmNvbS81eHgtZXJyb3ItbGFuZGluZz91dG1fc291cmNlPWVycm9yY29kZV81MjAmIzM4O3V0bV9jYW1wYWlnbj13d3cucGxhbnR1bWwuY29tIiBpZD0iYnJhbmRfbGluayIgdGFyZ2V0PSJfYmxhbmsiPkNsb3VkZmxhcmU8L2E+PC9zcGFuPgogICAgICAKICAgIDwvcD4KICAgIDxzY3JpcHQ+KGZ1bmN0aW9uKCl7ZnVuY3Rpb24gZCgpe3ZhciBiPWEuZ2V0RWxlbWVudEJ5SWQoImNmLWZvb3Rlci1pdGVtLWlwIiksYz1hLmdldEVsZW1lbnRCeUlkKCJjZi1mb290ZXItaXAtcmV2ZWFsIik7YiYmImNsYXNzTGlzdCJpbiBiJiYoYi5jbGFzc0xpc3QucmVtb3ZlKCJoaWRkZW4iKSxjLmFkZEV2ZW50TGlzdGVuZXIoImNsaWNrIixmdW5jdGlvbigpe2MuY2xhc3NMaXN0LmFkZCgiaGlkZGVuIik7YS5nZXRFbGVtZW50QnlJZCgiY2YtZm9vdGVyLWlwIikuY2xhc3NMaXN0LnJlbW92ZSgiaGlkZGVuIil9KSl9dmFyIGE9ZG9jdW1lbnQ7ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lciYmYS5hZGRFdmVudExpc3RlbmVyKCJET01Db250ZW50TG9hZGVkIixkKX0pKCk7PC9zY3JpcHQ+CiAgPC9kaXY+PCEtLSAvLmVycm9yLWZvb3RlciAtLT4KCiAgICA8L2Rpdj4KPC9kaXY+CjwvYm9keT4KPC9odG1sPg==" class="uml" alt="uml diagram" title=""></p>
-<h4 id="map-format">Map Format<a class="headerlink" href="#map-format" title="Permanent link">#</a></h4>
-<ul>
-<li>To avoid sudden braking, the length between the start line and stop line of a virtual traffic light must be longer than <span class="arithmatex">\(l_{\mathrm{min}}\)</span> calculated as follows, assuming that <span class="arithmatex">\(v_0\)</span> is the velocity when passing the start line and <span class="arithmatex">\(a_{\mathrm{min}}\)</span> is minimum acceleration defined in Autoware.</li>
-</ul>
-<div class="arithmatex">\[
-\begin{align}
-l_{\mathrm{min}} = -\frac{v_0^2}{2 a_{\mathrm{min}}}
-\end{align}
-\]</div>
-<h4 id="known-limits">Known Limits<a class="headerlink" href="#known-limits" title="Permanent link">#</a></h4>
-<ul>
-<li>tbd.</li>
-</ul></div>
+<h3 id="collision_detection">collision_detection<a class="headerlink" href="#collision_detection" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.collision_detection_hold_time</td>
+<td>double</td>
+<td>[s] Debounce hold time to stabilize SAFE/UNSAFE while waiting before entry</td>
+</tr>
+<tr>
+<td>.min_predicted_path_confidence</td>
+<td>double</td>
+<td>[-] Minimum confidence to use a predicted path for collision checking</td>
+</tr>
+<tr>
+<td>.collision_start_margin_time</td>
+<td>double</td>
+<td>[s] Time margin added before object entry time for ego time window</td>
+</tr>
+<tr>
+<td>.collision_end_margin_time</td>
+<td>double</td>
+<td>[s] Time margin added after object exit time for ego time window</td>
+</tr>
+<tr>
+<td>.target_type.car/bus/truck/trailer/motorcycle/bicycle/unknown</td>
+<td>bool</td>
+<td>[-] Enable/disable target object classes</td>
+</tr>
+<tr>
+<td>.velocity_profile.use_upstream</td>
+<td>bool</td>
+<td>[-] Use upstream module’s velocity profile inside roundabout when possible</td>
+</tr>
+<tr>
+<td>.velocity_profile.minimum_upstream_velocity</td>
+<td>double</td>
+<td>[m/s] Lower bound when using upstream velocity profile</td>
+</tr>
+<tr>
+<td>.velocity_profile.default_velocity</td>
+<td>double</td>
+<td>[m/s] Constant reference velocity when not using upstream profile</td>
+</tr>
+<tr>
+<td>.velocity_profile.minimum_default_velocity</td>
+<td>double</td>
+<td>[m/s] Lower bound for default velocity to avoid zero</td>
+</tr>
+<tr>
+<td>.avoid_collision_by_acceleration.object_time_margin_to_collision_point</td>
+<td>double</td>
+<td>[s] Time margin for risk diagnosis to compute required ego acceleration</td>
+</tr>
+</tbody>
+</table>
+<h3 id="debug-enable_rtc">debug / enable_rtc<a class="headerlink" href="#debug-enable_rtc" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>debug.ttc</td>
+<td>[int64]</td>
+<td>Internal TTC/diagnostic visualization selector</td>
+</tr>
+<tr>
+<td>enable_rtc.roundabout</td>
+<td>bool</td>
+<td>Enable RTC gating for this module</td>
+</tr>
+</tbody>
+</table></div>
 
 
 
@@ -14202,7 +14386,7 @@ l_{\mathrm{min}} = -\frac{v_0^2}{2 a_{\mathrm{min}}}
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../autoware_behavior_velocity_traffic_light_module/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Index" rel="prev">
+          <a href="../autoware_behavior_velocity_occlusion_spot_module/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Index" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -14218,13 +14402,13 @@ l_{\mathrm{min}} = -\frac{v_0^2}{2 a_{\mathrm{min}}}
         
         
           
-          <a href="../autoware_behavior_velocity_walkway_module/" class="md-footer__link md-footer__link--next" aria-label="Next: Index" rel="next">
+          <a href="../autoware_behavior_velocity_rtc_interface/" class="md-footer__link md-footer__link--next" aria-label="Next: Behavior Velocity RTC Interface" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Index
+                Behavior Velocity RTC Interface
               </div>
             </div>
             <div class="md-footer__button md-icon">
