@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../docs/assets/images/autoware-foundation.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -22790,8 +22790,8 @@
 <span class="w">  </span><span class="n">pub_options</span>
 <span class="p">);</span>
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">onPointCloud</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">AUTOWARE_MESSAGE_PTR</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">PointCloud2</span><span class="p">)</span><span class="w"> </span><span class="n">input_msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ALLOCATE_OUTPUT_MESSAGE</span><span class="p">(</span><span class="n">pub_output_</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">onPointCloud</span><span class="p">(</span><span class="n">AUTOWARE_MESSAGE_UNIQUE_PTR</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">PointCloud2</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">input_msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ALLOCATE_OUTPUT_MESSAGE_UNIQUE</span><span class="p">(</span><span class="n">pub_output_</span><span class="p">);</span>
 <span class="w">  </span><span class="p">...</span>
 <span class="w">  </span><span class="n">pub_output_</span><span class="o">-&gt;</span><span class="n">publish</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">output</span><span class="p">));</span>
 <span class="p">}</span>
@@ -22799,7 +22799,7 @@
 <p>To use the macros provided by this package in your own package, include the following lines in your <code>CMakeLists.txt</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">find_package</span><span class="p">(</span><span class="s">autoware_agnocast_wrapper</span><span class="w"> </span><span class="s">REQUIRED</span><span class="p">)</span>
 <span class="nb">ament_target_dependencies</span><span class="p">(</span><span class="s">target</span><span class="w"> </span><span class="s">autoware_agnocast_wrapper</span><span class="p">)</span>
-<span class="nb">target_include_directories</span><span class="p">(</span><span class="s">target</span><span class="w"> </span><span class="o">${</span><span class="nv">autoware_agnocast_wrapper_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
+<span class="nb">target_include_directories</span><span class="p">(</span><span class="s">target</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="o">${</span><span class="nv">autoware_agnocast_wrapper_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
 <span class="nb">autoware_agnocast_wrapper_setup</span><span class="p">(</span><span class="s">target</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="how-to-enabledisable-agnocast-on-build">How to Enable/Disable Agnocast on Build<a class="headerlink" href="#how-to-enabledisable-agnocast-on-build" title="Permanent link">#</a></h2>
