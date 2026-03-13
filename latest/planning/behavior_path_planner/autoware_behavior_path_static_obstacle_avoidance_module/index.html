@@ -25276,9 +25276,16 @@ To solve that, this module provides a parameter for the minimum avoidance speed,
 <tr>
 <td>policy.candidate_path_turn_signal</td>
 <td>string</td>
-<td>policy for turn signal output during planWaitingApproval (candidate path). 'none': never output turn signal for candidate paths. 'stopped_candidate': output turn signal only when the vehicle is stopped and a candidate path exists (default behavior). 'all_candidate': always output turn signal whenever a candidate path exists.</td>
+<td>policy for turn signal output during planWaitingApproval (candidate path). 'none': never output turn signal for candidate paths. 'stopped_candidate': output turn signal only when the vehicle is stopped and a candidate path exists (default behavior). 'all_candidate': always output turn signal whenever a candidate path exists. 'stop_on_approval': no turn signal during candidate phase; after approval, hold a stop point and turn signal for turn_signal_on_approval_hold_duration seconds before proceeding with avoidance.</td>
 <td>none</td>
-<td>['none', 'stopped_candidate', 'all_candidate']</td>
+<td>['none', 'stopped_candidate', 'all_candidate', 'stop_on_approval']</td>
+</tr>
+<tr>
+<td>policy.turn_signal_on_approval_hold_duration</td>
+<td>float</td>
+<td>duration [s] to hold stop and turn signal after approval (used by 'stop_on_approval' policy)</td>
+<td>3.0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
 <td>lateral.velocity</td>
