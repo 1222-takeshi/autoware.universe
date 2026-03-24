@@ -22994,6 +22994,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#spell-checking-cspell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spell-checking (CSpell)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#how-to-debug" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -23358,6 +23369,20 @@ Although it has a cons to converge to the local minima, it can get a good soluti
 <td>N/A</td>
 </tr>
 <tr>
+<td>mpt.use_acados</td>
+<td>boolean</td>
+<td>Enable/disable acados solver for MPT optimization</td>
+<td>False</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>mpt.use_acados_circle_constraints</td>
+<td>boolean</td>
+<td>Enable/disable the new MPT-style circle road-bound constraints in acados</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
 <td>option.steer_limit_constraint</td>
 <td>boolean</td>
 <td>Enable steer limit constraint.</td>
@@ -23646,6 +23671,12 @@ Although it has a cons to converge to the local minima, it can get a good soluti
 </tr>
 </tbody>
 </table>
+<h2 id="spell-checking-cspell">Spell-checking (CSpell)<a class="headerlink" href="#spell-checking-cspell" title="Permanent link">#</a></h2>
+<p>Generated acados C code under <code>src/acados_mpc/c_generated_code/</code> is ignored in repo-wide CSpell runs. To spell-check only that folder, run from the <strong>autoware_universe</strong> package root (e.g. <code>src/universe/autoware_universe</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>path/to/autoware/src/universe/autoware_universe
+npx<span class="w"> </span>--yes<span class="w"> </span>cspell<span class="w"> </span><span class="s2">"planning/autoware_path_optimizer/src/acados_mpc/c_generated_code/**/*.{c,h}"</span><span class="w"> </span>--no-progress
+</code></pre></div>
+<p>Running CSpell from inside <code>c_generated_code</code> with a glob like <code>**/*.{c,h}</code> and <code>--config</code> pointing to the repo config makes the glob relative to the config directory, so the whole path_optimizer package gets checked instead of just that folder.</p>
 <h2 id="how-to-debug">How To Debug<a class="headerlink" href="#how-to-debug" title="Permanent link">#</a></h2>
 <p>How to debug can be seen <a href="docs/debug/">here</a>.</p></div>
 
